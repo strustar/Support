@@ -1,7 +1,7 @@
 import streamlit as st 
 import plotly.graph_objects as go
 import pandas as pd
-# import numpy as np
+import numpy as np
 
 def Load(fn, s_t, s_weight, w_weight):
     headers = [
@@ -16,10 +16,10 @@ def Load(fn, s_t, s_weight, w_weight):
     t_load = s_load + w_load + live_load
 
     data = [
-    ['<b>콘크리트 자중', '<b>{:.4f}'.format(s_load/1e3), '<b>{:.2f}'.format(s_load), '<b>{:.1f}'.format(s_weight) + ' kN/m³ × ' + '{:.3f}'.format(s_t/1e3) + ' m = {:.2f}'.format(s_load) + ' kN/m²'],
-    ['<b>거푸집 자중', '<b>{:.4f}'.format(w_load/1e3), '<b>{:.2f}'.format(w_load), '<b>최소 0.4 kN/m² (1.6.2 연직하중)'],
-    ['<b>작업하중 (활하중)', '<b>{:.4f}'.format(live_load/1e3), '<b>{:.2f}'.format(live_load), '<b>*최소 2.5 kN/m² (1.6.2 연직하중)'],
-    ['<b>∑ (합계)', '<b>{:.4f}'.format(t_load/1e3), '<b>{:.2f}'.format(t_load), '<b>최소 5.0 kN/m² (1.6.2 연직하중)'],
+    ['<b>콘크리트 자중', f'<b>{s_load/1e3:.4f}', f'<b>{s_load:.2f}', f'<b>{s_weight:.1f}'+' kN/m³ × ' + f'<b>{s_t/1e3:.3f}'+' m = ' + f'<b>{s_load:.2f}' + ' kN/m²'],
+    ['<b>거푸집 자중', f'<b>{w_load/1e3:.4f}', f'<b>{w_load:.2f}', '<b>최소 0.4 kN/m² (1.6.2 연직하중)'],
+    ['<b>작업하중 (활하중)', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>*최소 2.5 kN/m² (1.6.2 연직하중)'],
+    ['<b>∑ (합계)', f'<b>{t_load/1e3:.4f}', f'<b>{t_load:.2f}', '<b>최소 5.0 kN/m² (1.6.2 연직하중)'],
     ]
 
     data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
@@ -58,7 +58,7 @@ def Load(fn, s_t, s_weight, w_weight):
 
 def Info(fn, shape, section, A, I, S, E, fba, fsa, l_margin):
     headers = [
-        '<b>재료<br>형상</b>',
+        '<b>부재<br>형상</b>',
         '<b>두께 / 하중방향<br>      [mm / °]</b>',
         '<b> 단면적<br>A [mm²]</b>',
         '<b>단면계수<br>S [mm³]</b>',
@@ -70,10 +70,10 @@ def Info(fn, shape, section, A, I, S, E, fba, fsa, l_margin):
     data = [
         '<b>' + shape,
         '<b>' + section,
-        f'<b>{A:.1f}</b>',
-        f'<b>{S:.1f}</b>',
-        f'<b>{I:.1f}</b>',        
-        f'<b>{E/1e3:.1f}</b>',
+        f'<b>{A:,.1f}</b>',
+        f'<b>{S:,.1f}</b>',
+        f'<b>{I:,.1f}</b>',        
+        f'<b>{E/1e3:,.1f}</b>',
         f'<b>{fba:.1f}</b>',
         f'<b>{fsa:.2f}</b>',
         ]
@@ -81,9 +81,17 @@ def Info(fn, shape, section, A, I, S, E, fba, fsa, l_margin):
         headers[2] = '<b>  전단상수<br>Ib/Q [mm²]</b>'
     if '합판' not in shape:
         headers[1] = '<b> 단면<br>[mm]</b>'
-        data[3] = f'<b>{S/1e3:.1f}×10³</b>'
-        data[4] = f'<b>{I/1e3:.1f}×10³</b>'
+        data[3] = f'<b>{S/1e3:,.1f}×10³</b>'
+        data[4] = f'<b>{I/1e3:,.1f}×10³</b>'
         data[7] = f'<b>{fsa:.1f}</b>'
+
+    if '동바리' in shape:
+        headers = np.delete(headers, -1)
+        data[0] = '<b>원형강관'
+        headers[3] = '<b>회전반경<br> r [mm]</b>'
+        data[3] = f'<b>{S:,.1f}</b>'
+        headers[6] = '<b>항복강도<br><i>F<sub>y</sub></i> [MPa]</b>'
+        pass
 
     data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때    
     df = pd.DataFrame(data_dict)
@@ -123,9 +131,9 @@ def Interval(fn, d, d1, d2):
         '<b>절대변형 검토</b>',
         ]
     data = [
-        f'<b>{d:.1f} mm</b>',
-        f'<b>{d1:.1f} mm</b>',
-        f'<b>{d2:.1f} mm</b>',
+        f'<b>{d:,.1f} mm</b>',
+        f'<b>{d1:,.1f} mm</b>',
+        f'<b>{d2:,.1f} mm</b>',
         ]
     data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때    
     df = pd.DataFrame(data_dict)

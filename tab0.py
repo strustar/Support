@@ -42,8 +42,7 @@ def Tab(In, color, fn, s1, s2, s3, h4, h5):
     # st.info('**<근거 : 2.2 거푸집 널 & 2.3 장선 및 멍에 (KDS 21 50 00 :2022)>]**')
 
     st.write(s1, '1) 거푸집 널')
-    section = str(round(w_t));  A = w_t*1
-    E = 11e3;  fba = 16.8;  fsa = 0.63
+    A = w_t*1;  E = 11e3;  fba = 16.8;  fsa = 0.63
     if w_t == 12:
         if w_angle == 0:  I = 90;  S =13;  Ib_Q = 10
         if w_angle ==90:  I = 20;  S = 6;  Ib_Q = 5.1
