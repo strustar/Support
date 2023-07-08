@@ -129,7 +129,7 @@ st.write('Example (아래는 나중에 참조할 사항)')
 
 import streamlit as st
 import pandas as pd
-from tabulate import tabulate
+# from tabulate import tabulate
 
 # 샘플 데이터 프레임 선언
 data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
