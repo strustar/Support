@@ -123,6 +123,7 @@ def Info(fn, shape, section, A, I, S, E, fba, fsa, l_margin):
     )    
     fig.update_layout(width=900, height=100, margin=dict(l=l_margin, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
+    
 
 def Interval(fn, d, d1, d2):
     headers = [

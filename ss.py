@@ -82,7 +82,7 @@ with tab[0]:
 
     st.write(h4, '5. 동바리 (수직재) 검토')
     KL = In.KL;  Fy = In.sp_fy
-    style = '동바리';  section = '𝜙'+str(round(In.sp_d,1))+'×'+str(round(In.sp_t,1))+'t'
+    style = '동바리';  section = f'𝜙{In.sp_d:,.1f}×{In.sp_t:,.1f}t'
     t = In.sp_t;  d = In.sp_d;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  r = np.sqrt(I/A);  E = 200.e3    
     table.Info(fn1, style, section, A, I, r, E, Fy, -1, 20)
@@ -311,6 +311,34 @@ st.markdown(boxed_text, unsafe_allow_html=True)
 
 # st.markdown(box_template, unsafe_allow_html=True)
 
+import random
+import pandas as pd
+import streamlit as st
+
+df = pd.DataFrame(
+    {
+        "name": ["Roadmap", "Extras", "Issues"],
+        "url": ["https://roadmap.streamlit.app", "https://extras.streamlit.app", "https://issues.streamlit.app"],
+        "stars": [random.randint(0, 1000) for _ in range(3)],
+        "views_history": [[random.randint(0, 5000) for _ in range(30)] for _ in range(3)],
+    }
+)
+st.dataframe(
+    df,
+    column_config={
+        "name": "App name",
+        "stars": st.column_config.NumberColumn(
+            "Github Stars",
+            help="Number of stars on GitHub",
+            format="%d ⭐",
+        ),
+        "url": st.column_config.LinkColumn("App URL"),
+        "views_history": st.column_config.LineChartColumn(
+            "Views (past 30 days)", y_min=0, y_max=5000
+        ),
+    },
+    hide_index=True,
+)
 
 
 

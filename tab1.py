@@ -14,7 +14,7 @@ def Tab(In, color, fn, s1, s2, s3, h4, h5, Wood, Joist, Yoke):
     st.write('###### $\quad \qquad$', '*콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용')
 
     st.write(s1, '2) 수평하중' + '$\qquad$ :orange[ <근거 : 1.6.5 수평하중 (KDS 21 50 00 : 2022)>]')
-
+    
 
     st.markdown(border2, unsafe_allow_html=True)
     opt = ['합판','장선', '2. '];  Lj = Check(In, opt, fn, s1, s2, s3, h4, h5, Wood, Joist, Yoke, t_load, level, d1, d2, Ln, 1)
