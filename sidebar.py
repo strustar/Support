@@ -95,4 +95,6 @@ def Sidebar(h2, h4):
     [In.s_h, In.s_t, In.s_weight, In.w_weight, In.w_s, In.w_t, In.w_angle, In.level, In.d1, In.d2] = [s_h, s_t, s_weight, w_weight, w_s, w_t, w_angle, level, d1, d2]
     [In.j_s, In.j_b, In.j_h, In.j_d, In.j_t] = [j_s, j_b, j_h, j_d, j_t]
     [In.j_margin, In.y_margin, In.s_margin, In.Ln, In.KL, In.sp_d, In.sp_t, In.sp_fy] = [j_margin, y_margin, s_margin, Ln, KL, sp_d, sp_t, sp_fy]
+
+    st.sidebar.selectbox('예시', ('1', '2', '3', '4', '5', '6', '...'))
     return In
