@@ -73,7 +73,7 @@ s1 = h5+'$\quad$';  s2 = h5+'$\qquad$';  s3 = h5+'$\quad \qquad$'  #s12 = '$\ens
 st.sidebar.title(':blue[[Information : 입력값]]')
 In = sidebar.Sidebar(h2, h4)
 ##### tab ===========================================================================================================
-tab = st.tabs([h5+':blue[Ⅱ. 단면제원 검토 💻⭕]', h5+':green[Ⅰ. 설계조건 📝✍️]', h5+':orange[Ⅲ. 시스템 서포터 검토 🏛️🏗️]', h5+':green[Ⅳ. 구조검토 결과 🎯✅ ]' ])
+tab = st.tabs([h4+':blue[Ⅱ. 단면제원 검토 💻⭕]', h4+':green[Ⅰ. 설계조건 📝✍️]', h4+':orange[Ⅲ. 시스템 서포터 검토 🏛️🏗️]', h4+':green[Ⅳ. 구조검토 결과 🎯✅ ]' ])
 with tab[1]:
     [Wood, Joist, Yoke] = tab0.Tab(In, 'green', fn1, s1, s2, s3, h4, h5)    
 
@@ -82,7 +82,7 @@ with tab[0]:
 
     st.write(h4, '5. 동바리 (수직재) 검토')
     KL = In.KL;  Fy = In.sp_fy
-    style = '동바리';  section = '𝜙'+str(round(In.sp_d,1))+'×'+str(round(In.sp_t,1))+'t'
+    style = '동바리';  section = f'𝜙{In.sp_d:,.1f}×{In.sp_t:,.1f}t'
     t = In.sp_t;  d = In.sp_d;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  r = np.sqrt(I/A);  E = 200.e3    
     table.Info(fn1, style, section, A, I, r, E, Fy, -1, 20)
@@ -124,12 +124,74 @@ st.markdown(border2, unsafe_allow_html=True)
 # ============================================================================================================================================
 st.write('Example (아래는 나중에 참조할 사항)')
 
+import streamlit as st
+
+h4 = "합판"
+radio_labels = ["12.0 mm", "15.0 mm", "18.0 mm"]
+
+# Radio 버튼을 감싸고 있는 div 태그의 클래스를 추가 (불필요한 클래스 제거)
+import streamlit as st
+
+st.markdown(
+    """
+<style>
+div.row-widget.stRadio > div[role='radiogroup'] {
+    display: flex;
+    flex-direction: row;
+}
+div.row-widget.stRadio > div[role='radiogroup'] > label {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    margin-right: 5px;
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+div.row-widget.stRadio > div[role='radiogroup'] > label:hover {
+    background-color: #dcdde1;
+}
+
+div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {
+    display: none;
+}
+
+div.row-widget.stRadio > div[role='radiogroup'] > label span.custom-radio {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio]:checked + span.custom-radio {
+    background-color: green;
+    color: green;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+
+
+
+
+
+container = st.container()
+
+with container:
+    st.radio(h4 + ' 두께 [mm]', radio_labels, key="thickness_options", help="라디오버튼 1")
+
+
 
 
 
 import streamlit as st
 import pandas as pd
-from tabulate import tabulate
+# from tabulate import tabulate
 
 # 샘플 데이터 프레임 선언
 data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
@@ -311,6 +373,34 @@ st.markdown(boxed_text, unsafe_allow_html=True)
 
 # st.markdown(box_template, unsafe_allow_html=True)
 
+import random
+import pandas as pd
+import streamlit as st
+
+df = pd.DataFrame(
+    {
+        "name": ["Roadmap", "Extras", "Issues"],
+        "url": ["https://roadmap.streamlit.app", "https://extras.streamlit.app", "https://issues.streamlit.app"],
+        "stars": [random.randint(0, 1000) for _ in range(3)],
+        "views_history": [[random.randint(0, 5000) for _ in range(30)] for _ in range(3)],
+    }
+)
+st.dataframe(
+    df,
+    column_config={
+        "name": "App name",
+        "stars": st.column_config.NumberColumn(
+            "Github Stars",
+            help="Number of stars on GitHub",
+            format="%d ⭐",
+        ),
+        "url": st.column_config.LinkColumn("App URL"),
+        "views_history": st.column_config.LineChartColumn(
+            "Views (past 30 days)", y_min=0, y_max=5000
+        ),
+    },
+    hide_index=True,
+)
 
 
 
