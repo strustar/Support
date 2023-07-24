@@ -1,18 +1,22 @@
 import streamlit as st
 import numpy as np
+sb = st.sidebar
 
 ##### sidebar =======================================================================================================
 def Sidebar(h2, h4):
-    st.sidebar.write(h2, '1. 슬래브')
-    [col1, col2] = st.sidebar.columns([1, 1])
+    sb.write(h2, '✤  공사명')
+    sb.text_input('', placeholder='공사명을 입력하세요', label_visibility='collapsed')
+
+    sb.write(h2, '✦  슬래브')    
+    [col1, col2] = sb.columns([1, 1])
     with col1:
-        s_h = st.number_input(h4+'층고 [mm]', min_value = 100., value = 2000., step = 100., format = '%f')
+        s_h = st.number_input(h4+'￭ 층고 [mm]', min_value = 100., value = 2000., step = 100., format = '%f')
     with col2:
         s_t = st.number_input(h4+'두께 [mm]', min_value = 50., value = 350., step = 10., format = '%f')
 
-    st.sidebar.write(h2, '2. 거푸집용 합판')
+    sb.write(h2, '2. 거푸집용 합판')
     w_s = '합판'
-    [col1, col2] = st.sidebar.columns([1,1], gap = "small")
+    [col1, col2] = sb.columns([1,1], gap = "small")
     with col1:
         w_t = st.radio(h4+'합판 두께 [mm]', (12., 15., 18.), horizontal=True)
     with col2:
@@ -22,10 +26,10 @@ def Sidebar(h2, h4):
     for i in [0,1]:
         if i == 0:  typ = '장선'
         if i == 1:  typ = '멍에'
-        st.sidebar.write(h2, str(round(i+3))+'. '+typ)  # st.sidebar.write(h2, ':blue['+typ+']')
+        sb.write(h2, str(round(i+3))+'. '+typ)  # sb.write(h2, ':blue['+typ+']')
         
-        j_s[i] = st.sidebar.radio(h4+':green['+typ+' 종류]', ('목재', '각형강관', '원형강관'), horizontal=True, index=1)
-        [col1, col2, col3] = st.sidebar.columns(3)
+        j_s[i] = sb.radio(h4+':green['+typ+' 종류]', ('목재', '각형강관', '원형강관'), horizontal=True, index=1)
+        [col1, col2, col3] = sb.columns(3)
         a = {'step':5., 'format':'%f'}
         with col1:
             if '목재' in j_s[i]:
@@ -45,8 +49,8 @@ def Sidebar(h2, h4):
             if '원형' in j_s[i]:
                 j_t[i] = st.number_input(h4+':green[두께 [mm]]', min_value = 1.+i/10, value = 2.2+0.1*i, step = 0.1, format = '%.1f')
 
-    st.sidebar.write(h2, '5. 동바리')    
-    [col1, col2, col3] = st.sidebar.columns(3, gap = "small")
+    sb.write(h2, '5. 동바리')    
+    [col1, col2, col3] = sb.columns(3, gap = "small")
     with col1:
         sp_d = st.number_input(h4+':green[직경 [mm]]', min_value = 10., value = 60.5, step = 2., format = '%f')
     with col2:
@@ -54,8 +58,8 @@ def Sidebar(h2, h4):
     with col3:
         sp_fy = st.number_input(h4+':green[항복강도 [MPa]]', min_value = 10., value = 355., step = 10., format = '%f')
 
-    st.sidebar.write(h2, ':blue[6. 간격 여유 설정 (기본 : 85%)]')
-    [col1, col2, col3] = st.sidebar.columns(3)
+    sb.write(h2, ':blue[6. 간격 여유 설정 (기본 : 85%)]')
+    [col1, col2, col3] = sb.columns(3)
     with col1:
         j_margin = st.number_input(h4+':green[장선 간격 여유 [%]]', min_value = 10., value = 85., step = 5., format = '%f')
     with col2:
@@ -63,15 +67,15 @@ def Sidebar(h2, h4):
     with col3:
         s_margin = st.number_input(h4+':green[동바리 간격 여유 [%]]', min_value = 10., value = 85., step = 5., format = '%f')
 
-    st.sidebar.write(h2, ':blue[7. 자중]')
-    [col1, col2] = st.sidebar.columns(2)
+    sb.write(h2, ':blue[7. 자중]')
+    [col1, col2] = sb.columns(2)
     with col1:
         s_weight = st.number_input(h4+':green[콘크리트 단위중량 [kN/m³]]', min_value = 10., value = 24., step = 1., format = '%f')
     with col2:
         w_weight = st.number_input(h4+':green[거푸집 단위중량 [kN/m²]]', min_value = 0.1, value = 0.4, step = 0.1, format = '%f')
 
-    st.sidebar.write(h2, ':blue[8. 거푸집 널의 변형기준]')
-    [col1, col2] = st.sidebar.columns(2)
+    sb.write(h2, ':blue[8. 거푸집 널의 변형기준]')
+    [col1, col2] = sb.columns(2)
     with col1:
         level = st.radio(h4+':green[표면의 등급]', ('A급', 'B급', 'C급'), horizontal=True)
         if 'A' in level:  d1 = 360;  d2 = '3mm'
@@ -83,8 +87,8 @@ def Sidebar(h2, h4):
         st.write(h4+'➣ 상대변형 :', d1)
         st.write(h4+'➣ 절대변형 :', d2)
 
-    st.sidebar.write(h2, ':blue[9. 동바리 (Support)]')    
-    [col1, col2] = st.sidebar.columns([1,1], gap = "small")
+    sb.write(h2, ':blue[9. 동바리 (Support)]')    
+    [col1, col2] = sb.columns([1,1], gap = "small")
     with col1:
         Ln = st.number_input(h4+':green[순간격 [mm] (Ln) ]', min_value = 50., value = 1500., step = 100., format = '%f')
     with col2:

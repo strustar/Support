@@ -7,7 +7,7 @@ import sidebar, tab0, tab1, table
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
 # https://zzsza.github.io/mlops/2021/02/07/python-streamlit-dashboard/  유용한 사이트
-st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈", layout = "centered",    # centered, wide
+st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈", layout = "wide",    # centered, wide
                     initial_sidebar_state="expanded",
                     # runOnSave = True,
                     menu_items = {        #   initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
@@ -17,32 +17,81 @@ st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈
                     })
 ### * -- Set page config
 
-# 줄바꿈 처리 & 모든 텍스트 진하게
-st.markdown("""
-    <style>
-        .element-container {
-            white-space: nowrap;
-            overflow-x: visible;}
-        h1, h2, h3, h4, h5, h6, p, span, stTextInput > div > div > input {
-        font-weight: bold !important;}
-    </style>
-    """, unsafe_allow_html=True)
+text = 'Hello Streamlit!'
+html_code = f"""
+<!DOCTYPE html>
+<html>
+<head>
 
-# 스타일 정의 및 적용
-st.markdown("""
-    <style>
-        .element-container {
-            white-space: nowrap;
-            overflow-x: visible;}
-        h1, h2, h3, h4, h5, h6, p, span, stTextInput > div > div > input {
-        font-weight: bold !important;}
+<style>
+.container {{
+    background-color: yellow;
+    font-family: Arial, sans-serif;
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 20px;
+}}
+</style>
 
-        .sidebar .css-17eq0hr {
-            background-color: blue;}
-        .css-17eq0hr h1, .css-17eq0hr h2, .css-17eq0hr h3, .css-17eq0hr h4, .css-17eq0hr h5, .css-17eq0hr h6, .css-17eq0hr p, .css-17eq0hr span {
-            color: red !important;}
-    </style>
-    """, unsafe_allow_html=True)
+</head>
+
+<body>
+<div class="container">
+    <h2>{text}</h2>
+    <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
+</div>
+</body>
+
+</html>
+"""
+
+st.components.v1.html(html_code, width=650, height=180)
+
+
+
+# 메인바 윗쪽 여백 줄이기
+color = 'linen'
+css = f"""
+<style>
+    .block-container {{
+        margin-top: 20px;
+        padding-top: 0px;
+        # background-color: linen !important; }}
+
+    .element-container {{
+            white-space: nowrap;
+            # background-color: linen !important;
+            overflow-x: visible;}}
+        h1, h2, h3, h4, h5, h6, p, span, stTextInput > div > div > input {{
+        font-weight: bold !important; }}
+
+    input[type="text"] {{
+        background-color: {color};
+        font-weight: bold !important;
+        border: 1px solid black !important;
+        border-radius: 100px;
+    }}
+    input[type="number"] {{
+        background-color: {color};
+        font-weight: bold !important;
+        border: 1px solid black !important;
+        border-radius: 100px;
+    }}
+
+    [data-testid=stSidebar] {{
+        background-color: whitesmoke !important;  # whitesmoke
+        # border: 3px dashed lightblue !important;
+        font-weight: bold !important;
+        padding: 5px !important;
+        margin-top: -100px !important;        
+        padding-bottom: 100px !important;
+        height: 110% !important;        
+        # width: 100% !important; }}  # 이렇게 하면 사이드 바 폭을 고정할수 있음.      
+</style>
+"""
+st.markdown(css, unsafe_allow_html=True)
 
 # Adding custom style with font
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
@@ -67,10 +116,11 @@ font_style = """
 """
 st.markdown(font_style, unsafe_allow_html=True)
 
+
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5+'$\quad$';  s2 = h5+'$\qquad$';  s3 = h5+'$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
-st.sidebar.title(':blue[[Information : 입력값]]')
+st.sidebar.title(':blue[[Information : 입력값 📘]]')
 In = sidebar.Sidebar(h2, h4)
 ##### tab ===========================================================================================================
 tab = st.tabs([h4+':blue[Ⅱ. 단면제원 검토 💻⭕]', h4+':green[Ⅰ. 설계조건 📝✍️]', h4+':orange[Ⅲ. 시스템 서포터 검토 🏛️🏗️]', h4+':green[Ⅳ. 구조검토 결과 🎯✅ ]' ])
@@ -124,39 +174,83 @@ st.markdown(border2, unsafe_allow_html=True)
 # ============================================================================================================================================
 st.write('Example (아래는 나중에 참조할 사항)')
 
+
+
 import streamlit as st
 
-h4 = "합판"
-radio_labels = ["12.0 mm", "15.0 mm", "18.0 mm"]
+css = """
+<style>
+    .boxed {
+        border: 2px solid black;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+        background-color: linen;
+        color: blue;
+    }
+</style>
+"""
+st.markdown(css, unsafe_allow_html=True)
 
-# Radio 버튼을 감싸고 있는 div 태그의 클래스를 추가 (불필요한 클래스 제거)
-import streamlit as st
+content = '''
+* 첫째 구성 요소
+* 두 번째 구성 요소
+* 세 번째 구성 요소
+'''
+st.markdown('<div class="boxed"> **첫째 구성 요소** </div>', unsafe_allow_html=True)
 
+
+radio_options = ["Option A", "Option B"]
+radio_selected = st.radio("선택하세요:", radio_options)
+st.markdown(f'<div class="boxed"> **두 번째 구성 요소 - 라디오 버튼** <br>* {radio_selected} </div>', unsafe_allow_html=True)
+
+
+h2 = '**1. 슬래브**'
+[col1, col2] = st.columns([1, 1])
+with col1:
+    h4 = ''  # 이 변수의 값을 지정해 주세요
+    s_h = st.number_input(h4 + '층고 [mm]', min_value=100., value=2000., step=100., format='%f')
+with col2:
+    s_t = st.number_input(h4 + '두께 [mm]', min_value=50., value=350., step=10., format='%f')
+
+boxed_content = f'<div class="boxed">{h2}<br>층고: {s_h} mm<br>두께: {s_t} mm</div>'
+st.markdown(boxed_content, unsafe_allow_html=True)
+
+
+#  라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 st.markdown(
     """
 <style>
 div.row-widget.stRadio > div[role='radiogroup'] {
     display: flex;
     flex-direction: row;
+    font-weight: bold !important;
 }
 div.row-widget.stRadio > div[role='radiogroup'] > label {
     display: inline-flex;
     align-items: center;
-    padding: 10px 20px;
+    font-weight: bold !important;
+    padding: 5px;
     margin-right: 5px;
-    background-color: lightblue;
+    background-color: linen;
     border: 1px solid black;
-    border-radius: 5px;
+    border-radius: 100px;
+    width: 30%;       /* 추가: 라벨의 너비를 100px로 설정 */
+    height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
+    # justify-content: center;  /* 추가: 라벨 내용을 좌우로 중앙 정렬 */
 }
+
 div.row-widget.stRadio > div[role='radiogroup'] > label:hover {
-    background-color: #dcdde1;
+    font-weight: bold !important;
+    background-color: gray;    
 }
 
 div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {
-    display: none;
+    display: none;   # 기본 스타일 옵션 제거, 없어도 될거 같은데??
 }
 
 div.row-widget.stRadio > div[role='radiogroup'] > label span.custom-radio {
+    font-weight: bold !important;
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -165,27 +259,11 @@ div.row-widget.stRadio > div[role='radiogroup'] > label span.custom-radio {
     border-radius: 50%;
     cursor: pointer;
 }
-
-div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio]:checked + span.custom-radio {
-    background-color: green;
-    color: green;
-}
 </style>
 """,
     unsafe_allow_html=True,
 )
-
-
-
-
-
-
-container = st.container()
-
-with container:
-    st.radio(h4 + ' 두께 [mm]', radio_labels, key="thickness_options", help="라디오버튼 1")
-
-
+#  라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 
@@ -255,8 +333,6 @@ st.markdown(r'''
 ''', unsafe_allow_html=True)
 
 st.markdown(header_df.to_markdown(index=False), unsafe_allow_html=True)
-
-
 
 
 import base64
@@ -401,6 +477,5 @@ st.dataframe(
     },
     hide_index=True,
 )
-
 
 
