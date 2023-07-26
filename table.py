@@ -3,20 +3,20 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-def Load(fn, s_t, s_weight, w_weight):
+def Load(fn, thick_height, s_weight, w_weight):
     headers = [
         '<b>구분</b>',
         '<b>하중 [N/mm²]</b>',
         '<b>하중 [kN/m²]</b>',
         '<b>하중 산정 [KDS 21 50 00 :2022]</b>',
     ]
-    w_load = w_weight;  s_load = s_weight*s_t/1e3;  live_load = 2.5   # kN/m²
-    if s_t/1e3 >= 0.5: live_load = 3.5
-    if s_t/1e3 >= 1.0: live_load = 5.0
+    w_load = w_weight;  s_load = s_weight*thick_height/1e3;  live_load = 2.5   # kN/m²
+    if thick_height/1e3 >= 0.5: live_load = 3.5
+    if thick_height/1e3 >= 1.0: live_load = 5.0
     t_load = s_load + w_load + live_load
 
     data = [
-    ['<b>콘크리트 자중', f'<b>{s_load/1e3:.4f}', f'<b>{s_load:.2f}', f'<b>{s_weight:.1f}'+' kN/m³ × ' + f'<b>{s_t/1e3:.3f}'+' m = ' + f'<b>{s_load:.2f}' + ' kN/m²'],
+    ['<b>콘크리트 자중', f'<b>{s_load/1e3:.4f}', f'<b>{s_load:.2f}', f'<b>{s_weight:.1f}'+' kN/m³ × ' + f'<b>{thick_height/1e3:.3f}'+' m = ' + f'<b>{s_load:.2f}' + ' kN/m²'],
     ['<b>거푸집 자중', f'<b>{w_load/1e3:.4f}', f'<b>{w_load:.2f}', '<b>최소 0.4 kN/m² (1.6.2 연직하중)'],
     ['<b>작업하중 (활하중)', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>*최소 2.5 kN/m² (1.6.2 연직하중)'],
     ['<b>∑ (합계)', f'<b>{t_load/1e3:.4f}', f'<b>{t_load:.2f}', '<b>최소 5.0 kN/m² (1.6.2 연직하중)'],

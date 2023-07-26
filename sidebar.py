@@ -4,29 +4,40 @@ sb = st.sidebar
 
 ##### sidebar =======================================================================================================
 def Sidebar(h2, h4):
-    sb.write(h2, '✤  공사명')
-    sb.text_input('', placeholder='공사명을 입력하세요', label_visibility='collapsed')
+    class In:
+        pass
 
-    sb.write(h2, '✦  슬래브')    
-    [col1, col2] = sb.columns([1, 1])
+    sb.write(h2, '✤ 공사명')    
+    In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')    
+
+    sb.write(h2, '✤ 검토 유형')    
+    In.type = sb.radio('숨김', ('슬래브', '보하부', '기타(아직?)'), horizontal=True, label_visibility='collapsed', key='0')
+    
+    sb.write(h2, '✦ '+In.type)
+    [col1, col2, col3] = sb.columns(3)
     with col1:
-        s_h = st.number_input(h4+'￭ 층고 [mm]', min_value = 100., value = 2000., step = 100., format = '%f')
+        In.height = st.number_input(h4+'￭ 층고 [mm]', min_value = 100., value = 9500., step = 100., format = '%f')
     with col2:
-        s_t = st.number_input(h4+'두께 [mm]', min_value = 50., value = 350., step = 10., format = '%f')
+        if '슬래브' in In.type:  In.slab_t = st.number_input(h4+'￭ 두께 [mm]', min_value = 50., value = 350., step = 10., format = '%f')
+        if '보하부' in In.type:  In.beam_w = st.number_input(h4+'￭ 보의 폭 [mm]', min_value = 50., value = 500., step = 10., format = '%f')
+    with col3:
+        if '슬래브' not in In.type:  In.beam_h = st.number_input(h4+'￭ 보의 높이 [mm]', min_value = 50., value = 900., step = 10., format = '%f')
+    In.thick_height = In.slab_t if '슬래브' in In.type else In.beam_h
+
 
     sb.write(h2, '2. 거푸집용 합판')
     w_s = '합판'
-    [col1, col2] = sb.columns([1,1], gap = "small")
+    [col1, col2] = sb.columns([3,2], gap = "small")
     with col1:
-        w_t = st.radio(h4+'합판 두께 [mm]', (12., 15., 18.), horizontal=True)
+        w_t = st.radio(h4+'합판 두께 [mm]', (12., 15., 18.), horizontal=True, key='1')
     with col2:
-        w_angle = st.radio(h4+'하중 방향 [각도]', (0, 90), horizontal=True)
+        w_angle = st.radio(h4+'하중 방향 [각도]', (0, 90), horizontal=True, key='2')    
 
     j_s = ['',''];  j_b = np.zeros(2);  j_h = np.zeros(2);  j_d = np.zeros(2);  j_t = np.zeros(2)
-    for i in [0,1]:
+    for i in [0, 1]:
         if i == 0:  typ = '장선'
         if i == 1:  typ = '멍에'
-        sb.write(h2, str(round(i+3))+'. '+typ)  # sb.write(h2, ':blue['+typ+']')
+        sb.write(h2, str(round(i+3))+'. '+typ)
         
         j_s[i] = sb.radio(h4+':green['+typ+' 종류]', ('목재', '각형강관', '원형강관'), horizontal=True, index=1)
         [col1, col2, col3] = sb.columns(3)
@@ -94,9 +105,7 @@ def Sidebar(h2, h4):
     with col2:
         KL = st.number_input(h4+':green[수평 연결재 간격 [mm] (KL) ]', min_value = 50., value = 1800., step = 100., format = '%f')
 
-    class In:
-        pass
-    [In.s_h, In.s_t, In.s_weight, In.w_weight, In.w_s, In.w_t, In.w_angle, In.level, In.d1, In.d2] = [s_h, s_t, s_weight, w_weight, w_s, w_t, w_angle, level, d1, d2]
+    [In.s_weight, In.w_weight, In.w_s, In.w_t, In.w_angle, In.level, In.d1, In.d2] = [s_weight, w_weight, w_s, w_t, w_angle, level, d1, d2]
     [In.j_s, In.j_b, In.j_h, In.j_d, In.j_t] = [j_s, j_b, j_h, j_d, j_t]
     [In.j_margin, In.y_margin, In.s_margin, In.Ln, In.KL, In.sp_d, In.sp_t, In.sp_fy] = [j_margin, y_margin, s_margin, Ln, KL, sp_d, sp_t, sp_fy]
     return In

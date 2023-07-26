@@ -1,8 +1,6 @@
-# import openpyxl as ox
-# import xlwings as xw
 import streamlit as st
 import numpy as np
-import sidebar, tab0, tab1, table
+import sidebar, tab0, tab1, table, style
 
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
@@ -21,65 +19,63 @@ text = 'Hello Streamlit!'
 html_code = f"""
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
+        <style>
+            .container {{
+                background-color: yellow;
+                font-family: Arial, sans-serif;
+                padding: 3px 20px;
+                border: 1px solid black;
+                border-radius: 4px;
+                display: inline-block;
+                margin: 20px;
+            }}
+        </style>
+    </head>
 
-<style>
-.container {{
-    background-color: yellow;
-    font-family: Arial, sans-serif;
-    padding: 10px 20px;
-    border: 1px solid black;
-    border-radius: 4px;
-    display: inline-block;
-    margin: 20px;
-}}
-</style>
-
-</head>
-
-<body>
-<div class="container">
-    <h2>{text}</h2>
-    <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
-</div>
-</body>
-
-</html>
-"""
-
+    <body>
+        <div class="container">
+            <h2>{text}</h2>
+            <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
+        </div>
+    </body>
+</html>"""
 st.components.v1.html(html_code, width=650, height=180)
 
-
-
-# 메인바 윗쪽 여백 줄이기
+fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
 color = 'linen'
-css = f"""
-<style>
+# 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
+css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
-        # background-color: linen !important; }}
-
+        # background-color: linen !important;
+    }}
     .element-container {{
             white-space: nowrap;
             # background-color: linen !important;
-            overflow-x: visible;}}
-        h1, h2, h3, h4, h5, h6, p, span, stTextInput > div > div > input {{
-        font-weight: bold !important; }}
-
+            overflow-x: visible;
+            }}
     input[type="text"] {{
+        padding: 5px;
+        padding-left: 15px;
         background-color: {color};
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
     }}
     input[type="number"] {{
+        padding: 5px;
+        padding-left: 15px;
         background-color: {color};
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
+        width: 100%
     }}
-
+    input[type="number"]::-ms-clear {{
+        display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
+    }}
     [data-testid=stSidebar] {{
         background-color: whitesmoke !important;  # whitesmoke
         # border: 3px dashed lightblue !important;
@@ -87,41 +83,30 @@ css = f"""
         padding: 5px !important;
         margin-top: -100px !important;        
         padding-bottom: 100px !important;
-        height: 110% !important;        
-        # width: 100% !important; }}  # 이렇게 하면 사이드 바 폭을 고정할수 있음.      
-</style>
-"""
-st.markdown(css, unsafe_allow_html=True)
-
-# Adding custom style with font
-fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
-font_style = """
-    <style>
+        height: 110% !important;
+        # max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
+        width: 100% !important;  /* 이렇게 하면 사이드 바 폭을 고정할수 있음. */
+    }}
         /* CSS to set font for everything except code blocks */
-        body, h1, h2, h3, h4, h5, h6, p, blockquote {font-family: 'Nanum Gothic', sans-serif !important;}
-        font-weight: bold !important;
-        /* CSS to set font for code blocks */
-        .highlight pre, .highlight tt, pre, tt {font-family: 'Courier New', Courier, monospace;}
+        body, h1, h2, h3, h4, h5, h6, p, blockquote {{
+            font-family: 'Nanum Gothic', sans-serif; font-weight: bold !important; font-size: 16px !important;}}
 
         /* Font size for titles (h1 to h6) */
-        h1 {font-size: 32px;}
-        h2 {font-size: 28px;}
-        h3 {font-size: 24px;}
-        h4 {font-size: 20px;}
-        h5 {font-size: 16px;}
-        h6 {font-size: 14px;}
-        /* Font size for body text */
-        body {font-size: 16px;}
-    </style>
-"""
-st.markdown(font_style, unsafe_allow_html=True)
-
+        h1 {{font-size: 28px !important;}}
+        h2 {{font-size: 24px !important;}}
+        h3 {{font-size: 20px !important;}}
+        h4 {{font-size: 16px !important;}}
+        h5 {{font-size: 14px !important;}}
+        h6 {{font-size: 12px !important;}}
+</style> """
+st.markdown(css, unsafe_allow_html=True)
+style.radio(color, '30%')
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5+'$\quad$';  s2 = h5+'$\qquad$';  s3 = h5+'$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
-st.sidebar.title(':blue[[Information : 입력값 📘]]')
-In = sidebar.Sidebar(h2, h4)
+st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
+In = sidebar.Sidebar(h3, h4)
 ##### tab ===========================================================================================================
 tab = st.tabs([h4+':blue[Ⅱ. 단면제원 검토 💻⭕]', h4+':green[Ⅰ. 설계조건 📝✍️]', h4+':orange[Ⅲ. 시스템 서포터 검토 🏛️🏗️]', h4+':green[Ⅳ. 구조검토 결과 🎯✅ ]' ])
 with tab[1]:
@@ -139,29 +124,29 @@ with tab[0]:
     
     st.write(s1, '1) 1본당 작용하중 (P)')
     st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = t_load*Ly*Ls
-    st.write(s2, f'➣ P = {t_load:.4f} N/mm² x {Ly:,.1f} mm x {Ls:,.1f} mm = {P/1e3:,.1f} kN/EA')
+    st.write(s2, rf'➣ P = {t_load:.4f} N/mm² x {Ly:,.1f} mm x {Ls:,.1f} mm = {P/1e3:,.1f} kN/EA')
 
-    st.write(s1, '2) 허용압축응력 (${F_{ca}}$) 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
-    st.write(s2, f'➣ 유효 좌굴길이 : KL = {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
-    num_str = rf'$\large\frac{{{KL:,.1f}}}{{{r:,.1f}}}$ = ';  lamda = KL/r
+    st.write(s1, '2) 허용압축응력 (' + r'$\bm{F_{ca}}$' + ') 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
+    st.write(s2, rf'➣ 유효 좌굴길이 : KL = {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
+    num_str = rf'$\bm{{\Large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }}$ = ';  lamda = KL/r
     okng = '$\: \leq \:$ 200 (최대 세장비) $\qquad$ :blue[OK]' if lamda <= 200 else '$\: \geq \:$ 200 (최대 세장비) $\qquad$ :red[NG]'
-    st.write(s2, rf'➣ 세장비 : $\lambda = \Large{{\frac{{KL}}{{r}}}}$ = ' + num_str + f'{lamda:,.1f}', okng)
-    num_str = rf'$\large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
-    st.write(s2, rf'➣ 한계 세장비 : $C_c = \Large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}}$ = ' + num_str + f'{Cc:,.1f}')
+    st.write(s2, '➣ 세장비 : ' + rf'$\bm{{\lambda = \Large{{\frac{{KL}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', okng)
+    num_str = rf'$\bm{{\Large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
+    st.write(s2, '➣ 한계 세장비 : ' + rf'$\bm{{C_c = \Large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}} }}$ = ' + num_str + f'{Cc:,.1f}')
 
     if lamda <= Cc:
         a = (1 - lamda**2/(2*Cc**2)) *Fy;  b = 5/3 + 3*lamda/(8*Cc) - lamda**3/(8*Cc**3)
         Fca = a/b
-        st.write(s2, rf'➣ ${{KL/r \: \leq \: C_c}}$' + '이므로 : ' + rf'$F_{{ca}} = {{\Large{{\frac{{\left[1 - \frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize = $' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \leq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\Large{{\frac{{\left[1 - \Large\frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\Large\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
     else:
         Fca = 12*np.pi**2 *E/(23*lamda**2)
-        st.write(s2, rf'➣ ${{KL/r \: \geq \: C_c}}$' + '이므로 : ' + rf'$F_{{ca}} = {{\Large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize = $' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \geq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\Large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
     
     st.write(s1, '3) 허용 하중 및 안전율 검토' + '$\qquad$ :orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
     Pa = Fca*A;  SF = Pa/P
-    st.write(s2, rf'➣ 허용 하중 : $P_a = F_{{ca}} \times A$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
+    st.write(s2, '➣ 허용 하중 : ' + rf'$\bm{{P_a = F_{{ca}} \times A}}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
     okng = '$\: \geq \:$ 2.5 (안전율*) $\qquad$ :blue[OK]' if SF >= 2.5 else '$\: \leq \:$ 2.5 (안전율*) $\qquad$ :red[NG]'
-    st.write(s2, rf'➣ 안전율 : $S.F = \Large\frac{{P_a}}{{P}} \normalsize = \large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: $' + f'{SF:.1f}', okng)
+    st.write(s2, '➣ 안전율 : ' + rf'$\bm{{S.F = \Large\frac{{P_a}}{{P}} \normalsize = \Large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', okng)
     st.write('###### $\quad \qquad$', '*단품 동바리 안전율 3.0, 조립식 동바리 안전율 2.5적용')
 
     border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
@@ -215,55 +200,7 @@ with col2:
 
 boxed_content = f'<div class="boxed">{h2}<br>층고: {s_h} mm<br>두께: {s_t} mm</div>'
 st.markdown(boxed_content, unsafe_allow_html=True)
-
-
-#  라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-st.markdown(
-    """
-<style>
-div.row-widget.stRadio > div[role='radiogroup'] {
-    display: flex;
-    flex-direction: row;
-    font-weight: bold !important;
-}
-div.row-widget.stRadio > div[role='radiogroup'] > label {
-    display: inline-flex;
-    align-items: center;
-    font-weight: bold !important;
-    padding: 5px;
-    margin-right: 5px;
-    background-color: linen;
-    border: 1px solid black;
-    border-radius: 100px;
-    width: 30%;       /* 추가: 라벨의 너비를 100px로 설정 */
-    height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
-    # justify-content: center;  /* 추가: 라벨 내용을 좌우로 중앙 정렬 */
-}
-
-div.row-widget.stRadio > div[role='radiogroup'] > label:hover {
-    font-weight: bold !important;
-    background-color: gray;    
-}
-
-div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {
-    display: none;   # 기본 스타일 옵션 제거, 없어도 될거 같은데??
-}
-
-div.row-widget.stRadio > div[role='radiogroup'] > label span.custom-radio {
-    font-weight: bold !important;
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    background-color: transparent;
-    border: 1px solid black;
-    border-radius: 50%;
-    cursor: pointer;
-}
-</style>
-""",
-    unsafe_allow_html=True,
-)
-#  라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+print('a')
 
 
 
@@ -273,7 +210,7 @@ import pandas as pd
 
 # 샘플 데이터 프레임 선언
 data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
-        "Column2": [r'$\pmb{{\quad M = \Large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
+        "Column2": [r'$\bm{{\quad M = \Large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
 df = pd.DataFrame(data)
 
 # 상단에 DataFrame을 택스트로 표시합니다
@@ -477,5 +414,4 @@ st.dataframe(
     },
     hide_index=True,
 )
-
 
