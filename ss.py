@@ -60,7 +60,8 @@ css = f""" <style>
         padding: 5px;
         padding-left: 15px;
         background-color: {color};
-        font-weight: bold !important;
+        font-size: 18px;
+        font-weight: bold !important;        
         border: 1px solid black !important;
         border-radius: 100px;
     }}
@@ -68,18 +69,19 @@ css = f""" <style>
         padding: 5px;
         padding-left: 15px;
         background-color: {color};
+        font-size: 18px;
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
         width: 100%
     }}
-    input[type="number"]::-ms-clear {{
-        display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
-    }}
+    # input[type="number"]::-ms-clear {{
+    #     display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
+    # }}
     [data-testid=stSidebar] {{
         background-color: whitesmoke !important;
         /* border: 3px dashed lightblue !important; */
-        font-weight: bold !important;
+        font-weight: bold !important;        
         padding: 5px !important;
         margin-top: -100px !important;        
         padding-bottom: 100px !important;
