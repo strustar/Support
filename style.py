@@ -3,9 +3,12 @@ import streamlit as st
 # 라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 def radio(color, width):    
     radio_style = f""" <style>
+        div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {{
+            display: none;   /*기본 스타일 옵션 제거, 없어도 될거 같은데?? */
+        }}
         div.row-widget.stRadio > div[role='radiogroup'] {{
             display: flex;
-            # justify-content: space-between;
+            /* justify-content: space-between; */
             width: 100%;
             flex-direction: row;
             font-weight: bold !important;
@@ -23,26 +26,11 @@ def radio(color, width):
             border: 1px solid black;
             border-radius: 100px;    
             width: {width};       /* 추가: 라벨의 너비를 100px로 설정 */
-            # width: 100px;       /* 추가: 라벨의 너비를 100px로 설정 */
             height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
-            # justify-content: center;  /* 추가: 라벨 내용을 좌우로 중앙 정렬 */
         }}
         div.row-widget.stRadio > div[role='radiogroup'] > label:hover {{
             font-weight: bold !important;
             background-color: lightblue;    
-        }}
-        div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {{
-            display: none;   # 기본 스타일 옵션 제거, 없어도 될거 같은데??
-        }}
-        div.row-widget.stRadio > div[role='radiogroup'] > label span.custom-radio {{
-            font-weight: bold !important;
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            background-color: transparent;
-            border: 1px solid black;
-            border-radius: 50%;
-            cursor: pointer;
         }}
     </style> """
     st.markdown(radio_style, unsafe_allow_html=True)

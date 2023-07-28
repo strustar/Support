@@ -56,7 +56,7 @@ def Check(In, opt, fn, s1, s2, s3, h4, h5, Wood, Joist, Yoke, t_load, level, d1,
     st.write(h4, title + rf'($\small\bm{{{L_str}}}$) 결정')
     table.Info(fn, shape, section, AIb_Q, I, S, E, fba, fsa, 20)
 
-    col1, col2 = st.columns([1.7, 1])
+    col1, col2 = st.columns([1, 1])
     with col1:
         st.write(s1, '1) 개요')
         st.write(s2, '➣ 등분포 하중을 받는 단순보로 계산한다.')
@@ -65,7 +65,7 @@ def Check(In, opt, fn, s1, s2, s3, h4, h5, Wood, Joist, Yoke, t_load, level, d1,
         precision = 4 if '합판' in opt[0] else 2
         st.write(s2, rf'➣ $\bm{{\small{{{w_str} = {t_load:0.4f}}} }}$ N/mm² x  {L:0.1f} mm = {w:.{precision}f} N/mm')
     with col2:
-        st.image(img, width=550)
+        st.image(img, width=500)
 
     st.write(s1, '3) ' + interval_str)
     st.write(s2, '① 휨응력에 의한 간격 검토')  #\color{red}, \textcolor{blue}{}(범위 지정), \bm, \textbf, \boldsymbol [\pmb], \small, \normalize, \large, \Large    

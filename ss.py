@@ -5,7 +5,7 @@ import sidebar, tab0, tab1, table, style
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
 # https://zzsza.github.io/mlops/2021/02/07/python-streamlit-dashboard/  유용한 사이트
-st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈", layout = "wide",    # centered, wide
+st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈", layout = "centered",    # centered, wide
                     initial_sidebar_state="expanded",
                     # runOnSave = True,
                     menu_items = {        #   initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
@@ -42,6 +42,7 @@ html_code = f"""
 </html>"""
 st.components.v1.html(html_code, width=650, height=180)
 
+
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
 color = 'linen'
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
@@ -49,12 +50,11 @@ css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
-        # background-color: linen !important;
+        max-width: 1000px !important;        
     }}
     .element-container {{
-            white-space: nowrap;
-            # background-color: linen !important;
-            overflow-x: visible;
+            white-space: nowrap;            
+            overflow-x: visible;            
             }}
     input[type="text"] {{
         padding: 5px;
@@ -77,14 +77,14 @@ css = f""" <style>
         display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
     }}
     [data-testid=stSidebar] {{
-        background-color: whitesmoke !important;  # whitesmoke
-        # border: 3px dashed lightblue !important;
+        background-color: whitesmoke !important;
+        /* border: 3px dashed lightblue !important; */
         font-weight: bold !important;
         padding: 5px !important;
         margin-top: -100px !important;        
         padding-bottom: 100px !important;
         height: 110% !important;
-        # max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
+        /* max-width: 600px !important;   사이드바의 최대 크기를 조절합니다 */
         width: 100% !important;  /* 이렇게 하면 사이드 바 폭을 고정할수 있음. */
     }}
         /* CSS to set font for everything except code blocks */
@@ -95,9 +95,9 @@ css = f""" <style>
         h1 {{font-size: 28px !important;}}
         h2 {{font-size: 24px !important;}}
         h3 {{font-size: 20px !important;}}
-        h4 {{font-size: 16px !important;}}
-        h5 {{font-size: 14px !important;}}
-        h6 {{font-size: 12px !important;}}
+        h4 {{font-size: 18px !important;}}
+        h5 {{font-size: 16px !important;}}
+        h6 {{font-size: 14px !important;}}
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 style.radio(color, '30%')
@@ -106,9 +106,9 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5+'$\quad$';  s2 = h5+'$\qquad$';  s3 = h5+'$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
-In = sidebar.Sidebar(h3, h4)
+In = sidebar.Sidebar(h3, h5)
 ##### tab ===========================================================================================================
-tab = st.tabs([h4+':blue[Ⅱ. 단면제원 검토 💻⭕]', h4+':green[Ⅰ. 설계조건 📝✍️]', h4+':orange[Ⅲ. 시스템 서포터 검토 🏛️🏗️]', h4+':green[Ⅳ. 구조검토 결과 🎯✅ ]' ])
+h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':orange[Ⅲ. 요약 ✅]', h+':green[Ⅳ. 상세 해석 🎯 ]' ])
 with tab[1]:
     [Wood, Joist, Yoke] = tab0.Tab(In, 'green', fn1, s1, s2, s3, h4, h5)    
 

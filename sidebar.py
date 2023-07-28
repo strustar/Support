@@ -11,7 +11,7 @@ def Sidebar(h2, h4):
     In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')    
 
     sb.write(h2, '✤ 검토 유형')    
-    In.type = sb.radio('숨김', ('슬래브', '보하부', '기타(아직?)'), horizontal=True, label_visibility='collapsed', key='0')
+    In.type = sb.radio('숨김', ('슬래브', '보하부', '기타(작성중...)'), horizontal=True, label_visibility='collapsed', key='0')
     
     sb.write(h2, '✦ '+In.type)
     [col1, col2, col3] = sb.columns(3)
