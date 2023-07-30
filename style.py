@@ -1,5 +1,11 @@
 import streamlit as st
 
+c = 'lightblue'
+aa = (
+    f'font-weight: bold !important;'
+    f'background-color: {c};'
+    )
+print(aa[:10])
 # 라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 def radio(color, width):    
     radio_style = f""" <style>
@@ -15,32 +21,35 @@ def radio(color, width):
             font-weight: bold !important;
         }}
         div.row-widget.stRadio > div[role='radiogroup'] > label {{
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;            
+            # display: inline-flex;
+            # justify-content: center;
+            # align-items: center;            
             font-weight: bold !important;
-            padding: 0px;
+            padding: 2px;
             padding-left: 10px;
             padding-right: 15px;
             margin-right: 3%;
+            # color: blue;
             # background-color: {color};
-            # border: 1px solid black;
+            # border: 1px solid blue;
             # border-radius: 100px;    
             # width: 30px;       /* 추가: 라벨의 너비를 100px로 설정 */
-            height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
+            # height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
         }}
         div.row-widget.stRadio > div {{
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
+            # display: inline-flex;
+            # flex-direction: column;
+            # justify-content: center;
+            # align-items: center;
             font-weight: bold !important;
             font-size: 28px !important;
             padding: 5px;
             padding-left: 10px;
-            padding-right: 15px;
-            margin-right: 55px;
+            padding-right: 5px;
+            margin-right: 15px;
             margin-right: 3%;
-            background-color: {color};
+            # color: blue;
+            background-color: {color};            
             border: 1px solid black;
             border-radius: 100px;    
             # width: {width};       /* 추가: 라벨의 너비를 100px로 설정 */
@@ -48,7 +57,7 @@ def radio(color, width):
             # height: 100%;       /* 추가: 라벨의 높이를 50px로 설정 */
         }}
         div.row-widget.stSelectbox > div[data-baseweb='select'] > div {{
-            display: flex;
+            display: inline-flex;            
             justify-content: center;
             align-items: center;
             margin-top: -5px;
@@ -56,13 +65,16 @@ def radio(color, width):
             padding-left: 5px;
             background-color: {color};
             font-size: 18px;
-            color: blue;
+            # color: blue;
             font-weight: bold;
             border: 1px solid black;
             border-radius: 100px;
-            width: {width}
+            # width: 90%;
+            # width: {width};
         }}
-
+        div.row-widget.stSelectbox > div[data-baseweb='select'] > div:hover {{
+            {aa}
+        }}
         div.row-widget.stRadio > div[role='radiogroup'] > label:hover {{
             font-weight: bold !important;
             background-color: lightblue;    

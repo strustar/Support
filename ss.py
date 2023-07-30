@@ -15,34 +15,6 @@ st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈
                     })
 ### * -- Set page config
 
-text = 'Hello Streamlit!'
-html_code = f"""
-<!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            .container {{
-                background-color: yellow;
-                font-family: Arial, sans-serif;
-                padding: 3px 20px;
-                border: 1px solid black;
-                border-radius: 4px;
-                display: inline-block;
-                margin: 20px;
-            }}
-        </style>
-    </head>
-
-    <body>
-        <div class="container">
-            <h2>{text}</h2>
-            <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
-        </div>
-    </body>
-</html>"""
-st.components.v1.html(html_code, width=650, height=180)
-
-
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
 color = 'linen'
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
@@ -50,14 +22,14 @@ css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
-        max-width: 1000px !important;        
+        max-width: 1000px !important;
     }}
     .element-container {{
             white-space: nowrap;            
             overflow-x: visible;            
             }}
     input[type="text"] {{
-        padding: 5px;
+        padding: 6px;
         padding-left: 15px;
         background-color: {color};
         font-size: 18px;
@@ -65,15 +37,17 @@ css = f""" <style>
         border: 1px solid black !important;
         border-radius: 100px;
     }}
+    
     input[type="number"] {{
         padding: 5px;
         padding-left: 15px;
+        # color: blue;
         background-color: {color};
         font-size: 18px;
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
-        width: 100%
+        # width: 100%
     }}
     # input[type="number"]::-ms-clear {{
     #     display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
@@ -86,7 +60,7 @@ css = f""" <style>
         margin-top: -100px !important;        
         padding-bottom: 100px !important;
         height: 110% !important;
-        /* max-width: 600px !important;   사이드바의 최대 크기를 조절합니다 */
+        # max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
         width: 100% !important;  /* 이렇게 하면 사이드 바 폭을 고정할수 있음. */
     }}
         /* CSS to set font for everything except code blocks */
@@ -102,53 +76,51 @@ css = f""" <style>
         h6 {{font-size: 14px !important;}}
 </style> """
 st.markdown(css, unsafe_allow_html=True)
-style.radio(color, '30%')
+style.radio(color, '32%')
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
-s1 = h5+'$\quad$';  s2 = h5+'$\qquad$';  s3 = h5+'$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
+s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
-In = sidebar.Sidebar(h3, h5)
+In = sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':orange[Ⅲ. 요약 ✅]', h+':green[Ⅳ. 상세 해석 🎯 ]' ])
+h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':orange[Ⅲ. 요약 ✅]', h+':green[Ⅳ. 상세 해석 🎯 ]'])
 with tab[1]:
-    [Wood, Joist, Yoke] = tab0.Tab(In, 'green', fn1, s1, s2, s3, h4, h5)    
+    [Wood, Joist, Yoke, Vertical] = tab0.Tab(In, 'green', fn1)
 
 with tab[0]:
-    [t_load, Lj, Ly, Ls] = tab1.Tab(In, 'blue', fn1, s1, s2, s3, h4, h5, Wood, Joist, Yoke)
+    tab1.Tab(In, 'blue', fn1, Wood, Joist, Yoke)
 
-    st.write(h4, '5. 동바리 (수직재) 검토')
-    KL = In.KL;  Fy = In.sp_fy
-    style = '동바리';  section = f'𝜙{In.sp_d:,.1f}×{In.sp_t:,.1f}t'
-    t = In.sp_t;  d = In.sp_d;  d1 = d - 2*t
-    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  r = np.sqrt(I/A);  E = 200.e3    
-    table.Info(fn1, style, section, A, I, r, E, Fy, -1, 20)
+    st.write(h4, '7. 수직재 검토')
+    KL = In.KLv;  section = In.vertical
+    [A, I, S, E, r, Fy] = [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy]
+    table.Info(fn1, '수직재', section, A, I, S, E, r, Fy, 20)
     
     st.write(s1, '1) 1본당 작용하중 (P)')
-    st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = t_load*Ly*Ls
-    st.write(s2, rf'➣ P = {t_load:.4f} N/mm² x {Ly:,.1f} mm x {Ls:,.1f} mm = {P/1e3:,.1f} kN/EA')
+    st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = In.design_load*In.Ly*In.Ls
+    st.write(s2, rf'➣ P = {In.design_load:.4f} N/mm² x {In.Ly:,.1f} mm x {In.Ls:,.1f} mm = {P/1e3:,.1f} kN/EA')
 
-    st.write(s1, '2) 허용압축응력 (' + r'$\bm{F_{ca}}$' + ') 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
-    st.write(s2, rf'➣ 유효 좌굴길이 : KL = {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
-    num_str = rf'$\bm{{\Large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }}$ = ';  lamda = KL/r
+    st.write(s1, '2) 허용압축응력 (' + r'$\bm{\small{{F_{ca}}}}$' + ') 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
+    st.write(s2, rf'➣ 유효 좌굴길이 : KL$\bm{{_v}}$ = {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
+    num_str = rf'$\bm{{\large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }}$ = ';  lamda = KL/r
     okng = '$\: \leq \:$ 200 (최대 세장비) $\qquad$ :blue[OK]' if lamda <= 200 else '$\: \geq \:$ 200 (최대 세장비) $\qquad$ :red[NG]'
-    st.write(s2, '➣ 세장비 : ' + rf'$\bm{{\lambda = \Large{{\frac{{KL}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', okng)
-    num_str = rf'$\bm{{\Large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
-    st.write(s2, '➣ 한계 세장비 : ' + rf'$\bm{{C_c = \Large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}} }}$ = ' + num_str + f'{Cc:,.1f}')
+    st.write(s2, '➣ 세장비 : ' + rf'$\bm{{\lambda = \large{{\frac{{KL}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', okng)
+    num_str = rf'$\bm{{\large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
+    st.write(s2, '➣ 한계 세장비 : ' + rf'$\bm{{C_c = \large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}} }}$ = ' + num_str + f'{Cc:,.1f}')
 
     if lamda <= Cc:
         a = (1 - lamda**2/(2*Cc**2)) *Fy;  b = 5/3 + 3*lamda/(8*Cc) - lamda**3/(8*Cc**3)
         Fca = a/b
-        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \leq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\Large{{\frac{{\left[1 - \Large\frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\Large\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \leq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\large{{\frac{{\left[1 - \large\frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\large\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
     else:
         Fca = 12*np.pi**2 *E/(23*lamda**2)
-        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \geq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\Large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \geq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
     
     st.write(s1, '3) 허용 하중 및 안전율 검토' + '$\qquad$ :orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
     Pa = Fca*A;  SF = Pa/P
-    st.write(s2, '➣ 허용 하중 : ' + rf'$\bm{{P_a = F_{{ca}} \times A}}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
+    st.write(s2, '➣ 허용 하중 : ' + rf'$\bm{{\small{{P_a = F_{{ca}} \times A}} }}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
     okng = '$\: \geq \:$ 2.5 (안전율*) $\qquad$ :blue[OK]' if SF >= 2.5 else '$\: \leq \:$ 2.5 (안전율*) $\qquad$ :red[NG]'
-    st.write(s2, '➣ 안전율 : ' + rf'$\bm{{S.F = \Large\frac{{P_a}}{{P}} \normalsize = \Large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', okng)
+    st.write(s2, '➣ 안전율 : ' + rf'$\bm{{S.F = \large\frac{{P_a}}{{P}} \normalsize = \large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', okng)
     st.write('###### $\quad \qquad$', '*단품 동바리 안전율 3.0, 조립식 동바리 안전율 2.5적용')
 
     border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
@@ -156,10 +128,50 @@ with tab[0]:
     st.write(h4, '6. 가새재 (경사재) 검토')
 
 
+
+
 border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
 st.markdown(border2, unsafe_allow_html=True)
 # ============================================================================================================================================
 st.write('Example (아래는 나중에 참조할 사항)')
+
+
+text = 'Hello Streamlit!'
+latex_formula = r'\(E = mc^2\)'  # Example LaTeX formula
+html_code = f"""
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .container {{
+                background-color: yellow;
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+                padding: 5px 20px;
+                border: 3px solid green;
+                border-radius: 100px;
+                display: inline-block;
+                margin: 20px;
+                width: 550px
+            }}
+        </style>
+        <!-- Adding MathJax library to enable rendering LaTeX -->
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>{text}</h2>
+            <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
+            <p>LaTeX formula: {latex_formula}</p>  <!-- Adding LaTeX formula -->
+        </div>
+    </body>
+</html>"""
+st.components.v1.html(html_code, width=650, height=200)
+
 
 
 
@@ -212,7 +224,7 @@ import pandas as pd
 
 # 샘플 데이터 프레임 선언
 data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
-        "Column2": [r'$\bm{{\quad M = \Large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
+        "Column2": [r'$\bm{{\quad M = \large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
 df = pd.DataFrame(data)
 
 # 상단에 DataFrame을 택스트로 표시합니다
@@ -335,58 +347,6 @@ boxed_text = create_boxed_text(text, box_width='300px', box_height='50px', font_
 
 st.markdown(boxed_text, unsafe_allow_html=True)
 
-
-
-
-# import base64
-
-# def get_base64_encoded_image(image_path):
-#     with open(image_path, "rb") as image_file:
-#         return base64.b64encode(image_file.read()).decode("utf-8")
-
-# image_data = get_base64_encoded_image("aa.png")
-
-# image_width = 550  # 원하는 이미지 너비
-# image_height = 150  # 원하는 이미지 높이
-# top_margin = 25  # 원하는 상단 여백
-# left_margin = 525  # 원하는 좌측 여백
-
-# st.markdown('''
-#     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-#     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-#     ''', unsafe_allow_html=True)
-
-# left_lines = [
-#     rf"Left line 1: \( \alpha x_i + y \)",
-#     r"<b>Left line 2 is a bit longer: \( \frac{{x}}{{y}} \)</b>",
-#     r"<b>Left line 3 is much longer than the previous line: \( \int_{{0}}^{{1}} x^{{\gamma}} dx \)</b>",
-#     r"<b>Left line 4: \( \lambda^{{i\pi}} + 1 = 0 \)</b>"
-# ]
-
-# left_text_with_line_breaks = '<br>'.join(left_lines)
-
-# box_template = f'''
-# <style>
-# .box {{
-#     display: flex;
-#     align-items: center;
-#     background-color: lightblue;
-#     border-radius: 80px;
-#     border: 2px solid darkblue;
-#     padding: 5px;
-#     margin: 10px;
-#     box-shadow: 2px 2px 5px rgba(255, 0, 0, 0.7);
-#     width: 1500px;
-#     height: 200px;
-# }}
-# .text {{
-#     margin: 0 10px;
-# }}
-# </style>
-# <div class="box"><div id="math-text" class="text">{left_text_with_line_breaks}</div><img src="data:image/png;base64,{image_data}" alt="이미지" style="width:{image_width}px;height:{image_height}px;"></div>
-# '''
-
-# st.markdown(box_template, unsafe_allow_html=True)
 
 import random
 import pandas as pd
