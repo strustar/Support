@@ -76,8 +76,23 @@ css = f""" <style>
         h6 {{font-size: 14px !important;}}
 </style> """
 st.markdown(css, unsafe_allow_html=True)
-style.radio(color, '32%')
 
+# 모든 글씨 및 라텍스 수식 진하게 설정
+st.markdown('''
+<style>
+    .main * {
+        # font-size: 26pt !important;
+        font-weight: bold !important;
+        # font-family: Arial !important;            
+    }
+    # .mjx-chtml {
+    #     font-size: 36pt !important;
+    # }
+</style>
+''', unsafe_allow_html=True)
+
+
+style.radio(color, '32%')
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
@@ -94,33 +109,34 @@ with tab[0]:
     st.write(h4, '7. 수직재 검토')
     KL = In.KLv;  section = In.vertical
     [A, I, S, E, r, Fy] = [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy]
-    table.Info(fn1, '수직재', section, A, I, S, E, r, Fy, 20)
+    table.Info(fn1, '수직재', section, A, -1, I, S, E, r, Fy, 20)
     
     st.write(s1, '1) 1본당 작용하중 (P)')
-    st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = In.design_load*In.Ly*In.Ls
-    st.write(s2, rf'➣ P = {In.design_load:.4f} N/mm² x {In.Ly:,.1f} mm x {In.Ls:,.1f} mm = {P/1e3:,.1f} kN/EA')
+    st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = In.design_load*In.Ly*In.Lv
+    st.write(s2, rf'➣ P = {In.design_load:.4f} N/mm² x {In.Ly:,.1f} mm x {In.Lv:,.1f} mm = {P/1e3:,.1f} kN/EA')
 
     st.write(s1, '2) 허용압축응력 (' + r'$\bm{\small{{F_{ca}}}}$' + ') 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
-    st.write(s2, rf'➣ 유효 좌굴길이 : KL$\bm{{_v}}$ = {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
-    num_str = rf'$\bm{{\large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }}$ = ';  lamda = KL/r
-    okng = '$\: \leq \:$ 200 (최대 세장비) $\qquad$ :blue[OK]' if lamda <= 200 else '$\: \geq \:$ 200 (최대 세장비) $\qquad$ :red[NG]'
-    st.write(s2, '➣ 세장비 : ' + rf'$\bm{{\lambda = \large{{\frac{{KL}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', okng)
+    st.write(s2, rf'➣ 유효 좌굴길이  $\; : \;$ KL$\bm{{_v}} = $ {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
+    num_str = rf'$\bm{{\large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }} \; = \;$';  lamda = KL/r    
+    [lgeq, okng] = ['\leq', In.ok] if lamda <= 200 else ['\geq', In.ng]
+    st.write(s2, '➣ 세장비 $\; : \;$ ' + rf'$\bm{{\lambda = \large{{\frac{{KL}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', rf'$\; {lgeq} \:$ 200 (최대 세장비) $\qquad$' + okng)
+
     num_str = rf'$\bm{{\large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
-    st.write(s2, '➣ 한계 세장비 : ' + rf'$\bm{{C_c = \large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}} }}$ = ' + num_str + f'{Cc:,.1f}')
+    st.write(s2, '➣ 한계 세장비 $\; : \;$ ' + rf'$\bm{{C_c = \large\sqrt{{\frac{{2 \pi^2 E}}{{F_y}}}} }}$ = ' + num_str + f'{Cc:,.1f}')
 
     if lamda <= Cc:
         a = (1 - lamda**2/(2*Cc**2)) *Fy;  b = 5/3 + 3*lamda/(8*Cc) - lamda**3/(8*Cc**3)
         Fca = a/b
-        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \leq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\large{{\frac{{\left[1 - \large\frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\large\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{ \lambda = \large{{\frac{{KL}}{{r}} \normalsize \; \leq \; C_c}} }}$', ' 이므로 $\; : \;$', rf'$\bm{{F_{{ca}} = {{\large{{\frac{{\left[1 - \large\frac{{(KL/r)^2}}{{2 C_c^2}}\right] F_y}} {{\large\frac{{5}}{{3}} + \frac{{3 (KL/r)}}{{8 C_c}} - \frac{{(KL/r)^3}}{{8 C_c^3}} }}  }}}} \normalsize \; = \;}}$' + f'{Fca:,.1f} MPa')
     else:
         Fca = 12*np.pi**2 *E/(23*lamda**2)
-        st.write(s2, '➣ ' + rf'$\bm{{{{KL/r \: \geq \: C_c}} }}$' + ' 이므로 : ' + rf'$\bm{{F_{{ca}} = {{\large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \: = \:}}$' + f'{Fca:,.1f} MPa')
+        st.write(s2, '➣ ' + rf'$\bm{{ \lambda = \large{{\frac{{KL}}{{r}} \normalsize \; \geq \; C_c}} }}$', ' 이므로 $\; : \;$', rf'$\bm{{F_{{ca}} = {{\large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \; = \;}}$' + f'{Fca:,.1f} MPa')
     
     st.write(s1, '3) 허용 하중 및 안전율 검토' + '$\qquad$ :orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
     Pa = Fca*A;  SF = Pa/P
-    st.write(s2, '➣ 허용 하중 : ' + rf'$\bm{{\small{{P_a = F_{{ca}} \times A}} }}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
-    okng = '$\: \geq \:$ 2.5 (안전율*) $\qquad$ :blue[OK]' if SF >= 2.5 else '$\: \leq \:$ 2.5 (안전율*) $\qquad$ :red[NG]'
-    st.write(s2, '➣ 안전율 : ' + rf'$\bm{{S.F = \large\frac{{P_a}}{{P}} \normalsize = \large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', okng)
+    st.write(s2, '➣ 허용 하중 $\; : \;$', rf'$\bm{{\small{{P_a = F_{{ca}} \times A}} }}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
+    [lgeq, okng] = ['\leq', In.ok] if SF >= 2.5 else ['\geq', In.ng]    
+    st.write(s2, '➣ 안전율 $\; : \;$ ', rf'$\bm{{S.F = \large\frac{{P_a}}{{P}} \normalsize = \large\frac{{ {Pa/1e3:,.1f} }}{{ {P/1e3:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', rf'$\; {lgeq} \;$ 2.5 (안전율*) $\qquad$' + okng)
     st.write('###### $\quad \qquad$', '*단품 동바리 안전율 3.0, 조립식 동바리 안전율 2.5적용')
 
     border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'

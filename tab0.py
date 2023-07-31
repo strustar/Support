@@ -43,7 +43,7 @@ def Tab(In, color, fn):
     st.write(s2, '③ 최소 연직하중')
     st.write(s3, '➣ 콘크리트 타설 높이와 관계없이 최소 :blue[5kN/m² 이상] 적용, ??바뀐 설계기준에는 없음?? 전동식카트 사용시 최소 :blue[6.3kN/m² 이상] 적용')
 
-    st.write(s1, '2) 수평하중 **[:blue[아래 두값 중 큰 값 적용]]**')
+    st.write(s1, '2) 수평하중 [:blue[아래 두값 중 큰 값 적용]]')
     st.write(s2, '① 동바리 상단에 고정하중의 :blue[2% 이상]')
     st.write(s2, '② 동바리 상단에 수평방향으로 단위길이당 :blue[1.5kN/m 이상]')
     
@@ -64,7 +64,7 @@ def Tab(In, color, fn):
         if In.wood_angle == 0:  I =250;  S =23;  Ib_Q = 14.8
         if In.wood_angle ==90:  I =100;  S =13;  Ib_Q = 8
     In.wood = str(In.wood_t)+' / '+str(In.wood_angle)+'°'
-    table.Info(fn, '합판', In.wood, Ib_Q, I, S, E, fba, fsa, 40)
+    table.Info(fn, '합판', In.wood, A, Ib_Q, I, S, E, fba, fsa, 40)
     [Wood.A, Wood.I, Wood.S, Wood.E, Wood.fba, Wood.fsa, Wood.Ib_Q] = [A, I, S, E, fba, fsa, Ib_Q]
 
 
@@ -73,9 +73,11 @@ def Tab(In, color, fn):
     b = In.joist_b;  h = In.joist_h;  t = In.joist_t;  b1 = (b - 2*t);  h1 = (h - 2*t)
     A = b*h - b1*h1
     I = b*h**3/12 - b1*h1**3/12
-    S = I/(In.joist_h/2)    
-    table.Info(fn, '장선', In.joist, A, I, S, E, fba, fsa, 40)
-    [Joist.A, Joist.I, Joist.S, Joist.E, Joist.fba, Joist.fsa] = [A, I, S, E, fba, fsa]
+    S = I/(In.joist_h/2)
+    A1 = b*t;  A2 = 2*t*(h/2 - t);  y1 = (h - t)/2;  y2 = (h/2 - t)/2    # 전단상수, 전단 단면적 계산
+    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q
+    table.Info(fn, '장선', In.joist, A, Ib_Q, I, S, E, fba, fsa, 40)
+    [Joist.A, Joist.I, Joist.S, Joist.E, Joist.fba, Joist.fsa, Joist.Ib_Q] = [A, I, S, E, fba, fsa, Ib_Q]
 
     
     st.write(s1, '3) 멍에')    
@@ -83,13 +85,15 @@ def Tab(In, color, fn):
     A = b*h - b1*h1
     I = b*h**3/12 - b1*h1**3/12
     S = I/(In.yoke_h/2)    
-    table.Info(fn, '멍에', In.yoke, A, I, S, E, fba, fsa, 40)
-    [Yoke.A, Yoke.I, Yoke.S, Yoke.E, Yoke.fba, Yoke.fsa] = [A, I, S, E, fba, fsa]
+    A1 = b*t;  A2 = 2*t*(h/2 - t);  y1 = (h - t)/2;  y2 = (h/2 - t)/2    # 전단상수, 전단 단면적 계산
+    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q    
+    table.Info(fn, '멍에', In.yoke, A, Ib_Q, I, S, E, fba, fsa, 40)
+    [Yoke.A, Yoke.I, Yoke.S, Yoke.E, Yoke.fba, Yoke.fsa, Yoke.Ib_Q] = [A, I, S, E, fba, fsa, Ib_Q]
 
+    # 수직재, 수평재, 가새재 (중공 원형)
     st.markdown(border2, unsafe_allow_html=True)
     d = In.vertical_d;  t = In.vertical_t;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.vertical_d/2);  r = np.sqrt(I/A)
-
     [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy] = [A, I, S, 210e3, r, 355]
 
     return Wood, Joist, Yoke, Vertical

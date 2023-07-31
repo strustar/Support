@@ -23,18 +23,18 @@ def Wood_Deformation(fn, In):
         '<b>표면 등급</b>',
         '<b>상대변형 [mm]</b>',
         '<b>절대변형 [mm]</b>',
-        '<b>노출면 상태</b>',
+        '<b>표면 상태</b>',
         '<b>비고</b>',]
-    data = [
-    [f'<b>{In.level}', f'<b><i>L<sub>n</sub></i> / {In.d1}', f'<b>{In.d2}', f'<b>미관상 중요한 노출 콘크리트면', ''],    
-    ]
+    data = [ f'<b>{In.level}', f'<b><i>L<sub>n</sub></i> / {In.d1}', f'<b>{In.d2}', f'<b>미관상 중요한 노출 콘크리트 면', '', ]    
+    if 'B' in In.level: data[3] = f'<b>마감이 있는 콘크리트 면'
+    if 'C' in In.level: data[3] = f'<b>미관상 중요하지 않은 노출콘크리트 면'
 
-    data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
+    data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
     df = pd.DataFrame(data_dict)
     
     fig = go.Figure(data=[go.Table(
         # columnorder=[1,2,3],
-        columnwidth=[1, 1, 1, 2, 1],
+        columnwidth=[0.9, 1, 0.9, 2.2, 1],
         header=dict(
             values=list(df.columns),
             align=['center'],
@@ -106,7 +106,7 @@ def Load(fn, thick_height, concrete_weight, wood_weight):
     wood_load = wood_weight;  concrete_load = concrete_weight*thick_height/1e3;  live_load = 2.5   # kN/m²
     if thick_height/1e3 >= 0.5: live_load = 3.5
     if thick_height/1e3 >= 1.0: live_load = 5.0
-    design_load = concrete_load + wood_load + live_load
+    dead_load = concrete_load + wood_load;  design_load = dead_load + live_load
 
     data = [
     ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
@@ -143,16 +143,17 @@ def Load(fn, thick_height, concrete_weight, wood_weight):
     )
     fig.update_layout(width=width, height=190, margin=dict(l=40, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
-    return design_load
+    return design_load/1e3, dead_load/1e3
 
 
-def Info(fn, opt, section, A, I, S, E, fba, fsa, l_margin):
+def Info(fn, opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
     headers = [
         '<b>부재<br>종류</b>',
         '<b>두께 / 하중방향<br>      [mm / °]</b>',
         '<b> 단면적<br>A [mm²]</b>',
-        '<b>단면계수<br>S [mm³]</b>',
+        '<b>  전단상수<br>Ib/Q [mm²]</b>',        
         '<b>단면2차모멘트<br>    I [mm⁴]</b>',
+        '<b>단면계수<br>S [mm³]</b>',        
         '<b>탄성계수<br> E [GPa]</b>',
         '<b>허용휨응력<br>  f<sub>ba</sub> [MPa]</b>',
         '<b>허용전단응력<br>   f<sub>sa</sub> [MPa]</b>', ]
@@ -160,29 +161,31 @@ def Info(fn, opt, section, A, I, S, E, fba, fsa, l_margin):
         '<b>' + opt,
         '<b>' + section,
         f'<b>{A:,.1f}</b>',
-        f'<b>{S:,.1f}</b>',
-        f'<b>{I:,.1f}</b>',        
+        f'<b>{Ib_Q:,.1f}</b>',
+        f'<b>{I:,.1f}</b>',
+        f'<b>{S:,.1f}</b>',        
         f'<b>{E/1e3:,.1f}</b>',
         f'<b>{fba:.1f}</b>',
         f'<b>{fsa:.2f}</b>', ]
     
     if '합판' in opt:
-        headers[2] = '<b>  전단상수<br>Ib/Q [mm²]</b>'
+        data[2] = '<b>-'
     if '합판' not in opt:
-        headers[1] = '<b> 단면<br>[mm]</b>'
-        data[3] = f'<b>{S/1e3:,.1f}×10³</b>'
+        headers[1] = '<b>단면 규격<br>  [mm]</b>'
         data[4] = f'<b>{I/1e3:,.1f}×10³</b>'
-        data[7] = f'<b>{fsa:.1f}</b>'
+        data[5] = f'<b>{S/1e3:,.1f}×10³</b>'
+        data[8] = f'<b>{fsa:.1f}</b>'
     if '재' in opt:
-        headers[6] = '<b>회전반경<br> r [mm]</b>'
-        headers[7] = f'<b>항복강도<br><i>F<sub>y</sub></i> [MPa]</b>'        
+        data[3] = '<b>-'
+        headers[7] = '<b>회전반경<br> r [mm]</b>'
+        headers[8] = f'<b>항복강도<br><i>F<sub>y</sub></i> [MPa]</b>'        
 
-    data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때    
+    data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
     df = pd.DataFrame(data_dict)
 
     fig = go.Figure(data=[go.Table(
         # columnorder=[1,2,3],
-        columnwidth=[0.8, 1.4, 0.9, 0.9, 1.2, 0.9, 1, 1.1],
+        columnwidth=[0.7, 1.5, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1],
         header=dict(
             values=list(df.columns),
             align=['center'],

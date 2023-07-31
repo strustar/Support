@@ -5,7 +5,6 @@ aa = (
     f'font-weight: bold !important;'
     f'background-color: {c};'
     )
-print(aa[:10])
 # 라디오 버튼 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 def radio(color, width):    
     radio_style = f""" <style>
