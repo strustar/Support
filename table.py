@@ -51,7 +51,7 @@ def Wood_Deformation(fn, In):
             # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width=width, height=80, margin=dict(l=20, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=80, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 
 def Input(fn, In):
@@ -64,7 +64,7 @@ def Input(fn, In):
     data = [
     ['<b>합판',   f'<b>{In.wood} (하중방향)', '<b>거푸집용', f'<b>-', ''],
     ['<b>장선',   f'<b>{In.joist}', '<b>SPSR400', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
-    ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', f'<b>멍에의 간격은 수직재의 간격과 같다'],
+    ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
     ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Ly:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
     ['<b>수평재', f'<b>{In.horizontal}', '<b>SKT400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
     ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''],
@@ -93,33 +93,59 @@ def Input(fn, In):
             # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width=width, height=275, margin=dict(l=20, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=275, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 
 
-def Load(fn, thick_height, concrete_weight, wood_weight):
+def Load(fn, In, verhor):
     headers = [
         '<b>구분</b>',
         '<b>하중 [N/mm²]</b>',
         '<b>하중 [kN/m²]</b>',
-        '<b>하중 산정 [KDS 21 50 00 :2022]</b>', ]
-    wood_load = wood_weight;  concrete_load = concrete_weight*thick_height/1e3;  live_load = 2.5   # kN/m²
-    if thick_height/1e3 >= 0.5: live_load = 3.5
-    if thick_height/1e3 >= 1.0: live_load = 5.0
+        '<b>하중 산정</b>', ]
+        
+    wood_load = In.wood_weight;  concrete_load = In.concrete_weight*In.thick_height/1e3;  live_load = 2.5   # kN/m²
+    if In.thick_height/1e3 >= 0.5: live_load = 3.5
+    if In.thick_height/1e3 >= 1.0: live_load = 5.0
     dead_load = concrete_load + wood_load;  design_load = dead_load + live_load
+    [In.design_load, In.dead_load] = [design_load/1e3, dead_load/1e3]  # N/mm
 
     data = [
-    ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
-    ['<b>거푸집 자중', f'<b>{wood_load/1e3:.4f}', f'<b>{wood_load:.2f}', '<b>최소 0.4 kN/m² (1.6.2 연직하중)'],
-    ['<b>작업하중 (활하중)', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>*최소 2.5 kN/m² (1.6.2 연직하중)'],
-    ['<b>∑ (합계)', f'<b>{design_load/1e3:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m² (1.6.2 연직하중)'], ]
+    ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{In.concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{In.thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
+    ['<b>거푸집 자중', f'<b>{wood_load/1e3:.4f}', f'<b>{wood_load:.2f}', '<b>최소 0.4 kN/m²'],
+    ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
+    ['<b>∑ (합계)', f'<b>{design_load/1e3:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
+    
+    columnwidth = [1., 1., 1., 1.8];  height = 190
+    if 'hor' in verhor:        
+        Ph2 = dead_load*0.02;  Phx1 = Ph2*In.slab_Y;  Phy1 = Ph2*In.slab_X
+        lgeqx = ' < ' if Phx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Phy1 <= 1.5 else ' > '
+        
+        columnwidth = [1, 4.3];  height = 220
+        headers = [
+        '<b>구분</b>',
+        '<b>max[고정하중의 2%, 단위길이당 1.5 kN/m]', ]
 
+        txt1 = f'<b>X방향 : 고정하중의 2% × Y방향 길이 = {Ph2:.3f} kN/m² × {In.slab_Y:.1f} m = {Phx1:.3f} kN/m {lgeqx} 1.5 kN/m'+ f'<br><b>Y방향 : 고정하중의 2% × X방향 길이 = {Ph2:.3f} kN/m² × {In.slab_X:.1f} m = {Phy1:.3f} kN/m  {lgeqy} 1.5 kN/m'
+
+        Phx1 = max(Phx1, 1.5);  Phx2 = Phx1/In.slab_X
+        Phy1 = max(Phy1, 1.5);  Phy2 = Phy1/In.slab_Y
+        txt2 = f'<b>X방향 : 위의 큰값 / X방향 길이 = {Phx1:.3f} kN/m / {In.slab_X:.1f} m = {Phx2:.3f} kN/m²'+ f'<br><b>Y방향 : 위의 큰값 / Y방향 길이 = {Phy1:.3f} kN/m / {In.slab_Y:.1f} m = {Phy2:.3f} kN/m²'
+        In.Phx = Phx2*In.slab_X*In.slab_Y;  In.Phy = Phy2*In.slab_X*In.slab_Y;  In.Ph = max(In.Phx, In.Phy)
+
+        txt3 = f'<b>X방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Phx2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Phx:.1f} kN'+ f'<br><b>Y방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Phy2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Phy:.1f} kN'
+
+        data = [
+        [f'<b>단위 길이당 수평하중<br><b>        [kN/m]', txt1],
+        ['<b>단위 면적당 수평하중<br><b>         [kN/m²]', txt2],
+        ['<b>수평하중 (P<sub>h</sub>)<br>      [kN]', txt3], ]
+        
     data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
     df = pd.DataFrame(data_dict)
-    
+    # if 'hor' in verhor:  df = df.drop(df.columns[2:4], axis=1)
+
     fig = go.Figure(data=[go.Table(
-        # columnorder=[1,2,3],
-        columnwidth=[1.6, 1., 1., 2.6],
+        columnwidth = columnwidth,
         header=dict(
             values=list(df.columns),
             align=['center'],
@@ -129,9 +155,8 @@ def Load(fn, thick_height, concrete_weight, wood_weight):
             line=dict(color='black', width=lw),   # 셀 경계색, 두께
         ),
         cells=dict(
-            values=[df[col] for col in df.columns],
-            align=['center'],
-            # align=['center', 'center', 'right', 'left'],
+            values=[df[col] for col in df.columns],            
+            align=['center', 'center', 'center', 'left'],
             # height=25,
             prefix=None,
             suffix=None,
@@ -141,9 +166,8 @@ def Load(fn, thick_height, concrete_weight, wood_weight):
             format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width=width, height=190, margin=dict(l=40, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig)
-    return design_load/1e3, dead_load/1e3
+    fig.update_layout(width=width, height=height, margin=dict(l=40, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
+    st.plotly_chart(fig)    
 
 
 def Info(fn, opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
@@ -206,7 +230,7 @@ def Info(fn, opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
             format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )    
-    fig.update_layout(width=width, height=100, margin=dict(l=l_margin, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=100, margin=dict(l=l_margin, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
     
 
@@ -243,6 +267,6 @@ def Interval(fn, d, d1, d2):
             format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )    
-    fig.update_layout(width=600, height=80, margin=dict(l=65, r=0, t=1, b=0))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=600, height=80, margin=dict(l=65, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 

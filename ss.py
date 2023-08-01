@@ -115,6 +115,7 @@ with tab[0]:
     st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격');  P = In.design_load*In.Ly*In.Lv
     st.write(s2, rf'➣ P = {In.design_load:.4f} N/mm² x {In.Ly:,.1f} mm x {In.Lv:,.1f} mm = {P/1e3:,.1f} kN/EA')
 
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s1, '2) 허용압축응력 (' + r'$\bm{\small{{F_{ca}}}}$' + ') 산정' + '$\qquad$ :orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)>]')
     st.write(s2, rf'➣ 유효 좌굴길이  $\; : \;$ KL$\bm{{_v}} = $ {KL:,.1f} mm' + '$\qquad$ :orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)>]')
     num_str = rf'$\bm{{\large\frac{{{KL:,.1f}}}{{{r:,.1f}}} }} \; = \;$';  lamda = KL/r    
@@ -132,6 +133,7 @@ with tab[0]:
         Fca = 12*np.pi**2 *E/(23*lamda**2)
         st.write(s2, '➣ ' + rf'$\bm{{ \lambda = \large{{\frac{{KL}}{{r}} \normalsize \; \geq \; C_c}} }}$', ' 이므로 $\; : \;$', rf'$\bm{{F_{{ca}} = {{\large{{\frac{{12 \pi^2 E}}{{23 (KL/r)^2}} }}  }} \normalsize \; = \;}}$' + f'{Fca:,.1f} MPa')
     
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s1, '3) 허용 하중 및 안전율 검토' + '$\qquad$ :orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
     Pa = Fca*A;  SF = Pa/P
     st.write(s2, '➣ 허용 하중 $\; : \;$', rf'$\bm{{\small{{P_a = F_{{ca}} \times A}} }}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa/1e3:,.1f} kN')
