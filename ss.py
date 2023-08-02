@@ -38,13 +38,14 @@ css_intro = """
         padding: 10px;
         font-size: 16px;
         display: inline-block;
+        # text-decoration: underline;
         # line-height: 1.2;
     }
 </style>
 """
 txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
     <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
-    <br> ￭ 이메일 문의 환영 (strustar@konyang.ac.kr)
+    <br> ￭ 이메일 문의 환영 ((<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>))
 '''
 txt1 ='''￭ Edge, Chrome 브라우저에서 실행
     <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
