@@ -16,6 +16,48 @@ st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈
                     })
 ### * -- Set page config
 
+css_intro = """
+<style>
+    .boxed {
+        border: 3px solid blue;
+        border-radius: 100px;
+        padding: 20px;
+        padding-left: 30px;
+        margin: 20px;
+        margin-top: 30px;
+        margin-bottom: 0px;
+        font-size: 22px;
+        # line-height: 1.5;
+        background-color: yellow;
+        color: black;
+        width: 520px;
+        # height: 100px;
+    }
+    .small {
+        color: green;
+        padding: 10px;
+        font-size: 16px;
+        display: inline-block;
+        # line-height: 1.2;
+    }
+</style>
+"""
+txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
+    <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
+    <br> ￭ 이메일 문의 환영 (strustar@konyang.ac.kr)
+'''
+txt1 ='''￭ Edge, Chrome 브라우저에서 실행
+    <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
+    <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
+'''
+[col1, col2] = st.columns([1.2,1])
+st.markdown(css_intro, unsafe_allow_html=True)
+with col1:
+    st.markdown(f'<div class="boxed"> [가칭] 동바리 설계 자동화 프로그램 (초안)<br><span class="small">{txt}</span></div>', unsafe_allow_html=True)
+with col2:
+    st.markdown(f'<div class="boxed"> ✦ 프로그램 사용 유의사항<br><span class="small">{txt1}</span></div>', unsafe_allow_html=True)
+
+
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
 css = f""" <style>
     .block-container {{
@@ -98,15 +140,18 @@ s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = 
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':orange[Ⅲ. 요약 ✅]', h+':green[Ⅳ. 상세 해석 🎯 ]'])
+h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]'])
 with tab[1]:
+    st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
 
 with tab[0]:
     Calculate.Info(In, 'blue', Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
 
-
-
+with tab[2]:
+    st.title(':red[작성중... (요약 페이지 입니다.)]')
+with tab[3]:
+    st.title(':red[작성중... (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)]')
 
 
 border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
@@ -152,39 +197,16 @@ html_code = f"""
 st.components.v1.html(html_code, width=650, height=200)
 
 
-import streamlit as st
 
-css = """
-<style>
-    .boxed {
-        border: 2px solid black;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px 0;
-        background-color: linen;
-        color: blue;
-    }
-</style>
-"""
-st.markdown(css, unsafe_allow_html=True)
+# import streamlit as st
+# import pandas as pd
+# # from tabulate import tabulate
 
-content = '''
-* 첫째 구성 요소
-* 두 번째 구성 요소
-* 세 번째 구성 요소
-'''
-st.markdown('<div class="boxed"> **첫째 구성 요소** </div>', unsafe_allow_html=True)
+# # 샘플 데이터 프레임 선언
+# data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
+#         "Column2": [r'$\bm{{\quad M = \large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
+# df = pd.DataFrame(data)
 
-
-import streamlit as st
-import pandas as pd
-# from tabulate import tabulate
-
-# 샘플 데이터 프레임 선언
-data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
-        "Column2": [r'$\bm{{\quad M = \large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
-df = pd.DataFrame(data)
-
-# 상단에 DataFrame을 택스트로 표시합니다
-st.markdown(df.to_markdown(), unsafe_allow_html=True)
-# st.write(df.style.set_properties(**{'font-weight': 'bold', 'font-size': '28px'}))
+# # 상단에 DataFrame을 택스트로 표시합니다
+# st.markdown(df.to_markdown(), unsafe_allow_html=True)
+# # st.write(df.style.set_properties(**{'font-weight': 'bold', 'font-size': '28px'}))

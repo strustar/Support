@@ -5,10 +5,12 @@ sb = st.sidebar
 class In:
     pass
 
-In.ok = ':blue[OK] (🆗✅)'
-In.ng = ':red[NG] (❌)'
+In.ok = ':blue[∴ OK] (🆗✅)'
+In.ng = ':red[∴ NG] (❌)'
 In.space = '<div style="margin:0px">'
 In.background_color = 'linen'
+In.col_span_ref = [1.3, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
+In.col_span_okng = [5, 1]
 
 ##### sidebar =======================================================================================================
 def Sidebar(h2, h4):    
