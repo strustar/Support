@@ -13,7 +13,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.write(h4, '1. 설계하중 산정')    
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '1) 연직하중 (고정하중 + 작업하중)')
-    with col2: st.write(':orange[ <근거 : 1.6.2 연직하중 (KDS 21 50 00 : 2022)>]')
+    with col2: st.write(h5, ':orange[ <근거 : 1.6.2 연직하중 (KDS 21 50 00 : 2022)>]')
 
     st.write(s2, '➣ 고정하중은 철근콘크리트와 거푸집의 무게를 합한 하중이다.')
     st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')
@@ -23,7 +23,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    # st.write('&nbsp;', unsafe_allow_html=True)
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '2) 수평하중 (H)')
-    with col2: st.write(':orange[ <근거 : 1.6.5 수평하중 (KDS 21 50 00 : 2022)>]')
+    with col2: st.write(h5, ':orange[ <근거 : 1.6.5 수평하중 (KDS 21 50 00 : 2022)>]')
 
     st.write(s2, '➣ 수평하중은 고정하중의 :blue[2% 이상], 수평방향으로 단위길이당 :blue[1.5kN/m 이상] 중에 큰 값의 하중이 상단에 작용하는 것으로 한다.')
     st.write(s2, f'➣ 고정하중의 2% : (콘크리트 자중 + 거푸집 자중) × 0.02 = {In.dead_load*1e3:.1f} kN/m² × 0.02 = {In.dead_load*1e3*0.02:.3f} kN/m²')
@@ -42,7 +42,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.markdown(border2, unsafe_allow_html=True) ############
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(h4, '3. 거푸집 널의 변형기준')
-    with col2: st.write(':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
+    with col2: st.write(h4, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
     Table.Wood_Deformation(In)
 
     st.markdown(border2, unsafe_allow_html=True) ############
@@ -90,11 +90,11 @@ def Check_Support(In, opt, section, Support):
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '2) 허용압축응력 (' + r'$\bm{\small{{F_{ca}}}}$' + ') 산정')
-    with col2: st.write(':orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)> ]')
+    with col2: st.write(h5, ':orange[ <근거 : 4.4.3 허용압축응력 (KDS 14 30 10 : 2019)> ]')
         
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s2, '➣ 유효 좌굴길이 ')
-    with col2: st.write(':orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)> ]')
+    with col2: st.write(h5, ':orange[ <근거 : 4.4.2 좌굴길이와 세장비 (KDS 14 30 10 : 2019)> ]')
     # st.write("<div style='text-align: right; color: blue'>우측 정렬 예시</div>", unsafe_allow_html=True)  # 우측 정렬 예시
 
     st.write(s3, rf'￭ $\bm{{\small{{{KL_str}}} }} = $', KL_cal, f'{KL:,.1f} mm')
@@ -103,7 +103,7 @@ def Check_Support(In, opt, section, Support):
     st.write(s2, '➣ 세장비')
     [col1, col2] = st.columns(In.col_span_okng)
     with col1:     st.write(s3, rf'￭ $\bm{{\lambda = \large{{\frac{{{KL_str}}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', rf'$\; {lgeq} \:$ 200 (최대 세장비) $\qquad$')
-    with col2: st.write(okng)    
+    with col2: st.write(h5, okng)    
 
 
     num_str = rf'$\bm{{\large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
@@ -126,7 +126,7 @@ def Check_Support(In, opt, section, Support):
     txt = '3) 가새재 수량' if '가새재' in opt[0] else '3) 안전율 검토'    
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, txt)
-    with col2: st.write(':orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
+    with col2: st.write(h5, ':orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
 
     if '가새재' in opt[0]:
         Pa = Fca*A/1e3*np.cos(np.pi/3)  # 가새재 최대 경사(60도) 고려
@@ -141,7 +141,7 @@ def Check_Support(In, opt, section, Support):
         [lgeq, okng] = ['\geq', In.ok] if SF >= 2.5 else ['\leq', In.ng]
         [col1, col2] = st.columns(In.col_span_okng)
         with col1: st.write(s2, '➣ 안전율 검토 $\; : \;$ ', rf'$\bm{{S.F = \large\frac{{P_a}}{{{Load_str}}} \normalsize = \large\frac{{ {Pa:,.1f} }}{{ {Load:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', rf'$\; {lgeq} \;$ 2.5 (안전율*) $\qquad$')
-        with col2: st.write(okng)        
+        with col2: st.write(h5, okng)        
         st.write('###### $\quad \qquad$', ':blue[*단품 동바리 안전율 3.0, 조립식 동바리 안전율 2.5 적용]')
 
 
@@ -189,12 +189,12 @@ def Check(In, opt, section, WJY):
     [lgeq, okng] = ['\leq', In.ok] if L[1] <= Lm else ['\geq', In.ng]
     [col1, col2] = st.columns(In.col_span_okng)
     with col1: st.write(s2, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Lm:,.1f} mm $\qquad$')
-    with col2: st.write(okng)    
+    with col2: st.write(h5, okng)    
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '4) 변형 검토 (표면 등급 : :blue[', In.level, '] )')
-    with col2: st.write(':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
+    with col2: st.write(h5, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
 
     Ld1 = (384*E*I*L[1]/(5*w*In.d1))**(1/4);  Ld2 = (384*E*I*In.d2/(5*w))**(1/4)
     st.write(s2, '① 상대변형 검토')    
@@ -204,7 +204,7 @@ def Check(In, opt, section, WJY):
     [lgeq, okng] = ['\leq', In.ok] if L[1] <= Ld1 else ['\geq', In.ng]
     [col1, col2] = st.columns(In.col_span_okng)
     with col1: st.write(s3, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Ld1:,.1f} mm $\qquad$')
-    with col2: st.write(okng)    
+    with col2: st.write(h5, okng)    
 
     st.write(s2, '② 절대변형 검토')
     st.write(s3, rf'✦ $\bm{{\delta_{{max}} \; = \; \Large{{\frac{{5\,{{{w_str}}} {L_jyv}^4}}{{384\,E\,I}}}} \normalsize \; \leq \;}} $', In.d2_str)
@@ -213,7 +213,7 @@ def Check(In, opt, section, WJY):
     [lgeq, okng] = ['\leq', In.ok] if L[1] <= Ld2 else ['\geq', In.ng]
     [col1, col2] = st.columns(In.col_span_okng)
     with col1: st.write(s3, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Ld2:,.1f} mm $\qquad$')
-    with col2: st.write(okng)    
+    with col2: st.write(h5, okng)    
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s1, '5) 전단응력 검토')
@@ -225,5 +225,5 @@ def Check(In, opt, section, WJY):
     num_str = rf'$\bm{{\large{{\frac{{ {Vmax:,.1f}}}{{{Ib_Q:,.1f}}} }} \normalsize \; = \;}} $'
     [col1, col2] = st.columns(In.col_span_okng)
     with col1:     st.write(s2, rf'✦ $\boldsymbol{{f_s \; = \; \Large{{\frac{{V_{{max}}}}{{Ib/Q}} }} \normalsize \; = \;}}$', num_str, f'{fs:.2f} MPa', rf'$\: \bm \; {lgeq} \;$', f'{fsa:.2f} MPa', r'$\bm {( \; = \; f_{sa})} \qquad$')
-    with col2: st.write(okng)    
+    with col2: st.write(h5, okng)    
 

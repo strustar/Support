@@ -5,7 +5,7 @@ import numpy as np
 
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
 table_font = fn1
-fs = 16;  lw = 2; width = 950
+fs = 17;  lw = 2; width = 960
 
 # # 공통 스타일 정의
 # common_style = {
@@ -53,7 +53,7 @@ def Wood_Deformation(In):
             # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width=width, height=80, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=85, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 
 def Input(In):
@@ -77,7 +77,7 @@ def Input(In):
     
     fig = go.Figure(data=[go.Table(
         # columnorder=[1,2,3],
-        columnwidth=[0.8, 1.3, 1,1,2.6],
+        columnwidth=[0.8, 1.4, 1,1.2, 3],
         header=dict(
             values=list(df.columns),
             align=['center'],
@@ -95,7 +95,7 @@ def Input(In):
             # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width=width, height=275, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=285, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 
 
@@ -118,8 +118,8 @@ def Load(In, verhor):
     ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
     ['<b>∑ (합계)', f'<b>{design_load/1e3:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
     
-    columnwidth = [1., 1., 1., 1.8];  height = 190
-    if 'hor' in verhor:        
+    columnwidth = [1., 1., 1., 1.8];  height = 198
+    if 'hor' in verhor:
         H2 = dead_load*0.02;  Hx1 = H2*In.slab_Y;  Hy1 = H2*In.slab_X
         lgeqx = ' < ' if Hx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Hy1 <= 1.5 else ' > '
         
@@ -144,8 +144,8 @@ def Load(In, verhor):
         
     data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
     df = pd.DataFrame(data_dict)
-    # if 'hor' in verhor:  df = df.drop(df.columns[2:4], axis=1)
-
+    
+    fs_verhor = 16 if 'hor' in verhor else 17
     fig = go.Figure(data=[go.Table(
         columnwidth = columnwidth,
         header=dict(
@@ -162,7 +162,7 @@ def Load(In, verhor):
             # height=25,
             prefix=None,
             suffix=None,
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
+            font=dict(size=fs_verhor, color='black', family=table_font, ),  # 글꼴 변경
             fill=dict(color=['silver', 'white']),  # 셀 배경색 변경
             line=dict(color='black', width=lw),   # 셀 경계색, 두께
             format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
@@ -211,7 +211,7 @@ def Info(opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
 
     fig = go.Figure(data=[go.Table(
         # columnorder=[1,2,3],
-        columnwidth=[0.7, 1.5, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1],
+        columnwidth=[0.7, 1.6, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1],
         header=dict(
             values=list(df.columns),
             align=['center'],
@@ -232,7 +232,7 @@ def Info(opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
             format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )    
-    fig.update_layout(width=width, height=100, margin=dict(l=l_margin, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width=width, height=106, margin=dict(l=l_margin, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
     
 

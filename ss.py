@@ -47,7 +47,8 @@ txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
     <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
     <br> ￭ 이메일 문의 환영 ((<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>))
 '''
-txt1 ='''￭ Edge, Chrome 브라우저에서 실행
+txt1 ='''￭ 표 등이 겹쳐서 보일 때는 새로 고침을 해 주세요
+    <br> ￭ Edge, Chrome 브라우저 등에서 실행
     <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
     <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
 '''
@@ -112,10 +113,10 @@ css = f""" <style>
         /* Font size for titles (h1 to h6) */
         h1 {{font-size: 28px !important;}}
         h2 {{font-size: 24px !important;}}
-        h3 {{font-size: 20px !important;}}
-        h4 {{font-size: 18px !important;}}
-        h5 {{font-size: 16px !important;}}
-        h6 {{font-size: 14px !important;}}
+        h3 {{font-size: 22px !important;}}
+        h4 {{font-size: 20px !important;}}
+        h5 {{font-size: 18px !important;}}
+        h6 {{font-size: 15px !important;}}
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 
@@ -141,9 +142,9 @@ s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = 
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]'])
+h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
 with tab[1]:
-    st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
+    # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
 
 with tab[0]:

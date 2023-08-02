@@ -14,18 +14,45 @@ s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
 def Tab(In, color):
     border1 = '<hr style="border-top: 5px double ' + color + '; margin-top: 0px; margin-bottom:30px; border-radius: 10px">'
-    border2 = '<hr style="border-top: 2px solid '  + color + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'    
+    border2 = '<hr style="border-top: 2px solid '  + color + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
+    word_wrap_style = '<span style="white-space:pre-line; display:inline; font-size: 18px; line-height: 2; margin: 0px">' # 자동 줄바꿈 등
 
     st.markdown(border1, unsafe_allow_html=True)
-    st.write(h4, '1. 검토 개요 및 주의사항')
+    st.write(h4, '1. 검토 개요 및 주의사항')    
+    txt = ':red[ [공사명을 입력하세요 (좌측 사이드바에서 입력)] ]' if In.title == '' else f':blue[ {In.title} ]'
+    txt = f'본 검토서는 {txt} 현장에서 의뢰한 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'    
+    st.markdown(s1 + f'{word_wrap_style}{txt}</span>', unsafe_allow_html=True)
+
+    txt = f'￭ 본 검토서는 시공사에서 제시한 시공조건 및 도면을 근거로 검토하였음. 따라서, 현장 여건이 변경되는 경우에는 반드시 검토자와 협의 후 시공하여야 함.'
+    st.markdown(s1 + f'{word_wrap_style}{txt}</span>', unsafe_allow_html=True)
+
+    txt = f'￭ 본 공사는 ":blue[2. 적용기준]"에 제시된 설계기준 및 시공기준을 따라 시공하여야 하며, 거푸집 및 동바리에 적용되는 각종 안전작업지침 및 설치지침에 따라 시공하여야 함.'
+    st.markdown(s1 + f'{word_wrap_style}{txt}</span>', unsafe_allow_html=True)
     
     st.markdown(border2, unsafe_allow_html=True)
-    st.write(h4, '1. 적용기준')
-    st.write(s1, '1) 가시설물 설계 일반사항 (국토교통부, :blue[KDS 21 10 00 : 2022])')
-    st.write(s1, '2) 거푸집 및 동바리 설계기준 (국토교통부, :blue[KDS 21 50 00 : 2022])')
-    st.write(s1, '3) 강구조 부재 설계기준(허용응력설계법) (국토교통부, :blue[KDS 14 30 10 : 2019])')
-    st.write(s1, '4) 거푸집 및 동바리 안전작업지침 등 (한국산업안전보건공단)')
-    st.write(s1, '5) 콘크리트 표준시방서 (한국콘크리트학회, 2016)')        
+    st.write(h4, '2. 적용기준 및 참고문헌')
+    st.write(s1, '￭ 가시설물 설계 일반사항 (KDS 21 10 00 : 2022, 국토교통부)')
+    st.write(s1, '￭ 거푸집 및 동바리 설계기준 (KDS 21 50 00 : 2022, 국토교통부)')
+    st.write(s1, '￭ 강구조 설계 일반사항(허용응력설계법) (KDS 14 30 05 : 2019, 국토교통부)')
+    st.write(s1, '￭ 강구조 부재 설계기준(허용응력설계법) (KDS 14 30 10 : 2019, 국토교통부)')
+    st.write(s1, '￭ 건축물 설계하중 (KDS 41 12 00 : 2022, 국토교통부)')
+    st.write(s1, '￭ 비계 및 안전시설물 설계기준 (KDS 21 60 00 : 2022, 국토교통부)')
+    st.write('')
+
+    st.write(s1, '￭ 거푸집 및 동바리 (KCS 14 20 12 : 2022, 국토교통부)')
+    st.write(s1, '￭ 가설공사 일반사항 (KCS 21 10 00 : 2022, 국토교통부)')
+    st.write(s1, '￭ 거푸집 및 동바리공사 일반사항 (KCS 21 50 05 : 2023, 국토교통부)')
+    st.write(s1, '￭ 초고층 고주탑 공사용 거푸집 및 동바리 (KCS 21 50 10 : 2022, 국토교통부)')
+    st.write(s1, '￭ 노출 콘크리트용 거푸집 및 동바리 (KCS 21 50 15 : 2022, 국토교통부)')
+    st.write(s1, '￭ 기타 콘크리트용 거푸집 및 동바리 (KCS 21 50 20 : 2022, 국토교통부)')
+    st.write(s1, '￭ 비계공사 일반사항 (KCS 21 60 05 : 2022, 국토교통부)')
+    st.write(s1, '￭ 비계 (KCS 21 60 10 : 2022, 국토교통부)')
+    st.write('')
+
+    st.write(s1, '￭ 시스템 동바리 안전작업 지침 (2020, 한국산업안전보건공단)')
+    st.write(s1, '￭ 파이프 서포트 동바리 안전작업 지침 (2020, 한국산업안전보건공단)')
+    st.write(s1, '￭ 거푸집 동바리 구조검토 및 설치 안전보건작업 지침 (2015, 한국산업안전보건공단)')
+    
     
     st.markdown(border2, unsafe_allow_html=True)
     st.write(h4, '2. 설계하중')  # \enspace : 1/2 em space, \quad : 1 em space, \qquad : 2 em space
