@@ -75,7 +75,7 @@ css = f""" <style>
         padding: 6px;
         padding-left: 15px;
         background-color: {In.background_color};
-        font-size: 18px;
+        font-size: {In.font_h5};
         font-weight: bold !important;        
         border: 1px solid black !important;
         border-radius: 100px;
@@ -86,7 +86,7 @@ css = f""" <style>
         padding-left: 15px;
         # color: blue;
         background-color: {In.background_color};
-        font-size: 18px;
+        font-size: {In.font_h5};
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
@@ -111,12 +111,12 @@ css = f""" <style>
             font-family: 'Nanum Gothic', sans-serif; font-weight: bold !important; font-size: 16px !important;}}
 
         /* Font size for titles (h1 to h6) */
-        h1 {{font-size: 28px !important;}}
-        h2 {{font-size: 24px !important;}}
-        h3 {{font-size: 22px !important;}}
-        h4 {{font-size: 20px !important;}}
-        h5 {{font-size: 18px !important;}}
-        h6 {{font-size: 15px !important;}}
+        h1 {{font-size: {In.font_h1} !important;}}
+        h2 {{font-size: {In.font_h2} !important;}}
+        h3 {{font-size: {In.font_h3} !important;}}
+        h4 {{font-size: {In.font_h4} !important;}}
+        h5 {{font-size: {In.font_h5} !important;}}
+        h6 {{font-size: {In.font_h6} !important;}}
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 
@@ -134,11 +134,10 @@ st.markdown('''
 </style>
 ''', unsafe_allow_html=True)
 
-
-style.radio(In.background_color, '32%')
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
+style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================

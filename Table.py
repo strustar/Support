@@ -118,7 +118,7 @@ def Load(In, verhor):
     ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
     ['<b>∑ (합계)', f'<b>{design_load/1e3:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
     
-    columnwidth = [1., 1., 1., 1.8];  height = 198
+    columnwidth = [1., 1., 1., 1.8];  height = 198    
     if 'hor' in verhor:
         H2 = dead_load*0.02;  Hx1 = H2*In.slab_Y;  Hy1 = H2*In.slab_X
         lgeqx = ' < ' if Hx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Hy1 <= 1.5 else ' > '
@@ -159,7 +159,7 @@ def Load(In, verhor):
         cells=dict(
             values=[df[col] for col in df.columns],            
             align=['center', 'center', 'center', 'left'],
-            # height=25,
+            # height=25,            
             prefix=None,
             suffix=None,
             font=dict(size=fs_verhor, color='black', family=table_font, ),  # 글꼴 변경

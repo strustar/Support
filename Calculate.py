@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+from Sidebar import word_wrap_style
 import Table
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
@@ -16,7 +17,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     with col2: st.write(h5, ':orange[ <근거 : 1.6.2 연직하중 (KDS 21 50 00 : 2022)>]')
 
     st.write(s2, '➣ 고정하중은 철근콘크리트와 거푸집의 무게를 합한 하중이다.')
-    st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')
+    st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')    
     Table.Load(In, 'vertical')
     st.write('###### $\quad \qquad$', '*작업하중은 콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용')
     
@@ -24,8 +25,9 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '2) 수평하중 (H)')
     with col2: st.write(h5, ':orange[ <근거 : 1.6.5 수평하중 (KDS 21 50 00 : 2022)>]')
-
-    st.write(s2, '➣ 수평하중은 고정하중의 :blue[2% 이상], 수평방향으로 단위길이당 :blue[1.5kN/m 이상] 중에 큰 값의 하중이 상단에 작용하는 것으로 한다.')
+    
+    txt = rf'$\,$ ➣ 수평하중은 고정하중의 :blue[2% 이상], 수평방향으로 단위길이당 :blue[1.5kN/m 이상] 중에 큰 값의 하중이 상단에 작용하는 것으로 한다.'
+    word_wrap_style(s2, txt, In.font_h5)
     st.write(s2, f'➣ 고정하중의 2% : (콘크리트 자중 + 거푸집 자중) × 0.02 = {In.dead_load*1e3:.1f} kN/m² × 0.02 = {In.dead_load*1e3*0.02:.3f} kN/m²')
     Table.Load(In, 'horizontal')
     st.write(s2, f'➣ ∴ X방향 수평하중 (H$_{{x}}$) = {In.Hx:.1f} kN')
