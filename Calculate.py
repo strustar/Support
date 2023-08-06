@@ -18,7 +18,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
 
     st.write(s2, '➣ 고정하중은 철근콘크리트와 거푸집의 무게를 합한 하중이다.')
     st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')    
-    Table.Load(In, 'vertical')
+    Table.Load(In, 'vertical')    
     st.write('###### $\quad \qquad$', '*작업하중은 콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용')
     
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    # st.write('&nbsp;', unsafe_allow_html=True)
@@ -35,7 +35,7 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s1, '3) 풍하중')
-    st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')
+    st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    
 
     st.markdown(border2, unsafe_allow_html=True) ############
     st.write(h4, '2. 사용부재 및 설치간격')
