@@ -11,12 +11,19 @@ In.background_color = 'linen'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
 In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px'
 
+color = 'green'
+In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
+In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
+
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em">{txt}</div>', unsafe_allow_html=True)    
     # return st.markdown(span + f'<span style="white-space:pre-line; display:inline; font-size: {fs}; line-height: 2; padding-left: 0px; text-indent: 10em">{txt}</span>', unsafe_allow_html=True)    
 
 ##### sidebar =======================================================================================================
-def Sidebar(h4, h5):    
+def Sidebar(h4, h5):
+    sb.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
+    In.select = sb.selectbox(h5 + '✦ 숨김', ('Ⅰ. 일반 사항 📝✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 요약 ✅', 'Ⅳ. 상세 해석 🎯', 'Ⅴ. 참고'), index = 1, label_visibility='collapsed')
+    
     sb.write(h4, '✤ 공사명')    
     In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
 
@@ -49,6 +56,7 @@ def Sidebar(h4, h5):
         In.wood_t = st.radio(h5 + '￭ 합판 두께 [mm]', (12, 15, 18), horizontal=True)
     with col2:
         In.wood_angle = st.radio(h5 + '￭ 하중 방향 [각도]', (0, 90), horizontal=True, index = 1)
+    In.wood = str(In.wood_t)+' / '+str(In.wood_angle)+'°'
 
     sb.write(h4, '3. 장선 규격 및 간격 [mm] [SPSR400]')  # 🔳🔘
     col = sb.columns([3,2], gap = 'medium')

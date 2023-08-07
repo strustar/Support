@@ -67,7 +67,7 @@ def Input(In):
     ['<b>합판',   f'<b>{In.wood} (하중방향)', '<b>거푸집용', f'<b>-', ''],
     ['<b>장선',   f'<b>{In.joist}', '<b>SPSR400', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
     ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
-    ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Ly:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
+    ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
     ['<b>수평재', f'<b>{In.horizontal}', '<b>SKT400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
     ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''],
     ]

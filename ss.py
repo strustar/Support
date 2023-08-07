@@ -24,13 +24,15 @@ css_intro = """
         padding: 20px;
         padding-left: 30px;
         margin: 20px;
+        margin-left: -30px;
+        margin-right: 0px;
         margin-top: 30px;
         margin-bottom: 0px;
         font-size: 22px;
         # line-height: 1.5;
         background-color: yellow;
         color: black;
-        width: 520px;
+        width: 515px;
         # height: 100px;
     }
     .small {
@@ -45,14 +47,14 @@ css_intro = """
 """
 txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
     <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
-    <br> ￭ 이메일 문의 환영 ((<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>))
+    <br> ￭ 이메일 문의 환영 (<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>)
 '''
 txt1 ='''￭ 표 등이 겹쳐서 보일 때는 새로 고침을 해 주세요
     <br> ￭ Edge, Chrome 브라우저 등에서 실행
     <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
     <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
 '''
-[col1, col2] = st.columns([1.2,1])
+[col1, col2] = st.columns([1.15,1])
 st.markdown(css_intro, unsafe_allow_html=True)
 with col1:
     st.markdown(f'<div class="boxed"> [가칭] 동바리 설계 자동화 프로그램 (초안)<br><span class="small">{txt}</span></div>', unsafe_allow_html=True)
@@ -141,22 +143,31 @@ style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻⭕]', h+':green[Ⅰ. 일반 사항 📝✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
+h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
 with tab[1]:
     # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
-
 with tab[0]:
     Calculate.Info(In, 'blue', Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
-
 with tab[2]:
     st.title(':red[작성중... (요약 페이지 입니다.)]')
 with tab[3]:
     st.title(':red[작성중... (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)]')
 
+# if 'Ⅰ' in In.select:
+#     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
+# if 'Ⅱ' in In.select:
+#     from General import Wood, Joist, Yoke, Vertical, Horizontal, Bracing
+#     Calculate.Info(In, 'blue', Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
+# if 'Ⅲ' in In.select:
+#     st.title(':red[작성중... (요약 페이지 입니다.)]')
+# if 'Ⅳ' in In.select:
+#     st.title(':red[작성중... (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)]')
+# if 'Ⅴ' in In.select:
+#     st.title(':red[작성중... (참고 사항)]')
+    
 
-border2 = '<hr style="border-top: 2px solid ' + 'blue' + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'
-st.markdown(border2, unsafe_allow_html=True)
+st.markdown(In.border2, unsafe_allow_html=True)
 # ============================================================================================================================================
 st.write('Example (아래는 나중에 참조할 사항)')
 

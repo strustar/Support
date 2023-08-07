@@ -7,10 +7,9 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
 def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
-    border1 = '<hr style="border-top: 5px double ' + color + '; margin-top: 0px; margin-bottom:30px; border-radius: 10px">'
-    border2 = '<hr style="border-top: 2px solid ' + color + '; margin-top:30px; margin-bottom:30px; border-radius: 10px">'    
+    st.title(':green[Ⅱ. 구조 검토 ✍️]')
+    st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
-    st.markdown(border1, unsafe_allow_html=True) ############
     st.write(h4, '1. 설계하중 산정')    
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '1) 연직하중 (고정하중 + 작업하중)')
@@ -37,28 +36,28 @@ def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.write(s1, '3) 풍하중')
     st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    
 
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '2. 사용부재 및 설치간격')
     Table.Input(In)
 
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(h4, '3. 거푸집 널의 변형기준')
     with col2: st.write(h4, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
     Table.Wood_Deformation(In)
 
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['합판','장선 간격', '4. '];  Check(In, opt, In.wood, Wood)
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['장선','멍에 간격', '5. '];  Check(In, opt, In.joist, Joist)
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['멍에','수직재 간격', '6. '];  Check(In, opt, In.yoke, Yoke)
 
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['수직재', '7. '];  Check_Support(In, opt, In.vertical, Vertical)
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['수평재', '8. '];  Check_Support(In, opt, In.horizontal, Horizontal)
-    st.markdown(border2, unsafe_allow_html=True) ############
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['가새재', '9. '];  Check_Support(In, opt, In.bracing, Bracing)
     
     
