@@ -26,7 +26,7 @@ def Wood_Deformation(In):
         '<b>상대변형 [mm]</b>',
         '<b>절대변형 [mm]</b>',
         '<b>표면 상태</b>',
-        '<b>비고</b>',]
+        '<b>비 고</b>',]
     data = [ f'<b>{In.level}', f'<b><i>L<sub>n</sub></i> / {In.d1}', f'<b>{In.d2}', f'<b>미관상 중요한 노출 콘크리트 면', '', ]    
     if 'B' in In.level: data[3] = f'<b>마감이 있는 콘크리트 면'
     if 'C' in In.level: data[3] = f'<b>미관상 중요하지 않은 노출콘크리트 면'
@@ -62,15 +62,14 @@ def Input(In):
         '<b>규격 [mm]</b>',
         '<b>재료</b>',
         '<b>설치간격 [mm]</b>',
-        '<b>비고</b>',]
+        '<b>비 고</b>',]
     data = [
     ['<b>합판',   f'<b>{In.wood} (하중방향)', '<b>거푸집용', f'<b>-', ''],
     ['<b>장선',   f'<b>{In.joist}', '<b>SPSR400', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
     ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
     ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
     ['<b>수평재', f'<b>{In.horizontal}', '<b>SKT400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
-    ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''],
-    ]
+    ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''], ]
 
     data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
     df = pd.DataFrame(data_dict)
@@ -98,6 +97,43 @@ def Input(In):
     fig.update_layout(width=width, height=285, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
     st.plotly_chart(fig)
 
+def Load_Case():
+    headers = [
+        '<b>Load Case (LC)</b>',
+        '<b>하중조합</b>',
+        '<b>허용응력증가계수</b>', ]        
+    data = [
+    ['<b>LC1', '<b>D + L<sub>i</sub> + M (고정하중 + 작업하중 + 수평하중)', '<b>1.00',],
+    ['<b>LC2', '<b>D + W (고정하중 + 풍하중)', '<b>1.25',],
+    ['<b>LC3', '<b>D + L<sub>i</sub> + M + S (고정하중 + 작업하중 + 수평하중 + 특수하중)', '<b>1.50',],   ]    
+            
+    data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
+    df = pd.DataFrame(data_dict)    
+    
+    fig = go.Figure(data=[go.Table(
+        columnwidth = [1., 3.2, 1., 1],
+        header=dict(
+            values=list(df.columns),
+            align=['center'],
+            # height=10,
+            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
+            fill_color=['silver'],  #'darkgray'
+            line=dict(color='black', width=lw),   # 셀 경계색, 두께
+        ),
+        cells=dict(
+            values=[df[col] for col in df.columns],            
+            align=['center', 'center', 'center', 'left'],
+            # height=25,            
+            prefix=None,
+            suffix=None,
+            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
+            fill=dict(color=['silver', 'white']),  # 셀 배경색 변경
+            line=dict(color='black', width=lw),   # 셀 경계색, 두께
+            format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
+        ), )],
+    )
+    fig.update_layout(width=width, height=165, margin=dict(l=40, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
+    st.plotly_chart(fig) 
 
 def Load(In, verhor):
     headers = [

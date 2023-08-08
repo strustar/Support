@@ -146,14 +146,15 @@ In = Sidebar.Sidebar(h4, h5)
 h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
 with tab[1]:
     # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
-    [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
+    [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
 with tab[0]:
-    Calculate.Info(In, 'blue', Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
+    Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
 with tab[2]:
-    st.title(':red[작성중... (요약 페이지 입니다.)]')
+    st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
 with tab[3]:
-    st.title(':red[작성중... (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)]')
-
+    st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
+with tab[4]:
+    st.title(':green[Ⅴ. 참고] (참고사항, 작성중....)')
 # if 'Ⅰ' in In.select:
 #     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
 # if 'Ⅱ' in In.select:

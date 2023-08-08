@@ -6,8 +6,8 @@ import Table
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
-def Info(In, color, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
-    st.title(':green[Ⅱ. 구조 검토 ✍️]')
+def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
+    st.title(':blue[Ⅱ. 구조 검토 ✍️]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
     st.write(h4, '1. 설계하중 산정')    

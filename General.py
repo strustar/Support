@@ -13,7 +13,7 @@ class Bracing: pass
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
-def Tab(In, color):
+def Tab(In):
     st.title(':green[Ⅰ. 일반 사항 ✍️]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
@@ -25,7 +25,7 @@ def Tab(In, color):
     word_wrap_style(s1, txt, In.font_h5)    
     txt = '￭ 본 검토서는 시공사에서 제시한 시공조건 및 도면을 근거로 검토하였음. 따라서, :blue[현장 여건이 변경되는 경우에는 반드시 검토자와 협의 후 시공]하여야 함.'
     word_wrap_style(s1, txt, In.font_h5)
-    txt = '￭ 본 공사는 ":blue[2. 적용기준 및 참고문헌]"에 제시된 설계기준 및 시공기준을 따라 시공하여야 하며, 거푸집 및 동바리에 적용되는 각종 안전작업지침 및 설치지침에 따라 시공하여야 함.'
+    txt = '￭ 본 공사는 ":blue[5. 적용기준 및 참고문헌]"에 제시된 설계기준 및 시공기준을 따라 시공하여야 하며, 거푸집 및 동바리에 적용되는 각종 안전작업지침 및 설치지침에 따라 시공하여야 함.'
     word_wrap_style(s1, txt, In.font_h5)
     txt = '￭ 모든 재료적 성능은 검토서에 표기된 :blue[동등 이상의 제품을 확인]하고 설치하여야 함.'
     word_wrap_style(s1, txt, In.font_h5)
@@ -212,16 +212,19 @@ def Tab(In, color):
     with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')    
     st.write(s3, rf'￭ 재현기간($\small I_w(T_w)$)이 1년 이하의 경우에는 0.60을 적용하고, 이 외 기간에 대해서는 다음 식에 의해 산정할 수 있다.')
     st.write(s3, rf'￭ $\small I_w = 0.56 + 0.1 ln(T_w)$')
-    st.write(s3, rf'￭ $\bm{{\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }} }} \; : \; $재현기간(년)')
+    st.write(s3, rf'￭ $\bm{{\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }} }}$')
     st.write(s3, rf'￭ $\small T_w$ : 재현기간(년), $\quad \small N$ : 가시실물의 존치기간(년), $\quad \small P$ : 비초과 확률(60%)')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '4) 하중조합')
     with col2: st.write(h5, ':orange[<근거 : 3.3.1 거푸집 및 동바리, 비계 및 안전시설물 (KDS 21 10 00 : 2022)>]')
+    st.write(s2, '➣ 거푸집 및 동바리, 비계 및 안전시설물 설계 시 하중조합 및 허용응력증가계수는 다음과 같이 적용한다.')
+    Table.Load_Case()
+
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    st.write(h4, '2. 적용기준 및 참고문헌')
+    st.write(h4, '5. 적용기준 및 참고문헌')
     st.write(s1, '￭ 가시설물 설계 일반사항 (KDS 21 10 00 : 2022, 국토교통부)')
     st.write(s1, '￭ 거푸집 및 동바리 설계기준 (KDS 21 50 00 : 2022, 국토교통부)')
     st.write(s1, '￭ 강구조 설계 일반사항(허용응력설계법) (KDS 14 30 05 : 2019, 국토교통부)')
