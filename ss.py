@@ -122,6 +122,17 @@ css = f""" <style>
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 
+# 왼쪽 사이드바 인쇄하지 않기 설정
+st.markdown("""
+<style>
+@media print {
+    [data-testid=stSidebar] {
+        display: none;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 # 모든 글씨 및 라텍스 수식 진하게 설정
 st.markdown('''
 <style>
