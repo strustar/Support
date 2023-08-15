@@ -4,21 +4,36 @@ import pandas as pd
 import numpy as np
 
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
-table_font = fn1
-fs = 17;  lw = 2; width = 960
+table_font = fn1;  fs = 17;  lw = 2;  width = 980
 
-# # 공통 스타일 정의
-# common_style = {
-#     "align": ["center"],
-#     "font": {"size": fs, "color": "black", "family": fn},
-#     "fill_color": ["silver"],
-#     "line": {"color": "black", "width": lw},
-# }
+def common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left):
+    if np.ndim(data) == 1:
+        data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
+    else:
+        data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
+    df = pd.DataFrame(data_dict)
+    
+    fig = go.Figure(data = [go.Table(        
+        columnwidth = columnwidth,
+        header = dict(
+            values = list(df.columns),
+            align = ['center'],            
+            fill_color = ['silver'],  #'darkgray'
+            font = dict(size = fs, color = 'black', family = table_font, ),  # 글꼴 변경
+            line = dict(color = 'black', width = lw),   # 셀 경계색, 두께
+        ),
+        cells = dict(
+            values = [df[col] for col in df.columns],
+            align = cells_align,            
+            fill_color = cells_fill_color,  # 셀 배경색 변경
+            font = dict(size = fs, color = 'black', family = table_font, ),  # 글꼴 변경
+            line = dict(color = 'black', width = lw),   # 셀 경계색, 두께
+            # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
+        ), )],
+    )
+    fig.update_layout(width = width, height = height, margin = dict(l = left, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정
+    st.plotly_chart(fig)
 
-# # 적용할 요소에 공통 스타일에 대한 참조 사용
-# header=dict(
-#     **common_style
-# )
 
 def Wood_Deformation(In):
     headers = [
@@ -31,30 +46,10 @@ def Wood_Deformation(In):
     if 'B' in In.level: data[3] = f'<b>마감이 있는 콘크리트 면'
     if 'C' in In.level: data[3] = f'<b>미관상 중요하지 않은 노출콘크리트 면'
 
-    data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
-    df = pd.DataFrame(data_dict)
-    
-    fig = go.Figure(data=[go.Table(
-        # columnorder=[1,2,3],
-        columnwidth=[0.9, 1, 0.9, 2.2, 1],
-        header=dict(
-            values=list(df.columns),
-            align=['center'],
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['silver'],  #'darkgray'
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],
-            align=['center'],
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['white'],  # 셀 배경색 변경
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-            # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
-        ), )],
-    )
-    fig.update_layout(width=width, height=85, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig)
+    columnwidth = [0.9, 1, 0.9, 2.2, 1];  height = 85;  left = 20
+    cells_align = 'center';  cells_fill_color = 'white'
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
+
 
 def Input(In):
     headers = [
@@ -69,33 +64,12 @@ def Input(In):
     ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
     ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
     ['<b>수평재', f'<b>{In.horizontal}', '<b>SKT400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
-    ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''], ]
-
-    data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
-    df = pd.DataFrame(data_dict)
+    ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''], ]    
     
-    fig = go.Figure(data=[go.Table(
-        # columnorder=[1,2,3],
-        columnwidth=[0.8, 1.4, 1,1.2, 3],
-        header=dict(
-            values=list(df.columns),
-            align=['center'],
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['silver'],  #'darkgray'
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],
-            # align=['center','center','center','center','left'],
-            align=['center' if i != 4 else 'left' for i in range(len(df.columns))],
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['silver', 'white'],  # 셀 배경색 변경
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-            # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
-        ), )],
-    )
-    fig.update_layout(width=width, height=285, margin=dict(l=20, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig)
+    columnwidth = [0.8, 1.4, 1,1.2, 3];  height = 286;  left = 20
+    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
+
 
 def Load_Case():
     headers = [
@@ -107,33 +81,10 @@ def Load_Case():
     ['<b>LC2', '<b>D + W (고정하중 + 풍하중)', '<b>1.25',],
     ['<b>LC3', '<b>D + L<sub>i</sub> + M + S (고정하중 + 작업하중 + 수평하중 + 특수하중)', '<b>1.50',],   ]    
             
-    data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
-    df = pd.DataFrame(data_dict)    
+    columnwidth = [1., 3.2, 1., 1];  height = 165;  left = 40
+    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
     
-    fig = go.Figure(data=[go.Table(
-        columnwidth = [1., 3.2, 1., 1],
-        header=dict(
-            values=list(df.columns),
-            align=['center'],
-            # height=10,
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['silver'],  #'darkgray'
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],            
-            align=['center', 'center', 'center', 'left'],
-            # height=25,            
-            prefix=None,
-            suffix=None,
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill=dict(color=['silver', 'white']),  # 셀 배경색 변경
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-            format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
-        ), )],
-    )
-    fig.update_layout(width=width, height=165, margin=dict(l=40, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig) 
 
 def Load(In, verhor):
     headers = [
@@ -159,7 +110,7 @@ def Load(In, verhor):
         H2 = dead_load*0.02;  Hx1 = H2*In.slab_Y;  Hy1 = H2*In.slab_X
         lgeqx = ' < ' if Hx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Hy1 <= 1.5 else ' > '
         
-        columnwidth = [1, 4.3];  height = 220
+        columnwidth = [1, 4.3];  height = 228
         headers = [
         '<b>구분</b>',
         '<b>max[고정하중의 2%, 단위길이당 1.5 kN/m]', ]
@@ -177,35 +128,10 @@ def Load(In, verhor):
         [f'<b>단위 길이당 수평하중<br><b>        [kN/m]', txt1],
         ['<b>단위 면적당 수평하중<br><b>         [kN/m²]', txt2],
         ['<b>수평하중 (P<sub>h</sub>)<br>      [kN]', txt3], ]
-        
-    data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
-    df = pd.DataFrame(data_dict)
     
-    fs_verhor = 16 if 'hor' in verhor else 17
-    fig = go.Figure(data=[go.Table(
-        columnwidth = columnwidth,
-        header=dict(
-            values=list(df.columns),
-            align=['center'],
-            # height=10,
-            font=dict(size=fs, color='black', family=table_font, ),  # 글꼴 변경
-            fill_color=['silver'],  #'darkgray'
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],            
-            align=['center', 'center', 'center', 'left'],
-            # height=25,            
-            prefix=None,
-            suffix=None,
-            font=dict(size=fs_verhor, color='black', family=table_font, ),  # 글꼴 변경
-            fill=dict(color=['silver', 'white']),  # 셀 배경색 변경
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-            format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
-        ), )],
-    )
-    fig.update_layout(width=width, height=height, margin=dict(l=40, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig)    
+    left = 40
+    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
 
 
 def Info(opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
@@ -242,33 +168,6 @@ def Info(opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
         headers[7] = '<b>회전반경<br> r [mm]</b>'
         headers[8] = f'<b>항복강도<br><i>F<sub>y</sub></i> [MPa]</b>'        
 
-    data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
-    df = pd.DataFrame(data_dict)
-
-    fig = go.Figure(data=[go.Table(
-        # columnorder=[1,2,3],
-        columnwidth=[0.7, 1.6, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1],
-        header=dict(
-            values=list(df.columns),
-            align=['center'],
-            # height=10,
-            font=dict(size=fs, color='black', family=table_font),  # 글꼴 변경
-            fill_color=['silver'],  #'darkgray'
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],
-            align=['center']*1,
-            # height=25,
-            prefix=None,
-            suffix=None,
-            font=dict(size=fs, color='black', family=table_font),  # 글꼴 변경
-            fill=dict(color=['silver', 'white']),  # 셀 배경색 변경
-            line=dict(color='black', width=lw),   # 셀 경계색, 두께
-            format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
-        ), )],
-    )    
-    fig.update_layout(width=width, height=106, margin=dict(l=l_margin, r=1, t=1, b=1))  # 테이블 여백 제거  # 표의 크기 지정
-    st.plotly_chart(fig)
-    
-
+    columnwidth = [0.7, 1.6, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1];  height = 106;  left = l_margin
+    cells_align = ['center'];  cells_fill_color = ['silver', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)

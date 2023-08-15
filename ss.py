@@ -78,7 +78,7 @@ css = f""" <style>
         padding-left: 15px;
         background-color: {In.background_color};
         font-size: {In.font_h5};
-        font-weight: bold !important;        
+        font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
     }}
@@ -154,7 +154,7 @@ style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = h4;  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
+h = '#### ';  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
 with tab[1]:
     # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
