@@ -165,7 +165,7 @@ with tab[2]:
 with tab[3]:
     st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
     
-    file_path = 'D:\Work_Python\Support\Analysis\Support.inp';  encoding = 'utf-8'
+    file_path = 'Analysis\Support.inp';  encoding = 'utf-8'
     with open(file_path, 'r', encoding = encoding) as f:
         lines = f.readlines()
         
