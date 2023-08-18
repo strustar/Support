@@ -164,6 +164,20 @@ with tab[2]:
     st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
 with tab[3]:
     st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
+    
+    file_path = 'D:\Work_Python\Support\Analysis\Support.inp';  encoding = 'utf-8'
+    with open(file_path, 'r', encoding = encoding) as f:
+        lines = f.readlines()
+        
+    for i in range(20):  # 앞에만 검색해서 변경
+        if "joist" in lines[i]:
+            lines[i] = f'joist_b = {In.joist_b}  $  joist_h = 50  $  joist_t = 2.3  $  Lj = {In.Lj}\n'
+            # break    
+    # with open(file_path, "w", encoding = encoding) as f:
+    #     f.writelines(lines)
+    st.write(h3, '[Modelling]')
+    st.image('Analysis/tt000.wmf', width=1800)
+
 with tab[4]:
     st.title(':green[Ⅴ. 참고] (참고사항, 작성중....)')
 # if 'Ⅰ' in In.select:
