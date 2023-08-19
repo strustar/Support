@@ -179,11 +179,12 @@ with tab[3]:
 
     st.write(h3, '[Modelling]')
     
-    # st.image('Analysis/tt000.wmf', width=1800)
-    remote_image_url = "https://raw.githubusercontent.com/strustar/Support/main/Analysis/tt000.wmf"
-    st.image(remote_image_url, width=1800)
+    # st.image('Analysis/tt000.wmf', width=1000)
+    st.image('Analysis/joist.png', width=1000)
+    remote_image_url = "https://raw.githubusercontent.com/strustar/Support/main/Analysis/joist.png"
+    st.image(remote_image_url, width=1000)
 
-    st.image('https://github.com/strustar/Support/Analysis/tt000.wmf', width=1800)
+    st.image('https://github.com/strustar/Support/main/Analysis/joist.png', width=1000)
 
 with tab[4]:
     st.title(':green[Ⅴ. 참고] (참고사항, 작성중....)')
