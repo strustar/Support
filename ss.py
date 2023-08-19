@@ -178,9 +178,7 @@ with tab[3]:
     # #     f.writelines(lines)
 
     st.write(h3, '[Modelling]')
-    
-    # st.image('Analysis/tt000.wmf', width=1000)
-    st.image('Analysis/tt000.png', width=1000)
+    st.image('Analysis/tt000.bmp', width=1000)
     # remote_image_url = "https://raw.githubusercontent.com/strustar/Support/main/Analysis/tt000.png"
     # st.image(remote_image_url, width=1000)
 
