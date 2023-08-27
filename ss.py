@@ -155,17 +155,18 @@ st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
 h = '#### ';  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
-with tab[1]:
+with tab[2]:
     # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
-with tab[0]:
+with tab[1]:
     Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
 with tab[2]:
     st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
-with tab[3]:
+with tab[0]:
     import os
     st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
-    
+
+
     # file_path = 'Analysis/Support.inp';  encoding = 'utf-8'
     # with open(file_path, 'r', encoding = encoding) as f:
     #     lines = f.readlines()
@@ -177,8 +178,8 @@ with tab[3]:
     # # with open(file_path, "w", encoding = encoding) as f:
     # #     f.writelines(lines)
 
-    st.write(h3, '[Modelling]')
-    st.image('Analysis/tt000.bmp', width=1000)
+    # st.write(h3, '[Modelling]')
+    # st.image('Analysis/tt000.bmp', width=1000)
     # remote_image_url = "https://raw.githubusercontent.com/strustar/Support/main/Analysis/tt000.png"
     # st.image(remote_image_url, width=1000)
 
@@ -197,7 +198,188 @@ with tab[4]:
 #     st.title(':red[작성중... (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)]')
 # if 'Ⅴ' in In.select:
 #     st.title(':red[작성중... (참고 사항)]')
+
+from ansys.mapdl.core import launch_mapdl
+import pyvista as pv
+from PIL import Image
+mapdl = launch_mapdl()
+factor = 1e3
+
+def analysis():
+    # !! ===============================================> Preprocessing
+    mapdl.clear();  mapdl.prep7()    
+
+    xea = int(np.ceil(In.slab_X*factor/In.Lv) + 1);  yea = int(np.ceil(In.slab_Y*factor/In.Ly) + 1);  zea = int(np.ceil(In.height*factor/In.Lh) + 1)
+
+    mapdl.k(1, 0,0,0)
+    mapdl.kgen(xea, 1,1,1, In.Lv,0,0, 1)
+    mapdl.kgen(yea, 'all','','', 0,In.Ly,0, 100)
+    mapdl.kgen(zea, 'all','','', 0,0,In.Lh, 10000)
+    # mapdl.allsel()
+    # xea,yea,zea
+
+    for i in range(1, xea + 1):   # 수직재
+        for j in range(1, yea + 1):
+            for k in range(1, zea):
+                mapdl.l(i + 100*(j-1) + 10000*(k-1), i + 10000 + 100*(j-1) + 10000*(k-1))    
+    mapdl.allsel();  mapdl.cm('ver',  'line')
+
+    for i in range(1, xea):   # 수평재 1
+        for j in range(1, yea + 1):
+            for k in range(1, zea):
+                mapdl.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1))
+    for i in range(1, xea + 1):   # 수평재 2
+        for j in range(1, yea):
+            for k in range(1, zea):
+                mapdl.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10100 + 100*(j-1) + 10000*(k-1))
+    mapdl.allsel();  mapdl.cmsel('u', 'ver');  mapdl.cm('hor',  'line')
+
+    for i in range(1, xea, 2):   # 가새재
+        for j in range(1, yea + 1, 2):
+            for k in range(1, zea, 2):
+                mapdl.l(i + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1))
+    mapdl.allsel();  mapdl.cmsel('u', 'ver');  mapdl.cmsel('u', 'hor');  mapdl.cm('bra',  'line')
+
+    mapdl.et(1, 'beam188');  mapdl.mp('ex', 1, 200e3);  mapdl.mp('prxy', 1, 0.3)
+    mapdl.sectype(1, 'beam', 'ctube');  mapdl.secdata(In.vertical_d/2 - In.vertical_t, In.vertical_d/2)
+    mapdl.sectype(2, 'beam', 'ctube');  mapdl.secdata(In.horizontal_d/2 - In.horizontal_t, In.horizontal_d/2)
+    mapdl.sectype(3, 'beam', 'ctube');  mapdl.secdata(In.bracing_d/2 - In.bracing_t, In.bracing_d/2)
+
+    mapdl.cmsel('s', 'ver');  mapdl.latt(1,'',1,'','',1);  mapdl.lesize('all', 200);  mapdl.lmesh('all')
+    ver = mapdl.mesh.grid    
+    mapdl.cmsel('s', 'hor');  mapdl.latt(1,'',1,'','',2);  mapdl.lesize('all', 200);  mapdl.lmesh('all')
+    hor = mapdl.mesh.grid
+    mapdl.cmsel('s', 'bra');  mapdl.latt(1,'',1,'','',3);  mapdl.lesize('all', 200);  mapdl.lmesh('all')
+    bra = mapdl.mesh.grid;  mesh = bra
+    mapdl.allsel();  mapdl.nummrg('all')
+
+    mapdl.esel('s', 'sec', '', 1);  mapdl.cm('v', 'elem')
+    mapdl.esel('s', 'sec', '', 2);  mapdl.cm('h', 'elem')
+    mapdl.esel('s', 'sec', '', 3);  mapdl.cm('b', 'elem')
+    # mapdl.lplot('all', show_line_numbering = False)    # mesh.plot()
+
+    plotter = pv.Plotter(off_screen = True)
+    # plotter = pv.Plotter(off_screen = False)
+    plotter.add_mesh(bra, color = 'magenta', line_width = 6, opacity = 1, label = 'Bracing')
+    plotter.add_mesh(hor, color = 'blue', line_width = 6, opacity = 0.5, label = 'Horizontal')
+    plotter.add_mesh(ver, color = 'green', line_width = 8, opacity = 1, label = 'Vertical')
+    plotter.add_legend(bcolor = 'w', face = None, size = (0.15, 0.15), border = True)
+    # plotter.add_title('Modelling', font_size = 54, color = 'k')
+    model_png = 'Images/model.png';  plotter.show(screenshot = model_png, window_size = (1920*2,1080*2), )    
     
+    model_png = Image.open(model_png)    # img = img.resize((2000, 2000))
+    st.write(h4, '[Modelling]')    
+    st.image(model_png)  #, width = 1500
+    mapdl.finish()
+    # !! ===============================================> Preprocessing
+
+
+    # !! ===============================================> Solution
+    mapdl.run('/solu')
+    mapdl.nsel('s', 'loc', 'z', 0)
+    mapdl.d('all', 'all', 0)
+
+    mapdl.allsel()
+    mapdl.cmsel('s', 'v')
+    mapdl.nsle('s')
+    mapdl.nsel('r', 'loc', 'z', In.Lh*(zea - 1))    
+    mapdl.f('all', 'fz', -1)
+
+    mapdl.allsel()
+    output = mapdl.solve()
+    # output
+    mapdl.finish()
+    # !! ===============================================> Solution
+
+    # !! ===============================================> Postprocessing
+    mapdl.run('/post1')
+    mapdl.set('last')
+    mapdl.plnsol('u', 'sum')
+
+    result = mapdl.result
+    plotter = pv.Plotter(off_screen=True)  # Modify this line
+    image_filename = 'plot.png'
+    _ = result.plot_principal_nodal_stress(
+        0,
+        "SEQV",
+        cpos="xy",
+        background="w",
+        text_color="k",
+        add_text=False,
+        screenshot=image_filename  # Add this line
+    )
+    # Use Streamlit to display the image in a web page
+    st.image(image_filename)
+
+try:
+    analysis()
+    mapdl.exit()
+except Exception as e:  # Catch any exception.
+    print(f"###################### An error occurred: {e}")
+    a = f"###################### An error occurred: {e}"
+    a
+    mapdl.exit()
+
+
+# # Create a simple sphere
+# sphere = pv.Sphere()
+
+# # Plot and save an image file
+# plotter = pv.Plotter(off_screen=True)
+# plotter.add_mesh(sphere)
+# plotter.show(screenshot='Images\screenshot.png')
+
+# # Display the image using streamlit
+# img = Image.open('Images\screenshot.png')
+# # img = img.resize((500,500))
+# st.image(img)
+
+
+# import streamlit as st
+
+# from PIL import Image
+
+
+# # Define an element type
+# mapdl.et(1, 'SOLID186')
+
+# # Define a material type
+# mapdl.mp('EX', 1, 210E9) # Young's modulus
+# mapdl.mp('DENS', 1, 7800) # Density
+# mapdl.mp('NUXY', 1, 0.3) # Poisson's ratio
+
+# # Create a block
+# vnum = mapdl.blc4(width=1, height=4, depth=9)
+
+# # Mesh the block
+# mapdl.esize(0.5)
+# mapdl.vmesh(vnum)
+
+# # Check the number of elements
+# num_elem = mapdl.mesh.n_elem
+# st.write(f"Number of elements: {num_elem}")
+
+# # Convert the mesh to VTK format for visualization with pyvista
+# mesh = mapdl.mesh._grid  # get the VTK grid
+# # vnum
+# # mesh
+
+# if mesh is None:
+#     st.write("Failed to visualize the volume.")
+# else:
+#     # Use pyvista's plotter to visualize the volume and save screenshot.
+#     p = pv.Plotter(off_screen=True)
+#     p.add_lines(mesh)
+#     p.show(screenshot='mesh.png')
+
+#     # Load the image with PIL and display it with Streamlit.
+#     image = Image.open('mesh.png')
+#     st.image(image)
+
+
+
+    
+# mapdl.vplot(show_lines=True, show_bounds=True)
 
 st.markdown(In.border2, unsafe_allow_html=True)
 # ============================================================================================================================================

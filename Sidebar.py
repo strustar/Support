@@ -36,6 +36,7 @@ def Sidebar(h4, h5):
     ### 슬라브 or 보 (￭)
     sb.write(h4, '1. ' + In.type)
     [col1, col2, col3] = sb.columns(3, gap = 'medium')
+    In.height = 9.5  # 나중에 추가할 사항!!!
     with col1:
         if '슬래브' in In.type:  In.slab_t = st.number_input(h5 + '✦ 두께 [mm]', min_value = 50., value = 400., step = 10., format = '%0.f')
         if '보' in In.type:
