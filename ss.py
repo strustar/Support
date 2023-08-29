@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 import Sidebar, General, Calculate, Table, style
 from Sidebar import In
 
@@ -202,12 +203,13 @@ with tab[4]:
 from ansys.mapdl.core import launch_mapdl
 import pyvista as pv
 from PIL import Image
-mapdl = launch_mapdl()
-factor = 1e3
+
+working_dir = 'pymapdl';  jobname = 'Support_apdl';  mapdl = launch_mapdl(run_location = working_dir, jobname = jobname, override = True)
 
 def analysis():
-    # !! ===============================================> Preprocessing
-    mapdl.clear();  mapdl.prep7()    
+    working_dir = 'pymapdl';  jobname = 'Support_apdl'
+    # !! ===============================================> Preprocessing    
+    mapdl.clear();  mapdl.prep7();  factor = 1e3
 
     xea = int(np.ceil(In.slab_X*factor/In.Lv) + 1);  yea = int(np.ceil(In.slab_Y*factor/In.Ly) + 1);  zea = int(np.ceil(In.height*factor/In.Lh) + 1)
 
@@ -296,20 +298,56 @@ def analysis():
     mapdl.set('last')
     mapdl.plnsol('u', 'sum')
 
-    result = mapdl.result
-    plotter = pv.Plotter(off_screen=True)  # Modify this line
-    image_filename = 'plot.png'
-    _ = result.plot_principal_nodal_stress(
-        0,
-        "SEQV",
-        cpos="xy",
-        background="w",
-        text_color="k",
-        add_text=False,
-        screenshot=image_filename  # Add this line
-    )
-    # Use Streamlit to display the image in a web page
-    st.image(image_filename)
+    from ansys.dpf import post
+    from ansys.dpf.post import examples
+
+    rst_file = os.path.join(working_dir, jobname + '.rst')
+    simulation = post.load_simulation(rst_file)
+    simulation = post.StaticMechanicalSimulation(rst_file)
+
+    solution = post.load_solution(rst_file)
+    print('a', simulation.results)
+    print('b', solution)
+    mesh = simulation.mesh
+    print(mesh)
+
+    d = post.displacement.Displacement.x
+    d
+    
+    displacement = simulation.displacement()    
+    print(displacement)
+
+    displacement1 = solution.displacement() 
+    uy = displacement1.y
+    u = uy.get_data_at_field()
+    print(u)
+    print(displacement1)
+
+
+    displacement.plot(screenshot = 'tt.png', off_screen = True)
+    st.image('tt.png')
+
+    # stress_z = simulation.nodal_force(components= "X")
+    stress_z = simulation.reaction_force(components= "X")
+    stress_z.plot(screenshot = 'tt1.png', off_screen = True)
+    st.image('tt1.png')
+    # st.pyplot(fig)
+
+
+    # result = mapdl.result
+    # plotter = pv.Plotter(off_screen=True)  # Modify this line
+    # image_filename = 'plot.png'
+    # _ = result.plot_principal_nodal_stress(
+    #     0,
+    #     "SEQV",
+    #     cpos="xy",
+    #     background="w",
+    #     text_color="k",
+    #     add_text=False,
+    #     screenshot=image_filename  # Add this line
+    # )
+    # # Use Streamlit to display the image in a web page
+    # st.image(image_filename)
 
 try:
     analysis()
