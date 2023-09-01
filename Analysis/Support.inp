@@ -123,15 +123,15 @@ LC = 1
 	ESEL,s,sec,, 2  $  cm, h, elem  $  /color,elem,cyan
 	ESEL,s,sec,, 3  $  cm, b, elem  $  /color,elem,orange
 
-	alls  $  NUMMRG,all
+	! alls  $  NUMMRG,all   ! sec number 등 같으면 병합됨
 	ALLSEL,all
 
 	EPLOT
-! !  Reverse Video - white
-! /RGB,INDEX,100,100,100, 0  
-! /RGB,INDEX, 80, 80, 80,13  
-! /RGB,INDEX, 60, 60, 60,14  
-! /RGB,INDEX, 0, 0, 0,15  
+!  Reverse Video - white
+/RGB,INDEX,100,100,100, 0  
+/RGB,INDEX, 80, 80, 80,13  
+/RGB,INDEX, 60, 60, 60,14  
+/RGB,INDEX, 0, 0, 0, 15  
 ! /RGB,INDEX, 100, 0, 0, 1   ! 빨강
 ! /RGB,INDEX, 0, 100, 0, 2   ! 녹색
 ! /RGB,INDEX, 0, 0, 100, 3   ! 파랑
@@ -140,14 +140,14 @@ LC = 1
 ! /RGB,INDEX, 0, 100, 100, 6  ! 시안
 
 
-	/SHOW,JPEG,rev  	
+	/SHOW,JPEG,rev
 	JPEG,QUAL,100,   ! 초기값 75 (0~100)
 	JPEG,ORIENT,HORIZ  ! JPEG,ORIENT,VERT ! 세로 그림	
 	/GFILE,2400,  ! 초기값 800
 	/REPLOT
 	/SHOW,CLOSE
 
-	/show,png,rev,
+	/show,png,rev
 	pngr,ORIENT,HORIZ
 	/GFILE,2400,  ! 초기값 800
 	/REPLOT
