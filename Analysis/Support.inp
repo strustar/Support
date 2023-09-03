@@ -153,8 +153,6 @@ LC = 1
 	/REPLOT
 	/SHOW,CLOSE
 
-
-
 	! *return
 !!! Attributes & Meshing
 FINISH
@@ -186,7 +184,7 @@ FINISH
 	/pbc,f,,1
 
 	ALLSEL,all
-	! *return
+	*return
 	solve
 FINISH
 !! ===============================================> Solution
