@@ -152,15 +152,15 @@ def Check(In, opt, section, WJY):
 
     if '합판' in opt[0]:        
         color = 'magenta';  L_jyv = rf'\textcolor{{{color}}}{{L_j}}'
-        w_str = 'ω_w';  img = 'wood.png';  L = [1, In.Lj]
+        w_str = 'ω_w';  img = 'Images/wood.png';  L = [1, In.Lj]
         
     if '장선' in opt[0]:        
         color = 'green';  L_jyv = rf'\textcolor{{{color}}}{{L_y}}'
-        w_str = 'ω_j';  img = 'joist.png';  L = [In.Lj, In.Ly]
+        w_str = 'ω_j';  img = 'Images/joist.png';  L = [In.Lj, In.Ly]
 
     if '멍에' in opt[0]:        
         color = 'blue';  L_jyv = rf'\textcolor{{{color}}}{{L_v}}'    
-        w_str = 'ω_y';  img = 'yoke.png';  L = [In.Ly, In.Ly]
+        w_str = 'ω_y';  img = 'Images/yoke.png';  L = [In.Ly, In.Ly]
 
     w = In.design_load*L[0]
     L_jyv1 = opt[1] + rf'($\bm{{{L_jyv}}}$) 검토'
