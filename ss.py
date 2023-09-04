@@ -163,15 +163,18 @@ with tab[1]:
     Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
 with tab[2]:
     st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
-with tab[0]:
-    import os
+with tab[0]:    
     st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
+    st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
+    
+    h = '##### ';  tabtab = st.tabs([h+':blue[해석 결과]', h+':green[해석 코드]'])
 
+    file_path = 'apdl/Support.inp';  encoding = 'utf-8'
+    with open(file_path, 'r', encoding = encoding) as f:
+        lines = f.readlines()
+    code_string = ''.join(lines)
 
-    # file_path = 'Analysis/Support.inp';  encoding = 'utf-8'
-    # with open(file_path, 'r', encoding = encoding) as f:
-    #     lines = f.readlines()
-        
+    st.code(code_string, language='fortran', line_numbers=True)
     # for i in range(20):  # 앞에만 검색해서 변경
     #     if "joist" in lines[i]:
     #         lines[i] = f'joist_b = {In.joist_b}  $  joist_h = 50  $  joist_t = 2.3  $  Lj = {In.Lj}\n'

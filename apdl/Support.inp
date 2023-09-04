@@ -1,0 +1,258 @@
+! 2023-08-16, Support 3D Detailed Analysis
+! Units : N, mm
+
+FINISH
+/CLEAR
+
+joist_b = 50.0  $  joist_h = 50  $  joist_t = 2.3  $  Lj = 150.0
+yoke_b = 75   $  yoke_h = 125  $  yoke_t = 3.2   $  Ly = 914
+vertical_d = 60.5  $  vertical_t = 2.6  $  Lv = 914
+horizontal_d = 42.7  $  horizontal_t = 2.2  $  Lh = 1725
+bracing_d = 42.7  $  bracing_t = 2.2
+
+slab_X = 8000  $  slab_Y = 12000  $  height = 9500
+dead_load = 10  $  design_load = 12.5  $  hx = 0.2  $  hy = 0.2  $  wind = 0.3  ! kN/m2
+Ex = 200e3
+
+LC = 1
+*if,LC,eq,1,then
+	P = 1e3*design_load*Ly*Lv/1e6  ! 1000N/m2 * mm * mm /1e6 : N
+	Hx = 1e3*hx*Ly*Lh/1e6
+	Hy = 1e3*hy*Lv*Lh/1e6
+*else  ! Load Case 2 : 풍하중
+	P = 1e3*dead_load*Ly*Lv/1e6  ! 1000N/m2 * mm * mm /1e6 : N
+	Hx = 1e3*wind*Ly*Lh/1e6  ! 풍하중
+	Hy = 1e3*wind*Lv*Lh/1e6  ! 풍하중
+*endif
+
+/sys, del/q/f *.png  ! png 모든 파일 지우기
+/PLOPTS,date,off
+! /PLOPTS,leg3,off
+! /PLOPTS,logo,off
+WPSTYLE,,,,,,,,0
+
+/VSCALE,,,1  ! 하중 재하시 화살표 크기 동일하게 (작은 것은 안보이는 현상 발생)
+
+! Reverse Video - white
+/RGB,INDEX,100,100,100, 0  
+/RGB,INDEX, 80, 80, 80,13  
+/RGB,INDEX, 60, 60, 60,14  
+/RGB,INDEX, 0, 0, 0, 15  
+
+!! ===============================================> Preprocessing
+/PREP7	
+	!/uis,msgpop,3  !!  3 : Only errors displayed.	
+!!! Modelling
+	xea = nint(slab_X/Lv) + 1 ! Nearest integer to x, xea : 수직재 개수, 간격
+	*if,mod(slab_X, Lv),lt,Lv/2,then
+		xea = xea + 1
+	*endif
+		
+	yea = nint(slab_Y/Ly) + 1 ! Nearest integer to y, yea : 멍에 개수, 간격
+	*if,mod(slab_Y, Ly),lt,Ly/2,then
+		yea = yea + 1
+	*endif
+	
+	zea = nint(height/Lh) + 1 ! Nearest integer to z, zea : 수평재 간격
+	*if,mod(height, Lh),lt,Lh/2,then
+		zea = zea + 1
+	*endif
+
+	k,1, 0,0,0
+	kgen,xea, 1,1,1,  Lv,0,0, 1
+	kgen,yea, all,,, 0,Ly,0, 100
+	kgen,zea, all,,, 0,0,Lh, 10000
+
+	*do,i,1,xea  !! 수직재
+		*do,j,1,yea
+			*do,k,1,zea-1
+				l, i + 100*(j-1) + 10000*(k-1), i + 10000 + 100*(j-1) + 10000*(k-1)
+			*enddo
+		*enddo
+	*enddo
+	alls  $  cm, ver, line  $  /color,line,magenta
+
+	*do,i,1,xea-1  !! 수평재 (x방향)
+		*do,j,1,yea
+			*do,k,1,zea-1
+				l, i + 10000 + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1)
+			*enddo
+		*enddo
+	*enddo
+
+	*do,i,1,xea  !! 수평재 (y방향)
+		*do,j,1,yea-1
+			*do,k,1,zea-1
+				l, i + 10000 + 100*(j-1) + 10000*(k-1), i + 10100 + 100*(j-1) + 10000*(k-1)
+			*enddo
+		*enddo
+	*enddo
+	alls  $  cmsel,u,ver  $  cm, hor, line  $  /color,line,cyan
+
+	*do,i,1,xea-1,2  !! 가새재
+		*do,j,1,yea,2
+			*do,k,1,zea-1,2
+				l, i + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1)
+			*enddo
+		*enddo
+	*enddo
+	alls  $  cmsel,u,ver  $  cmsel,u,hor  $  cm, bra, line  $  /color,line,blue
+
+	allsel  $  NUMMRG,all
+/VUP,,z
+/VIEW,,1,-1,1
+! *return
+!!! Modelling
+	
+!!! Attributes & Meshing
+	ET,1,BEAM188
+
+	MP,EX,1, Ex
+	MP,PRXY,1, 0.3
+	! mp,dens,1, 2.35e-6 ! kg / mm^3
+
+	SECTYPE,1, BEAM, CTUBE  $  SECDATA, vertical_d/2 - vertical_t, vertical_d/2  ! Ri, Ro, N
+	SECTYPE,2, BEAM, CTUBE  $  SECDATA, horizontal_d/2 - horizontal_t, horizontal_d/2  ! Ri, Ro, N
+	SECTYPE,3, BEAM, CTUBE  $  SECDATA, bracing_d/2 - bracing_t, bracing_d/2  ! Ri, Ro, N
+
+	cmsel,s,ver  $  LATT, 1,,1,,,, 1
+	cmsel,s,hor  $  LATT, 1,,1,,,, 2
+	cmsel,s,bra  $  LATT, 1,,1,,,, 3
+
+	/replot
+	alls  $  lesize,all, 200
+	LMESH,all
+
+	ESEL,s,sec,, 1  $  cm, v, elem  $  /color,elem,magenta
+	ESEL,s,sec,, 2  $  cm, h, elem  $  /color,elem,cyan
+	ESEL,s,sec,, 3  $  cm, b, elem  $  /color,elem,blue
+
+	! alls  $  NUMMRG,all   ! sec number 등 같으면 병합됨
+	ALLSEL,all
+	/eshape,3
+	EPLOT
+
+	/replot
+	/show,png,rev
+	PNGR,ORIENT,HORIZ
+	/GFILE,2400,  ! 초기값 800
+	/REPLOT
+	/SHOW,CLOSE
+
+	! /SHOW,JPEG,rev
+	! JPEG,QUAL,100,   ! 초기값 75 (0~100)
+	! JPEG,ORIENT,HORIZ  ! JPEG,ORIENT,VERT ! 세로 그림	
+	! /GFILE,2400,  ! 초기값 800
+	! /REPLOT
+	! /SHOW,CLOSE
+	! *return
+!!! Attributes & Meshing
+FINISH
+!! ===============================================> Preprocessing
+
+!! ===============================================> Solution
+/SOLU
+	eplot
+	nsel,s,loc, z,0
+	d,all,all,0
+
+	ALLSEL,all
+	cmsel,s,v  $  nsle,s
+	nsel,r,loc, z, Lh*(zea-1)	
+	f,all, fz, -P
+
+	alls
+	cmsel,s,v  $  nsle,s	
+	nsel,r,loc, z, Lh*(zea-1)
+	nsel,r,loc, y, 0
+	f,all, fy, Hy
+	
+	alls
+	cmsel,s,v  $  nsle,s	
+	nsel,r,loc, z, Lh*(zea-1)
+	nsel,r,loc, x, Lv*(xea-1)
+	f,all, fx, -Hx
+	
+	alls
+	/eshape,0
+	/pbc,rot,,1
+	/pbc,f,,1
+
+	/replot
+	/show,png,rev
+	PNGR,ORIENT,HORIZ
+	/GFILE,2400,  ! 초기값 800
+	/REPLOT
+	/SHOW,CLOSE
+
+	ALLSEL,all
+	! *return
+	solve
+FINISH
+!! ===============================================> Solution
+
+!*return
+!! ===============================================> Postprocessing
+/POST1
+	SET,LAST
+	!/esh,1
+	!/dscale,,1
+	plns,u,z
+	/eshape,3
+
+	/replot
+	/show,png,rev
+	PNGR,ORIENT,HORIZ
+	/GFILE,2400,  ! 초기값 800
+	/REPLOT
+	/SHOW,CLOSE
+	
+!plns,s,eqv
+
+*return
+
+! /ui,copy,save,bmp
+
+! *RETURN,
+	ETABLE,Fx1, SMISC,1  !!ETABLE, Lab, Item, Comp, Option
+	ETABLE,Fx2, SMISC,14
+
+	ETABLE,My1, SMISC,2
+	ETABLE,My2, SMISC,15
+	ETABLE,Mz1, SMISC,3
+	ETABLE,Mz2, SMISC,16
+
+	ETABLE,SFz1, SMISC,5
+	ETABLE,SFz2, SMISC,18
+	ETABLE,SFy1, SMISC,6
+	ETABLE,SFy2, SMISC,19
+
+	PLLS,Fx1,Fx2  !!PLLS, LabI, LabJ, Fact, KUND,ViewUP 
+	cmsel,s,v
+	/AUTO,1 
+	/REP,FAST	
+	! pletab,Fx1
+	! pretab,Fx1
+	
+	cmsel,s,v
+	esort,etab,Fx1,
+	*get,Fx_max,sort,0,max
+
+	! 파일에 변수 작성
+     *CFOPEN, Support, out       ! 새로운 파일을 생성하거나 기존 파일에 덮어씁니다.
+    *VWRITE, Fx_max   ! 이거 계속해서 에러났는데 ㅠㅠ 다시 하니 에러가 안납니다. 계속해서 고질병으로 에러가 났던 상황인데요... apdl 진짜 적응이 안되네요 ㅠㅠ ()
+    (F12.5)
+    *VWRITE, 'Load Case : ', Fx_max  ! 이것도 에러?
+    (A15, F8.0)
+
+    *VWRITE,'Temp: ',Fx_max,10,20, 'TREF: ',70  ! 하지만 이것은 된다??  
+   (A6,F8.0,g16.8,A3,A6,F10.4)   
+    *CFCLOSE	
+                         ! 파일 닫기
+
+	! *GET,Fx,ETAB,ENTNUM,Item1,IT1NUM,Item2,IT2NUM
+	! cmsel,s,ebar
+	! /rep
+	! /ui,copy,save,wmf
+
+
