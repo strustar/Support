@@ -169,7 +169,7 @@ with tab[0]:
     
     h = '##### ';  tabtab = st.tabs([h+':blue[해석 결과]', h+':green[해석 코드]'])
 
-    file_path = 'apdl/Support.inp';  encoding = 'utf-8'
+    file_path = 'APDL/Support.inp';  encoding = 'utf-8'
     with open(file_path, 'r', encoding = encoding) as f:
         lines = f.readlines()
     code_string = ''.join(lines)
