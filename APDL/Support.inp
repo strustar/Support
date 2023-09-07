@@ -248,9 +248,9 @@ FINISH
     (A15, F8.0)
 
     *VWRITE,'Temp: ',Fx_max,10,20, 'TREF: ',70  ! 하지만 이것은 된다??  
-   (A6,F8.0,g16.8,A3,A6,F10.4)   
+    (A6,F8.0,g16.8,A3,A6,F10.4)   
     *CFCLOSE	
-                         ! 파일 닫기
+                        ! 파일 닫기
 
 	! *GET,Fx,ETAB,ENTNUM,Item1,IT1NUM,Item2,IT2NUM
 	! cmsel,s,ebar

@@ -169,12 +169,14 @@ with tab[0]:
     
     h = '##### ';  tabtab = st.tabs([h+':blue[해석 결과]', h+':green[해석 코드]'])
 
-    file_path = 'APDL/Support.inp';  encoding = 'utf-8'
+    file_path = 'pyAPDL.py';  encoding = 'utf-8'
+    # file_path = 'APDL/Support.inp';  encoding = 'utf-8'
     with open(file_path, 'r', encoding = encoding) as f:
         lines = f.readlines()
     code_string = ''.join(lines)
 
-    st.code(code_string, language='fortran', line_numbers=True)
+    # st.code(code_string, language='fortran', line_numbers=True)
+    st.code(code_string, line_numbers=True)
     # for i in range(20):  # 앞에만 검색해서 변경
     #     if "joist" in lines[i]:
     #         lines[i] = f'joist_b = {In.joist_b}  $  joist_h = 50  $  joist_t = 2.3  $  Lj = {In.Lj}\n'
