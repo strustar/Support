@@ -8,6 +8,17 @@ import pyvista as pv
 import sys
 import os
 
+# 스트림릿 웹상에서 실행되지 않게
+if __name__ != "streamlit.script_runner":
+    a = 3
+    a
+
+# !! ===============================================> Web상에서만 실행~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import subprocess
+subprocess.run(['taskkill', '/F', '/IM', 'ANSYS*'])
+# 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class In:
     pass
 In.joist_b = 50.0;  In.joist_h = 50;  In.joist_t = 2.3;  In.Lj = 150.0  # Unit : N, mm
@@ -20,6 +31,16 @@ In.slab_X = 8;  In.slab_Y = 12;  In.height = 9.5  # Unit : m
 In.dead_load = 10;  In.design_load = 12.5;  In.hx = 0.2;  In.hy = 0.2;  In.wind = 0.3  # kN/m2
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
+In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
+In.space = '<div style="margin:0px">'
+In.background_color = 'linen'
+In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
+In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px'
+
+color = 'green'
+In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
+In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
+
 
 factor = 1e3
 LC = 1 # Load Case
@@ -34,7 +55,7 @@ Hy = hory*In.Lv*In.Lh/factor
 working_dir = 'pyAPDL';  jobname = 'file'
 ma = launch_mapdl(run_location = working_dir, jobname = jobname, override = True)
 
-def analysis():
+def analysis(In):
     ma.sys('del/q/f *.png')    # png 모든 파일 지우기
     ma.plopts('date','off')    # 날짜 지우기
     ma.vscale('','',1)  # 하중 재하시 화살표 크기 동일하게 (작은 것은 안보이는 현상 발생)
@@ -97,42 +118,19 @@ def analysis():
     ma.esel('s', 'sec', '', 2);  ma.cm('h', 'elem');  ma.color('elem', 'cyan')
     ma.esel('s', 'sec', '', 3);  ma.cm('b', 'elem');  ma.color('elem', 'blue')
     # ma.lplot('all', show_line_numbering = False)    # mesh.plot()
-    
-    ma.cmsel('all')
-    ma.allsel('all')
-    ma.eshape(3)
-    ma.replot()    
-    
-    # savefig = 'pyAPDL\ss.png'
-    savefig = 'ss.png'
-    ma.cmsel('all')
-    ma.eshape(3)
+        
+    ma.allsel('all');  ma.eshape(3)  # ma.replot()
+    # savefig = 'pyAPDL/ss.png'
     # ma.eplot(vtk=False, background='k', show_edges=False, smooth_shading=True, color = 'blue', edge_color='red',
     #             window_size=[1920, 1080], savefig=savefig, style='surface', render_lines_as_tubes=True, line_width=5,
     #             off_screen=True)
-    ma.eplot(vtk=False, off_screen=True)
-    
-    st.image('pyAPDL/file000.png')
-
-    # ma.allsel('all')
-    # ma.show('png')
-    # # ma.pngr('orient', 'horiz')
-    # ma.gfile(2400)
-    # ma.replot()
-    # ma.eshape(1)
-    # # ma.plls('Fx1', 'Fx2', 0.5, 0, 0) 
-    # ma.show('close')
-
-
-    ma.exit()
-    sys.exit()
-
+    ma.eplot(vtk=False, off_screen=True)  # png_model
     ma.finish()
     # !! ===============================================> Preprocessing
 
 
     # !! ===============================================> Solution
-    ma.run('/solu')
+    ma.slashsolu()
     ma.nsel('s', 'loc', 'z', 0)
     ma.d('all', 'all', 0)
 
@@ -141,19 +139,53 @@ def analysis():
     ma.nsle('s')
     ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))    
     ma.f('all', 'fz', -1)
-    ma.allsel()
+
+    ma.allsel('all');  ma.eshape(0)
+    ma.pbc('f',1);  ma.pbc('u',1)  # ma.replot()
+    ma.eplot(vtk=False, off_screen=True)
+    # ma.eplot(vtk=False, off_screen=True, plot_bc=True, plot_bc_legend=True, plot_bc_labels=True, bc_labels='a')      
     
-    ma.pbc('f','',1)
-    # ma.open_gui()
+    # png_bc    
+
+    # png_model = os.path.join(working_dir, jobname + '000.png')
+    # png_bc = os.path.join(working_dir, jobname + '001.png')
+
+    # [col1, col2] = st.columns(In.col_span_ref)
+    # with col1:
+    #     st.write(h4, '[해석 모델]')    
+    #     st.image(png_model)
+    # with col2:
+    #     st.write(h4, '[경계조건 및 하중조건]')    
+    #     st.image(png_bc)    
+        
     output = ma.solve()    
     # output
     ma.finish()
     # !! ===============================================> Solution
 
+
     # !! ===============================================> Postprocessing
-    ma.run('/post1')
+    ma.post1()
     ma.set('last')
-    ma.plnsol('u', 'sum')
+    # ma.open_gui()
+    ma.eshape(3)
+    ma.plnsol('s', 'eqv')
+    ma.post_processing.plot_nodal_eqv_stress(off_screen=True, savefig='tt7.png')
+
+
+    # ma.cmsel('s','v')
+    ma.eshape(3)
+    ma.post_processing.plot_nodal_displacement(component='z', off_screen=True, savefig='tt1.png')
+    ma.post_processing.plot_nodal_values('s','eqv', off_screen=True, savefig='tt2.png')
+
+    ma.eshape(3);  # ma.replot()
+    ma.show('png','REV')
+    ma.gfile(2400)    
+    ma.plnsol('s', 'eqv')
+    ma.show('close')
+    
+    print('제대로 끝')
+    # result = ma.result    
 
     ma.etable('Fx1', 'SMISC', 1)
     ma.etable('Fx2', 'SMISC', 14)
@@ -163,6 +195,23 @@ def analysis():
     ma.gfile(2400)
     ma.plls('Fx1', 'Fx2', 0.5, 0, 0) 
     ma.show('close')
+
+    # # Access MAPDL database : This feature does not work in the Ansys 2023 R1.
+    # elems = ma.db.elems
+    # nodes = ma.db.nodes
+    # elems, nodes
+
+    p = ma.parameters
+    p
+    g = ma.geometry
+    print(g)
+    g
+    m = ma.mesh
+    m
+    
+
+    ma.exit()
+    sys.exit()
 
     ma.cmsel('s', 'v')
     ma.esort('etab', 'Fx1')
@@ -228,7 +277,7 @@ def analysis():
 
 
     # result = ma.result
-analysis()
+analysis(In)
 ma.exit()
 
 # try:
