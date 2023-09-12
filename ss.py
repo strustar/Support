@@ -155,28 +155,134 @@ style.radio(In.background_color, '32%')
 st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
 ##### tab ===========================================================================================================
-h = '#### ';  tab = st.tabs([h+':blue[Ⅱ. 구조 검토 💻]', h+':green[Ⅰ. 일반 사항 ✍️]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
-with tab[2]:
+h = '#### ';  tab = st.tabs([h+':green[Ⅰ. 일반 사항 ✍️]', h+':blue[Ⅱ. 구조 검토 💻]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
+with tab[0]:
     # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
 with tab[1]:
     Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
 with tab[2]:
     st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
-with tab[0]:    
-    st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석, 작성중...)')
+with tab[3]:    
+    st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
     
-    h = '##### ';  tabtab = st.tabs([h+':blue[해석 결과]', h+':green[해석 코드]'])
+    h = '##### ';  tabtab = st.tabs([h+':orange[해석 결과]', h+':blue[해석 코드]'])
+    with tabtab[0]:
+        import os;  import json
 
-    file_path = 'pyAPDL.py';  encoding = 'utf-8'
-    # file_path = 'APDL/Support.inp';  encoding = 'utf-8'
-    with open(file_path, 'r', encoding = encoding) as f:
-        lines = f.readlines()
-    code_string = ''.join(lines)
+        uz = [];  seqv = [];  Fx1 = [];  Fx2 = []
+        My1 = [];  My2 = [];  Mz1 = [];  Mz2 = []
+        SFz1 = [];  SFz2 = [];  SFy1 = [];  SFy2 = []
+        with open('Images/result.json', 'r') as f:
+            result = json.load(f)        
+        for item in result:
+            uz.append(np.abs(item['uz']));  seqv.append(np.abs(item['seqv']))
+            Fx1.append(item['Fx1']/1e3);    Fx2.append(item['Fx2']/1e3)
+            My1.append(item['My1']/1e6);    My2.append(item['My2']/1e6)
+            Mz1.append(item['Mz1']/1e6);    Mz2.append(item['Mz2']/1e6)
+            SFz1.append(item['SFz1']/1e3);  SFz2.append(item['SFz2']/1e3)
+            SFy1.append(item['SFy1']/1e3);  SFy2.append(item['SFy2']/1e3)
+            
+        working_dir = 'Images';  jobname = 'file';  png = []
+        for i in range(0,18):
+            if i < 10:  name = os.path.join(working_dir, jobname + '00' + str(i) + '.png')
+            if i >= 10: name = os.path.join(working_dir, jobname + '0' + str(i) + '.png')
+            png.append(name)
+        
+        [col1, col2] = st.columns(In.col_span_ref)
+        with col1:
+            st.write(h4, '[해석 모델]')    
+            st.image(png[0])
+        with col2:
+            st.write(h4, '[경계조건 및 하중조건]')    
+            st.image(png[1])
+        
+        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+        [col1, col2] = st.columns(In.col_span_ref)        
+        with col1:
+            st.write(h4, '[Load Case 1 (LC1)]')
+            st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')            
+            st.write(s1, f'➣ 최대 변위 : {uz[0]:,.3f} mm')
+            st.image(png[2])
 
-    # st.code(code_string, language='fortran', line_numbers=True)
-    st.code(code_string, line_numbers=True)
+            st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
+            st.write(s1, f'➣ 최대 등가응력 : {seqv[0]:,.1f} MPa')
+            st.image(png[3])
+        with col2:
+            st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
+            st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')
+            st.write(s1, f'➣ 최대 변위 : {uz[1]:,.3f} mm')
+            st.image(png[2+9])
+
+            st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
+            st.write(s1, f'➣ 최대 등가응력 : {seqv[1]:,.1f} MPa')
+            st.image(png[3+9])
+
+        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+        [col1, col2] = st.columns(In.col_span_ref)        
+        with col1:
+            st.write(h4, '[Load Case 1 (LC1)]')
+            st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
+            st.write(s1, f'➣ 최대 축방향력 : {Fx1[0]:,.3f} kN')
+            st.write(s1, f'➣ 최소 축방향력 : {Fx2[0]:,.3f} kN')
+            st.image(png[4])
+            
+            st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')            
+            st.write(s1, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m')
+            st.write(s1, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m')
+            st.image(png[5])
+
+            st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')
+            st.write(s1, f'➣ 최대 모멘트 : {My1[0]:,.3f} kN·m')
+            st.write(s1, f'➣ 최소 모멘트 : {My2[0]:,.3f} kN·m')
+            st.image(png[6])
+
+            st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
+            st.write(s1, f'➣ 최대 전단력 : {SFz1[0]:,.3f} kN')
+            st.write(s1, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN')
+            st.image(png[7])
+
+            st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
+            st.write(s1, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN')
+            st.write(s1, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN')
+            st.image(png[8])
+
+        with col2:
+            st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
+            st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
+            st.write(s1, f'➣ 최대 축방향력 : {Fx1[1]:,.3f} kN')
+            st.write(s1, f'➣ 최소 축방향력 : {Fx2[1]:,.3f} kN')
+            st.image(png[4+9])
+
+            st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')            
+            st.write(s1, f'➣ 최대 모멘트 : {Mz1[1]:,.3f} kN·m')
+            st.write(s1, f'➣ 최소 모멘트 : {Mz2[1]:,.3f} kN·m')
+            st.image(png[5+9])
+
+            st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')            
+            st.write(s1, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m')
+            st.write(s1, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m')
+            st.image(png[6+9])
+
+            st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
+            st.write(s1, f'➣ 최대 전단력 : {SFz1[1]:,.3f} kN')
+            st.write(s1, f'➣ 최소 전단력 : {SFz2[1]:,.3f} kN')
+            st.image(png[7+9])
+
+            st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
+            st.write(s1, f'➣ 최대 전단력 : {SFy1[1]:,.3f} kN')
+            st.write(s1, f'➣ 최소 전단력 : {SFy2[1]:,.3f} kN')
+            st.image(png[8+9])
+
+    with tabtab[1]:
+        file_path = 'pyAPDL.py';  encoding = 'utf-8'    
+        with open(file_path, 'r', encoding = encoding) as f:
+            lines = f.readlines()
+        code_string = ''.join(lines)
+        st.code(code_string, line_numbers=True)
+        
+
     # for i in range(20):  # 앞에만 검색해서 변경
     #     if "joist" in lines[i]:
     #         lines[i] = f'joist_b = {In.joist_b}  $  joist_h = 50  $  joist_t = 2.3  $  Lj = {In.Lj}\n'

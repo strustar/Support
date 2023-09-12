@@ -1,10 +1,10 @@
 import streamlit as st
 import numpy as np
 from ansys.mapdl.core import launch_mapdl
-from ansys.mapdl.core import convert_script
+# from ansys.mapdl.core import convert_script
 # from ansys.dpf import post
-from PIL import Image
-import pyvista as pv
+# from PIL import Image
+# import pyvista as pv
 import sys
 import os
 
@@ -17,18 +17,20 @@ if __name__ != "streamlit.script_runner":
 # 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import subprocess
 subprocess.run(['taskkill', '/F', '/IM', 'ANSYS*'])
+subprocess.run(['taskkill', '/F', '/IM', 'APDL*'])
 # 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class In:
     pass
 In.joist_b = 50.0;  In.joist_h = 50;  In.joist_t = 2.3;  In.Lj = 150.0  # Unit : N, mm
 In.yoke_b = 75;  In.yoke_h = 125;  In.yoke_t = 3.2;  In.Ly = 914
+
 In.vertical_d = 60.5;  In.vertical_t = 2.6;  In.Lv = 914
 In.horizontal_d = 42.7;  In.horizontal_t = 2.2;  In.Lh = 1725
 In.bracing_d = 42.7;  In.bracing_t = 2.2
 
-In.slab_X = 8;  In.slab_Y = 12;  In.height = 9.5  # Unit : m
-In.dead_load = 10;  In.design_load = 12.5;  In.hx = 0.2;  In.hy = 0.2;  In.wind = 0.3  # kN/m2
+In.slab_X = 4;  In.slab_Y = 6;  In.height = 6  # Unit : m
+In.dead_load = 10;  In.design_load = 12.5;  In.hx = 0.375;  In.hy = 0.25;  In.wind = 0.286  # kN/m2
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
@@ -41,24 +43,19 @@ color = 'green'
 In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
 In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
 
+working_dir = 'pyAPDL';  jobname = 'file';  ma = launch_mapdl(run_location = working_dir, jobname = jobname, override = True)
+ma.sys('del/q/f *.png')    # png 모든 파일 지우기
 
-factor = 1e3
-LC = 1 # Load Case
-if LC == 1:
-    ver = In.design_load;  horx = In.hx;  hory = In.hy
-if LC == 2:  # 풍하중
-    ver = In.dead_load;  horx = In.wind;  hory = In.wind
-P = ver*In.Ly*In.Lv/factor  # kN/m2 = 1e3 N/(mm*mm*1e6) *mm*mm = N / 1e3
-Hx = horx*In.Ly*In.Lh/factor
-Hy = hory*In.Lv*In.Lh/factor
+results = []
+def analysis(In, LC):   # Load Case
+    factor = 1e3
+    if LC == 1:
+        ver = In.design_load;  horx = In.hx;  hory = In.hy
+    if LC == 2:  # 풍하중
+        ver = In.dead_load;  horx = In.wind;  hory = In.wind
+    P = ver*In.Ly*In.Lv/factor;  Hx = horx*In.Ly*In.Lh/factor;  Hy = hory*In.Lv*In.Lh/factor  # kN/m2 = 1e3 N/(mm*mm*1e6) *mm*mm = N / 1e3
 
-working_dir = 'pyAPDL';  jobname = 'file'
-ma = launch_mapdl(run_location = working_dir, jobname = jobname, override = True)
-
-def analysis(In):
-    ma.sys('del/q/f *.png')    # png 모든 파일 지우기
-    ma.plopts('date','off')    # 날짜 지우기
-    ma.vscale('','',1)  # 하중 재하시 화살표 크기 동일하게 (작은 것은 안보이는 현상 발생)
+    ma.plopts('date','off')    # 날짜 지우기    
 
     # Reverse Video - white
     ma.rgb('INDEX',100,100,100, 0)
@@ -69,6 +66,7 @@ def analysis(In):
     # !! ===============================================> Preprocessing 
     ma.clear();  ma.prep7()
 
+    # !!! Modelling
     xea = int(np.ceil(In.slab_X*factor/In.Lv) + 1)
     yea = int(np.ceil(In.slab_Y*factor/In.Ly) + 1)
     zea = int(np.ceil(In.height*factor/In.Lh) + 1)    
@@ -85,11 +83,11 @@ def analysis(In):
                 ma.l(i + 100*(j-1) + 10000*(k-1), i + 10000 + 100*(j-1) + 10000*(k-1))    
     ma.allsel();  ma.cm('ver',  'line');  ma.color('line', 'magenta')
 
-    for i in range(1, xea):   # 수평재 1
+    for i in range(1, xea):   # 수평재 (x방향)
         for j in range(1, yea + 1):
             for k in range(1, zea):
                 ma.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1))
-    for i in range(1, xea + 1):   # 수평재 2
+    for i in range(1, xea + 1):   # 수평재 (y방향)
         for j in range(1, yea):
             for k in range(1, zea):
                 ma.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10100 + 100*(j-1) + 10000*(k-1))
@@ -102,29 +100,29 @@ def analysis(In):
     ma.allsel();  ma.cmsel('u', 'ver');  ma.cmsel('u', 'hor');  ma.cm('bra', 'line');  ma.color('line', 'blue')
     ma.vup('', 'z');  ma.view('', 1,-1,1)
     ma.allsel();  ma.nummrg('all')
+    # !!! Modelling
 
+    # !!! Attributes & Meshing
     i = 1;  ma.et(i, 'beam188');  ma.mp('ex', i, 200e3);  ma.mp('prxy', i, 0.3)
-    i = 2;  ma.et(i, 'beam188');  ma.mp('ex', i, 200e3);  ma.mp('prxy', i, 0.3)
-    i = 3;  ma.et(i, 'beam188');  ma.mp('ex', i, 200e3);  ma.mp('prxy', i, 0.3)
     ma.sectype(1, 'beam', 'ctube');  ma.secdata(In.vertical_d/2 - In.vertical_t, In.vertical_d/2)
     ma.sectype(2, 'beam', 'ctube');  ma.secdata(In.horizontal_d/2 - In.horizontal_t, In.horizontal_d/2)
     ma.sectype(3, 'beam', 'ctube');  ma.secdata(In.bracing_d*0.99/2 - In.bracing_t, In.bracing_d*0.99/2)    
 
-    ma.cmsel('s', 'ver');  ma.latt(1,'',1,'','',1);  ma.lesize('all', 200);  ma.lmesh('all')    
-    ma.cmsel('s', 'hor');  ma.latt(1,'',1,'','',2);  ma.lesize('all', 200);  ma.lmesh('all')    
-    ma.cmsel('s', 'bra');  ma.latt(1,'',1,'','',3);  ma.lesize('all', 200);  ma.lmesh('all')    
+    ma.cmsel('s', 'ver');  ma.latt(1,'',1,'','',1)
+    ma.cmsel('s', 'hor');  ma.latt(1,'',1,'','',2)
+    ma.cmsel('s', 'bra');  ma.latt(1,'',1,'','',3)
+    ma.allsel();  ma.lesize('all', 200);  ma.lmesh('all')
 
     ma.esel('s', 'sec', '', 1);  ma.cm('v', 'elem');  ma.color('elem', 'magenta')
     ma.esel('s', 'sec', '', 2);  ma.cm('h', 'elem');  ma.color('elem', 'cyan')
-    ma.esel('s', 'sec', '', 3);  ma.cm('b', 'elem');  ma.color('elem', 'blue')
-    # ma.lplot('all', show_line_numbering = False)    # mesh.plot()
+    ma.esel('s', 'sec', '', 3);  ma.cm('b', 'elem');  ma.color('elem', 'blue')    
         
-    ma.allsel('all');  ma.eshape(3)  # ma.replot()
-    # savefig = 'pyAPDL/ss.png'
+    ma.allsel();  ma.eshape(3)  # ma.replot()    
     # ma.eplot(vtk=False, background='k', show_edges=False, smooth_shading=True, color = 'blue', edge_color='red',
     #             window_size=[1920, 1080], savefig=savefig, style='surface', render_lines_as_tubes=True, line_width=5,
     #             off_screen=True)
-    ma.eplot(vtk=False, off_screen=True)  # png_model
+    ma.eplot(vtk=False, off_screen=True)  # png_model 000.png
+    # !!! Attributes & Meshing
     ma.finish()
     # !! ===============================================> Preprocessing
 
@@ -138,14 +136,26 @@ def analysis(In):
     ma.cmsel('s', 'v')
     ma.nsle('s')
     ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))    
-    ma.f('all', 'fz', -1)
+    ma.f('all', 'fz', -P)
 
-    ma.allsel('all');  ma.eshape(0)
-    ma.pbc('f',1);  ma.pbc('u',1)  # ma.replot()
-    ma.eplot(vtk=False, off_screen=True)
-    # ma.eplot(vtk=False, off_screen=True, plot_bc=True, plot_bc_legend=True, plot_bc_labels=True, bc_labels='a')      
-    
-    # png_bc    
+    ma.allsel()
+    ma.cmsel('s', 'v')
+    ma.nsle('s')
+    ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))
+    ma.nsel('r', 'loc', 'y', 0)
+    ma.f('all', 'fy', Hy)
+
+    ma.allsel()
+    ma.cmsel('s', 'v')
+    ma.nsle('s')
+    ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))
+    ma.nsel('r', 'loc', 'x', In.Lv*(xea - 1))
+    ma.f('all', 'fx', -Hx)
+
+    ma.allsel('all');  ma.eshape(0.1)
+    ma.vscale('','',1)  # 하중 재하시 화살표 크기 동일하게 (작은 것은 안보이는 현상 발생)
+    ma.pbc('f',1);  ma.pbc('u',1);  ma.pbc('rot',1)  # ma.replot()
+    ma.eplot(vtk=False, off_screen=True)    # png_bc  001.png
 
     # png_model = os.path.join(working_dir, jobname + '000.png')
     # png_bc = os.path.join(working_dir, jobname + '001.png')
@@ -168,117 +178,148 @@ def analysis(In):
     ma.post1()
     ma.set('last')
     # ma.open_gui()
-    ma.eshape(3)
-    ma.plnsol('s', 'eqv')
-    ma.post_processing.plot_nodal_eqv_stress(off_screen=True, savefig='tt7.png')
+    result = {'Load Case':LC, 'uz':0, 'seqv':0, 'Fx1': 0, 'Fx2': 0, 'My1':0, 'My2':0, 'Mz1':0, 'Mz2':0, 'SFz1':0, 'SFz2':0, 'SFy1':0, 'SFy2':0}
 
-
-    # ma.cmsel('s','v')
-    ma.eshape(3)
-    ma.post_processing.plot_nodal_displacement(component='z', off_screen=True, savefig='tt1.png')
-    ma.post_processing.plot_nodal_values('s','eqv', off_screen=True, savefig='tt2.png')
-
-    ma.eshape(3);  # ma.replot()
-    ma.show('png','REV')
-    ma.gfile(2400)    
-    ma.plnsol('s', 'eqv')
+    ma.show('png')
+    ma.graphics('power')
+    # ma.gfile(2400)
+    ma.eshape(3)    
+    ma.plnsol('u', 'z')   # Uz, 002.png
+    result['uz'] = ma.get('uz_max', 'plnsol',0,'min')
     ma.show('close')
-    
-    print('제대로 끝')
-    # result = ma.result    
+
+    ma.show('png')
+    ma.graphics('power')
+    # ma.gfile(2400)
+    ma.eshape(3)    
+    ma.plnsol('s', 'eqv')  # seqv, 003.png
+    result['seqv'] = ma.get('seqv_max', 'plnsol',0,'max')
+    ma.show('close')
+    # ma.post_processing.plot_nodal_eqv_stress(off_screen=True, savefig='tt7.png')        
+    # ma.post_processing.plot_nodal_displacement(component='z', off_screen=True, savefig='tt1.png')
+    # ma.post_processing.plot_nodal_values('s','eqv', off_screen=True, savefig='tt2.png')
 
     ma.etable('Fx1', 'SMISC', 1)
     ma.etable('Fx2', 'SMISC', 14)
 
-    ma.cmsel('s', 'v')
-    ma.show('png','REV')    
-    ma.gfile(2400)
-    ma.plls('Fx1', 'Fx2', 0.5, 0, 0) 
-    ma.show('close')
+    ma.etable('My1', 'SMISC', 2)
+    ma.etable('My2', 'SMISC', 15)
+    ma.etable('Mz1', 'SMISC', 3)
+    ma.etable('Mz2', 'SMISC', 16)
 
-    # # Access MAPDL database : This feature does not work in the Ansys 2023 R1.
-    # elems = ma.db.elems
-    # nodes = ma.db.nodes
-    # elems, nodes
+    ma.etable('SFz1', 'SMISC', 5)
+    ma.etable('SFz2', 'SMISC', 18)
+    ma.etable('SFy1', 'SMISC', 6)
+    ma.etable('SFy2', 'SMISC', 19)
+        
+    def section_force(s1, s2, fact):
+        if 'Fx' in s1:
+            ma.cmsel('s', 'v')
+        else:
+            ma.allsel()
+        ma.show('png')
+        # ma.gfile(2400)
+        ma.plls(s1, s2, fact, 0, 0) 
+        ma.esort('etab', s1)
+        result[s1] = ma.get('max', 'sort',0,'max')
+        result[s2] = ma.get('min', 'sort',0,'min')
+        ma.show('close')
 
-    p = ma.parameters
-    p
-    g = ma.geometry
-    print(g)
-    g
-    m = ma.mesh
-    m
+    fact = 1
+    section_force('Fx1', 'Fx2', fact)   # Fx, 004.png
+    section_force('My1', 'My2', fact)   # My, 005.png
+    section_force('Mz1', 'Mz2', fact)   # Mz, 006.png
+    section_force('SFz1', 'SFz2', fact)   # SFz, 007.png
+    section_force('SFy1', 'SFy2', fact)   # SFy, 008.png
+    result
+
+    results.append(result)
+
+
+    # # ma.exit()
+    # sys.exit()
+
+
+    # # # Access MAPDL database : This feature does not work in the Ansys 2023 R1.
+    # # elems = ma.db.elems
+    # # nodes = ma.db.nodes
+    # # elems, nodes
+
+    # p = ma.parameters
+    # p
+    # g = ma.geometry
+    # print(g)
+    # g
+    # m = ma.mesh
+    # m
     
 
-    ma.exit()
-    sys.exit()
+    # ma.exit()
+    # sys.exit()
 
-    ma.cmsel('s', 'v')
-    ma.esort('etab', 'Fx1')
-    f = ma.get('Fx_max', 'sort','','min')
-    'f', f
+
+    # # f = ma.get('f', 'elem', 3, 'smisc', '2')
+    # # f
+
+    # # result = ma.result
+    # # nnum, disp = result.nodal_displacement(0)
+    # # nnum, disp
+
+    # # # Create a structured grid (replace this with your actual mesh)
+    # # # grid = pv.StructuredGrid()
+    # # grid = result.mesh._grid
+
+    # # # Add displacement data to the grid
+    # # grid.point_array["Displacement"] = disp
+
+    # # p = pv.Plotter()
+    # # p.add_mesh(grid, scalars = 'Displacement')
+    # # p.show()
+
+
+
+
     
+    # rst_file = os.path.join(working_dir, jobname + '.rst')
+    # simulation = post.load_simulation(rst_file)
+    # simulation = post.StaticMechanicalSimulation(rst_file)
+
+    # solution = post.load_solution(rst_file)
+    # print('a', simulation.results)
+    # print('b', solution)
+    # mesh = simulation.mesh
+    # print(mesh)
+
+    # d = post.displacement.Displacement.x
+    # d
+    
+    # displacement = simulation.displacement()    
+    # print(displacement)
+
+    # displacement1 = solution.displacement() 
+    # uy = displacement1.y
+    # u = uy.get_data_at_field()
+    # print(u)
+    # print(displacement1)
 
 
+    # displacement.plot(screenshot = 'tt.png', off_screen = True)
+    # st.image('tt.png')
 
-    # f = ma.get('f', 'elem', 3, 'smisc', '2')
-    # f
+    # # stress_z = simulation.nodal_force(components= "X")
+    # stress_z = simulation.reaction_force(components= "X")
+    # stress_z.plot(screenshot = 'tt1.png', off_screen = True)
+    # st.image('tt1.png')
+    # # st.pyplot(fig)
+
 
     # result = ma.result
-    # nnum, disp = result.nodal_displacement(0)
-    # nnum, disp
+analysis(In, 1)  # Load Case
+analysis(In, 2)  # Load Case
 
-    # # Create a structured grid (replace this with your actual mesh)
-    # # grid = pv.StructuredGrid()
-    # grid = result.mesh._grid
-
-    # # Add displacement data to the grid
-    # grid.point_array["Displacement"] = disp
-
-    # p = pv.Plotter()
-    # p.add_mesh(grid, scalars = 'Displacement')
-    # p.show()
-
-
-
-
-    
-    rst_file = os.path.join(working_dir, jobname + '.rst')
-    simulation = post.load_simulation(rst_file)
-    simulation = post.StaticMechanicalSimulation(rst_file)
-
-    solution = post.load_solution(rst_file)
-    print('a', simulation.results)
-    print('b', solution)
-    mesh = simulation.mesh
-    print(mesh)
-
-    d = post.displacement.Displacement.x
-    d
-    
-    displacement = simulation.displacement()    
-    print(displacement)
-
-    displacement1 = solution.displacement() 
-    uy = displacement1.y
-    u = uy.get_data_at_field()
-    print(u)
-    print(displacement1)
-
-
-    displacement.plot(screenshot = 'tt.png', off_screen = True)
-    st.image('tt.png')
-
-    # stress_z = simulation.nodal_force(components= "X")
-    stress_z = simulation.reaction_force(components= "X")
-    stress_z.plot(screenshot = 'tt1.png', off_screen = True)
-    st.image('tt1.png')
-    # st.pyplot(fig)
-
-
-    # result = ma.result
-analysis(In)
-ma.exit()
+import json
+with open('result.json', 'w') as f:
+    json.dump(results, f, indent=4)
 
 # try:
 #     analysis()

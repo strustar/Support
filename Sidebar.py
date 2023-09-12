@@ -35,20 +35,19 @@ def Sidebar(h4, h5):
     
     ### 슬라브 or 보 (￭)
     sb.write(h4, '1. ' + In.type)
-    [col1, col2, col3] = sb.columns(3, gap = 'medium')
-    In.height = 9.5  # 나중에 추가할 사항!!!
+    [col1, col2, col3] = sb.columns(3, gap = 'medium')    
     with col1:
         if '슬래브' in In.type:  In.slab_t = st.number_input(h5 + '✦ 두께 [mm]', min_value = 50., value = 400., step = 10., format = '%0.f')
         if '보' in In.type:
             In.beam_b = st.number_input(h5 + '✦ 보의 폭 [mm]', min_value = 50., value = 500., step = 10., format = '%f')
             In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 900., step = 10., format = '%f')        
-        # In.height = st.number_input(h5 + '✦ 층고 [mm]', min_value = 100., value = 9500., step = 100., format = '%f')
     with col2:
-        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 1., value = 8., step = 0.1, format = '%.1f')        
+        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 1., value = 4., step = 0.1, format = '%.1f')        
         
     with col3:
-        In.slab_Y = st.number_input(h5 + '✦ Y 방향 길이 [m]', min_value = 1., value = 8., step = 0.1, format = '%.1f')
-    In.thick_height = In.slab_t if '슬래브' in In.type else In.beam_h    
+        In.slab_Y = st.number_input(h5 + '✦ Y 방향 길이 [m]', min_value = 1., value = 6., step = 0.1, format = '%.1f')
+        In.height = st.number_input(h5 + '✦ 높이 [m]', min_value = 1., value = 6., step = 0.1, format = '%.1f')
+    In.thick_height = In.slab_t if '슬래브' in In.type else In.beam_h
 
     ### 거푸집용 합판
     sb.write(h4, '2. 거푸집용 합판')    
