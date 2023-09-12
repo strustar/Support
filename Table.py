@@ -121,6 +121,7 @@ def Load(In, verhor):
         Hy1 = max(Hy1, 1.5);  Hy2 = Hy1/In.slab_Y
         txt2 = f'<b>X방향 : 위의 큰값 / X방향 길이 = {Hx1:.3f} kN/m / {In.slab_X:.1f} m = {Hx2:.3f} kN/m²'+ f'<br><b>Y방향 : 위의 큰값 / Y방향 길이 = {Hy1:.3f} kN/m / {In.slab_Y:.1f} m = {Hy2:.3f} kN/m²'
         In.Hx = Hx2*In.slab_X*In.slab_Y;  In.Hy = Hy2*In.slab_X*In.slab_Y
+        In.Hx2 = Hx2;  In.Hy2 = Hy2
 
         txt3 = f'<b>X방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hx2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Hx:.1f} kN'+ f'<br><b>Y방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hy2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Hy:.1f} kN'
 

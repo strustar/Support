@@ -178,18 +178,19 @@ def Tab(In):
     st.write(s2, '➣ 최소 수평하중은 동바리 설치면에 대하여 X방향 및 Y방향에 대하여 각각 적용한다.')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
+    VH = 36*1*1*1*0.6;  wind2 = 1.225*VH**2/2/1e3;  In.wind2 = wind2
     [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s1, '3) 픙하중')
+    with col1: st.write(s1, '3) 픙하중 [3D 상세 구조 해석에 적용된 풍하중]')
     with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')
     st.write(s2, rf'➣ 기준 높이 $\small H$에서의 속도압($\small q_H$)은 다음과 같이 산정한다.')    
     [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s2, rf'➣ $\bm{{q_{{H}} \; = \; \Large{{\frac{{1}}{2}}} \small \, \rho \, V^2_H}}$ (N/m$^2$)')
+    with col1: st.write(s2, rf'➣ $\bm{{q_{{H}} \; = \; \Large{{\frac{{1}}{2}}} \small \, \rho \, V^2_H}}$ (N/m$^2$) = {wind2:,.3f} kN/m$^2$')
     with col2: st.write(h5, ':orange[<근거 : 5.5 속도압 (KDS 41 12 00 : 2022)>]')
     st.write(s3, rf'￭ $\rho$ : 공기밀도로써 균일하게 1.225 kg/m$^3$으로 한다.')
     st.write(s3, rf'￭ $\small V_H$ : 설계풍속 (m/s) (5.5.1에 따른다)')
 
-    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    st.write(s2, rf'➣ $\bm{{\small{{V_{{H}} \; = \; V_0 \, K_D \, K_{{zr}} \, K_{{zt}} \, I_w(T)}} }}$ (m/s)')
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    
+    st.write(s2, rf'➣ $\bm{{\small{{V_{{H}} \; = \; V_0 \, K_D \, K_{{zr}} \, K_{{zt}} \, I_w(T)}} }}$ (m/s) = {VH:,.1f} m/s')
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s3, rf'￭ $\small V_0$ : 기본풍속 (m/s) (5.5.2에 따른다)')
     with col2: st.write(h5, ':green[[36m/s로 계산 : 제주도 제외 28 ~ 40m/s로 분포]]')

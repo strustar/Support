@@ -30,7 +30,7 @@ In.horizontal_d = 42.7;  In.horizontal_t = 2.2;  In.Lh = 1725
 In.bracing_d = 42.7;  In.bracing_t = 2.2
 
 In.slab_X = 4;  In.slab_Y = 6;  In.height = 6  # Unit : m
-In.dead_load = 10;  In.design_load = 12.5;  In.hx = 0.375;  In.hy = 0.25;  In.wind = 0.286  # kN/m2
+In.dead_load = 10;  In.design_load = 12.5;  In.Hx2 = 0.375;  In.Hy2 = 0.25;  In.wind2 = 0.286  # kN/m2
 
 h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
@@ -50,9 +50,9 @@ results = []
 def analysis(In, LC):   # Load Case
     factor = 1e3
     if LC == 1:
-        ver = In.design_load;  horx = In.hx;  hory = In.hy
+        ver = In.design_load;  horx = In.Hx2;  hory = In.Hy2
     if LC == 2:  # 풍하중
-        ver = In.dead_load;  horx = In.wind;  hory = In.wind
+        ver = In.dead_load;  horx = In.wind2;  hory = In.wind2
     P = ver*In.Ly*In.Lv/factor;  Hx = horx*In.Ly*In.Lh/factor;  Hy = hory*In.Lv*In.Lh/factor  # kN/m2 = 1e3 N/(mm*mm*1e6) *mm*mm = N / 1e3
 
     ma.plopts('date','off')    # 날짜 지우기    
