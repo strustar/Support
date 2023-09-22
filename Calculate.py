@@ -78,7 +78,8 @@ def Check_Support(In, opt, section, Support):
 
     st.write(h4, opt[1] + opt[0] + ' 검토')
     Table.Info('수직재', section, A, -1, I, S, E, r, Fy, 20)
-        
+    
+
     if '수직재' in opt[0]:
         st.write(s1, '1) 1본당 작용하중 (P)')
         st.write(s2, '➣ P = 설계 하중 x 멍에 간격 x 동바리 간격')

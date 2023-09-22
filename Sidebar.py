@@ -122,5 +122,5 @@ def Sidebar(h4, h5):
         In.concrete_weight = st.number_input(h5+':green[콘크리트 단위중량 [kN/m³]]', min_value = 10., value = 24., step = 1., format = '%f')
     with col2:
         In.wood_weight = st.number_input(h5+':green[거푸집 단위중량 [kN/m²]]', min_value = 0.1, value = 0.4, step = 0.1, format = '%f')
- 
+
     return In

@@ -4,6 +4,8 @@ import pandas as pd
 import Sidebar, General, Calculate, Table, style
 from Sidebar import In
 
+import os
+os.system('cls')  # 터미널 창 청소, clear screen
 ### * -- Set page config
 # emoji: https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
 # https://zzsza.github.io/mlops/2021/02/07/python-streamlit-dashboard/  유용한 사이트
