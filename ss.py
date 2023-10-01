@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import Sidebar, General, Calculate, Table, style
+import Sidebar, General, Calculate, Cover, style, Detail, Summary
 from Sidebar import In
 
 import os
@@ -19,50 +19,51 @@ st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈
                     })
 ### * -- Set page config
 
-css_intro = """
-<style>
-    .boxed {
-        border: 3px solid blue;
-        border-radius: 100px;
-        padding: 20px;
-        padding-left: 30px;
-        margin: 20px;
-        margin-left: -30px;
-        margin-right: 0px;
-        margin-top: 30px;
-        margin-bottom: 0px;
-        font-size: 22px;
-        # line-height: 1.5;
-        background-color: yellow;
-        color: black;
-        width: 515px;
-        # height: 100px;
-    }
-    .small {
-        color: green;
-        padding: 10px;
-        font-size: 16px;
-        display: inline-block;
-        # text-decoration: underline;
-        # line-height: 1.2;
-    }
-</style>
-"""
-txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
-    <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
-    <br> ￭ 이메일 문의 환영 (<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>)
-'''
-txt1 ='''￭ 표 등이 겹쳐서 보일 때는 새로 고침을 해 주세요
-    <br> ￭ Edge, Chrome 브라우저 등에서 실행
-    <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
-    <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
-'''
-[col1, col2] = st.columns([1.15,1])
-st.markdown(css_intro, unsafe_allow_html=True)
-with col1:
-    st.markdown(f'<div class="boxed"> [가칭] 동바리 설계 자동화 프로그램 (초안)<br><span class="small">{txt}</span></div>', unsafe_allow_html=True)
-with col2:
-    st.markdown(f'<div class="boxed"> ✦ 프로그램 사용 유의사항<br><span class="small">{txt1}</span></div>', unsafe_allow_html=True)
+# 맨 윗쪽 정보, 이메일 등 기본 정보 (필요 없음?)
+# css_intro = """
+# <style>
+#     .boxed {
+#         border: 3px solid blue;
+#         border-radius: 100px;
+#         padding: 20px;
+#         padding-left: 30px;
+#         margin: 20px;
+#         margin-left: -30px;
+#         margin-right: 0px;
+#         margin-top: 30px;
+#         margin-bottom: 0px;
+#         font-size: 22px;
+#         # line-height: 1.5;
+#         background-color: yellow;
+#         color: black;
+#         width: 515px;
+#         # height: 100px;
+#     }
+#     .small {
+#         color: green;
+#         padding: 10px;
+#         font-size: 16px;
+#         display: inline-block;
+#         # text-decoration: underline;
+#         # line-height: 1.2;
+#     }
+# </style>
+# """
+# txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
+#     <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
+#     <br> ￭ 이메일 문의 환영 (<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>)
+# '''
+# txt1 ='''￭ 표 등이 겹쳐서 보일 때는 새로 고침을 해 주세요
+#     <br> ￭ Edge, Chrome 브라우저 등에서 실행
+#     <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
+#     <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
+# '''
+# [col1, col2] = st.columns([1.15,1])
+# st.markdown(css_intro, unsafe_allow_html=True)
+# with col1:
+#     st.markdown(f'<div class="boxed"> [가칭] 동바리 설계 자동화 프로그램 (초안)<br><span class="small">{txt}</span></div>', unsafe_allow_html=True)
+# with col2:
+#     st.markdown(f'<div class="boxed"> ✦ 프로그램 사용 유의사항<br><span class="small">{txt1}</span></div>', unsafe_allow_html=True)
 
 
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
@@ -132,7 +133,15 @@ st.markdown("""
     [data-testid=stSidebar] {
         display: none;
     }
+    header, footer, .no-print { display:none }
+    # .print{zoom: 78%}   # 동작이 안됨 ??
+    # body {   # 동작이 안됨 ??
+    #     font-size: 24px;
+    #     color: blue;
+    #     background-dolor: red;
+    # }
 }
+@page {size: A4;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -154,153 +163,40 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'  #s12 = '$\enspace$'  공백 : \,\:\;  # ⁰¹²³⁴⁵⁶⁷⁸⁹  ₀₁₂₃₄₅₆₇₈₉
 
 style.radio(In.background_color, '32%')
-st.sidebar.write(h2, ':blue[[Information : 입력값 📘]]')
 In = Sidebar.Sidebar(h4, h5)
-##### tab ===========================================================================================================
-h = '#### ';  tab = st.tabs([h+':green[Ⅰ. 일반 사항 ✍️]', h+':blue[Ⅱ. 구조 검토 💻]', h+':red[Ⅲ. 요약 ✅]', h+':orange[Ⅳ. 상세 해석 🎯 ]', h+':green[Ⅴ. 참고]'])
-with tab[0]:
-    # st.title(':red[작성중... (일반 사항 페이지 입니다.)]')
+
+def Report():
+    Cover.Contents()
     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
-with tab[1]:
+    st.write('');  st.write('');  st.write('')
     Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
-with tab[2]:
-    st.title(':red[Ⅲ. 요약 ✅] (작성중....)')
-with tab[3]:    
-    st.title(':orange[Ⅳ. 상세 해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)')
-    st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
-    
-    h = '##### ';  tabtab = st.tabs([h+':orange[해석 결과]', h+':blue[해석 코드]'])
-    with tabtab[0]:
-        import os;  import json
+    st.write('');  st.write('');  st.write('')    
+    Detail.Analysis(In, h4, h5, s1, s2, 'both', Vertical, Horizontal, Bracing)   # opt : both, result, code
+    st.write('');  st.write('');  st.write('')
+    Summary.Info(In)
 
-        uz = [];  seqv = [];  Fx1 = [];  Fx2 = []
-        My1 = [];  My2 = [];  Mz1 = [];  Mz2 = []
-        SFz1 = [];  SFz2 = [];  SFy1 = [];  SFy2 = []
-        with open('Images/result.json', 'r') as f:
-            result = json.load(f)        
-        for item in result:
-            uz.append(np.abs(item['uz']));  seqv.append(np.abs(item['seqv']))
-            Fx1.append(item['Fx1']/1e3);    Fx2.append(item['Fx2']/1e3)
-            My1.append(item['My1']/1e6);    My2.append(item['My2']/1e6)
-            Mz1.append(item['Mz1']/1e6);    Mz2.append(item['Mz2']/1e6)
-            SFz1.append(item['SFz1']/1e3);  SFz2.append(item['SFz2']/1e3)
-            SFy1.append(item['SFy1']/1e3);  SFy2.append(item['SFy2']/1e3)
-            
-        working_dir = 'Images';  jobname = 'file';  png = []
-        for i in range(0,18):
-            if i < 10:  name = os.path.join(working_dir, jobname + '00' + str(i) + '.png')
-            if i >= 10: name = os.path.join(working_dir, jobname + '0' + str(i) + '.png')
-            png.append(name)
+##### tab ==========================================================================================
+if __name__ == "streamlit.script_runner":    # 스트림릿 웹상
+    h = '#### ';  tab = st.tabs([h+':green[Ⅰ. 일반 사항 ✍️]', h+':blue[Ⅱ. 구조 검토 💻]', h+':orange[Ⅲ. 상세 구조해석 🎯]', h+':green[Ⅳ. 검토 결과 ✅]', h+':blue[⭕ 보고서]'])
+    with tab[0]:    
+        [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
         
-        [col1, col2] = st.columns(In.col_span_ref)
-        with col1:
-            st.write(h4, '[해석 모델]')    
-            st.image(png[0])
-        with col2:
-            st.write(h4, '[경계조건 및 하중조건]')    
-            st.image(png[1])
+    with tab[1]:
+        Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
         
-        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-        [col1, col2] = st.columns(In.col_span_ref)        
-        with col1:
-            st.write(h4, '[Load Case 1 (LC1)]')
-            st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')            
-            st.write(s1, f'➣ 최대 변위 : {uz[0]:,.3f} mm')
-            st.image(png[2])
+    with tab[2]:
+        Detail.Analysis(In, h4, h5, s1, s2, 'both', Vertical, Horizontal, Bracing)   # opt : both, result, code
 
-            st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
-            st.write(s1, f'➣ 최대 등가응력 : {seqv[0]:,.1f} MPa')
-            st.image(png[3])
-        with col2:
-            st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-            st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')
-            st.write(s1, f'➣ 최대 변위 : {uz[1]:,.3f} mm')
-            st.image(png[2+9])
-
-            st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
-            st.write(s1, f'➣ 최대 등가응력 : {seqv[1]:,.1f} MPa')
-            st.image(png[3+9])
-
-        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-        [col1, col2] = st.columns(In.col_span_ref)        
-        with col1:
-            st.write(h4, '[Load Case 1 (LC1)]')
-            st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
-            st.write(s1, f'➣ 최대 축방향력 : {Fx1[0]:,.3f} kN')
-            st.write(s1, f'➣ 최소 축방향력 : {Fx2[0]:,.3f} kN')
-            st.image(png[4])
-            
-            st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')            
-            st.write(s1, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m')
-            st.write(s1, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m')
-            st.image(png[5])
-
-            st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')
-            st.write(s1, f'➣ 최대 모멘트 : {My1[0]:,.3f} kN·m')
-            st.write(s1, f'➣ 최소 모멘트 : {My2[0]:,.3f} kN·m')
-            st.image(png[6])
-
-            st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
-            st.write(s1, f'➣ 최대 전단력 : {SFz1[0]:,.3f} kN')
-            st.write(s1, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN')
-            st.image(png[7])
-
-            st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
-            st.write(s1, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN')
-            st.write(s1, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN')
-            st.image(png[8])
-
-        with col2:
-            st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-            st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
-            st.write(s1, f'➣ 최대 축방향력 : {Fx1[1]:,.3f} kN')
-            st.write(s1, f'➣ 최소 축방향력 : {Fx2[1]:,.3f} kN')
-            st.image(png[4+9])
-
-            st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')            
-            st.write(s1, f'➣ 최대 모멘트 : {Mz1[1]:,.3f} kN·m')
-            st.write(s1, f'➣ 최소 모멘트 : {Mz2[1]:,.3f} kN·m')
-            st.image(png[5+9])
-
-            st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')            
-            st.write(s1, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m')
-            st.write(s1, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m')
-            st.image(png[6+9])
-
-            st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
-            st.write(s1, f'➣ 최대 전단력 : {SFz1[1]:,.3f} kN')
-            st.write(s1, f'➣ 최소 전단력 : {SFz2[1]:,.3f} kN')
-            st.image(png[7+9])
-
-            st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
-            st.write(s1, f'➣ 최대 전단력 : {SFy1[1]:,.3f} kN')
-            st.write(s1, f'➣ 최소 전단력 : {SFy2[1]:,.3f} kN')
-            st.image(png[8+9])
-
-    with tabtab[1]:
-        file_path = 'pyAPDL.py';  encoding = 'utf-8'    
-        with open(file_path, 'r', encoding = encoding) as f:
-            lines = f.readlines()
-        code_string = ''.join(lines)
-        st.code(code_string, line_numbers=True)
+    with tab[3]:
+        st.title(':green[Ⅳ. 검토 결과 ✅] (작성중....)')
         
+    with tab[4]:  # 보고서
+        Report()
+else:    # 보고서 작성용
+    Report()
 
-    # for i in range(20):  # 앞에만 검색해서 변경
-    #     if "joist" in lines[i]:
-    #         lines[i] = f'joist_b = {In.joist_b}  $  joist_h = 50  $  joist_t = 2.3  $  Lj = {In.Lj}\n'
-    #         # break    
-    # # with open(file_path, "w", encoding = encoding) as f:
-    # #     f.writelines(lines)
 
-    # st.write(h3, '[Modelling]')
-    # st.image('Analysis/tt000.bmp', width=1000)
-    # remote_image_url = "https://raw.githubusercontent.com/strustar/Support/main/Analysis/tt000.png"
-    # st.image(remote_image_url, width=1000)
-
-    # st.image('https://github.com/strustar/Support/main/Analysis/joist.png', width=1000)
-
-with tab[4]:
-    st.title(':green[Ⅴ. 참고] (참고사항, 작성중....)')
+# st.title(':green[Ⅴ. 참고] (참고사항, 작성중....)')
 # if 'Ⅰ' in In.select:
 #     [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In, 'green')
 # if 'Ⅱ' in In.select:
@@ -314,59 +210,44 @@ with tab[4]:
 #     st.title(':red[작성중... (참고 사항)]')
 
 
-
-st.markdown(In.border2, unsafe_allow_html=True)
-# ============================================================================================================================================
-st.write('Example (아래는 나중에 참조할 사항)')
-
-
-text = 'Hello Streamlit!'
-latex_formula = r'\(E = mc^2\)'  # Example LaTeX formula
-html_code = f"""
-<!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            .container {{
-                background-color: yellow;
-                font-family: Arial, sans-serif;
-                font-weight: bold;
-                padding: 5px 20px;
-                border: 3px solid green;
-                border-radius: 100px;
-                display: inline-block;
-                margin: 20px;
-                width: 550px
-            }}
-        </style>
-        <!-- Adding MathJax library to enable rendering LaTeX -->
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-        <script id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-        </script>
-    </head>
-
-    <body>
-        <div class="container">
-            <h2>{text}</h2>
-            <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
-            <p>LaTeX formula: {latex_formula}</p>  <!-- Adding LaTeX formula -->
-        </div>
-    </body>
-</html>"""
-st.components.v1.html(html_code, width=650, height=200)
+# st.markdown(In.border2, unsafe_allow_html=True)
+# # ============================================================================================================================================
+# st.write('Example (아래는 나중에 참조할 사항)')
 
 
+# text = 'Hello Streamlit!'
+# latex_formula = r'\(E = mc^2\)'  # Example LaTeX formula
+# html_code = f"""
+# <!DOCTYPE html>
+# <html>
+#     <head>
+#         <style>
+#             .container {{
+#                 background-color: yellow;
+#                 font-family: Arial, sans-serif;
+#                 font-weight: bold;
+#                 padding: 5px 20px;
+#                 border: 3px solid green;
+#                 border-radius: 100px;
+#                 display: inline-block;
+#                 margin: 20px;
+#                 width: 550px
+#             }}
+#         </style>
+#         <!-- Adding MathJax library to enable rendering LaTeX -->
+#         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+#         <script id="MathJax-script" async
+#             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+#         </script>
+#     </head>
 
-# import streamlit as st
-# import pandas as pd
-# # from tabulate import tabulate
+#     <body>
+#         <div class="container">
+#             <h2>{text}</h2>
+#             <p>Welcome to the world of custom HTML content in Streamlit apps.</p>
+#             <p>LaTeX formula: {latex_formula}</p>  <!-- Adding LaTeX formula -->
+#         </div>
+#     </body>
+# </html>"""
+# st.components.v1.html(html_code, width=650, height=200)
 
-# # 샘플 데이터 프레임 선언
-# data = {r"$\pi\beta$": ["$e^{i \pi} + 1 = 0$", "This is an example text"],
-#         "Column2": [r'$\bm{{\quad M = \large{{\frac{{{0}\textcolor{{red}}{{{1}}}^2}}{{8}}}} \normalsize \leq f_{{ba}}\,S}} $'.format('w_w', 'tt'), r"$\frac{\partial f}{\partial x}$"]}
-# df = pd.DataFrame(data)
-
-# # 상단에 DataFrame을 택스트로 표시합니다
-# st.markdown(df.to_markdown(), unsafe_allow_html=True)
-# # st.write(df.style.set_properties(**{'font-weight': 'bold', 'font-size': '28px'}))

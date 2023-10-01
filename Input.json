@@ -1,0 +1,19 @@
+{
+    "Ly": 610,
+    "vertical_d": 60.5,
+    "vertical_t": 2.6,
+    "Lv": 305,
+    "horizontal_d": 42.7,
+    "horizontal_t": 2.2,
+    "Lh": 863,
+    "bracing_d": 42.7,
+    "bracing_t": 2.3,
+    "slab_X": 5.49,
+    "slab_Y": 1.83,
+    "height": 8.0,
+    "dead_load": 0.1372,
+    "design_load": 0.1422,
+    "Hx2": 0.9147,
+    "Hy2": 8.232,
+    "wind2": 0.2858
+}

@@ -18,8 +18,9 @@ def Tab(In):
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
     st.write(h4, '1. 검토 개요 및 주의사항')    
-    txt = ':red[ [공사명을 입력하세요 (좌측 사이드바에서 입력)] ]' if In.title == '' else f':blue[ {In.title} ]'
-    txt = f'본 검토서는 {txt} 현장에서 의뢰한 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
+    # txt = ':red[ [공사명을 입력하세요 (좌측 사이드바에서 입력)] ]' if In.title == '' else f':blue[ {In.title} ]'    
+    # txt = f'본 검토서는 {txt} 현장에서 의뢰한 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
+    txt = f'본 검토서는 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
     word_wrap_style(s1, txt, In.font_h5)
     txt = '￭ 시스템 동바리의 하부구조는 :blue[충분한 지지력을 확보한 것으로 가정]하고 구조검토를 실시 하였음.'
     word_wrap_style(s1, txt, In.font_h5)    
@@ -71,8 +72,8 @@ def Tab(In):
     A = b*h - b1*h1
     I = b*h**3/12 - b1*h1**3/12
     S = I/(In.joist_h/2)
-    A1 = b*t;  A2 = 2*t*(h/2 - t);  y1 = (h - t)/2;  y2 = (h/2 - t)/2    # 전단상수, 전단 단면적 계산
-    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q
+    A1 = b*t;  A2 = 2*t*(h/2 - t);  y1 = (h - t)/2;  y2 = (h/2 - t)/2     # 전단상수, 전단 단면적 계산
+    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q  # <== 정확한 계산, 간략 계산 ==> Ib_Q = 2*In.joist_b*In.joist_t
     Table.Info('장선', In.joist, A, Ib_Q, I, S, E, fba, fsa, 40)
     [Joist.A, Joist.I, Joist.S, Joist.E, Joist.fba, Joist.fsa, Joist.Ib_Q] = [A, I, S, E, fba, fsa, Ib_Q]
 
@@ -93,20 +94,23 @@ def Tab(In):
     st.write(s1, '4) 수직재')
     d = In.vertical_d;  t = In.vertical_t;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.vertical_d/2);  r = np.sqrt(I/A);  Fy = 355
-    Table.Info('수직재', In.vertical, A, -1, I, S, E, r, Fy, 40)
-    [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy] = [A, I, S, 210e3, r, Fy]
+    Ib_Q = np.pi*In.vertical_d/2*In.vertical_t
+    Table.Info('수직재', In.vertical, A, Ib_Q, I, S, E, r, Fy, 40)
+    [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy, Vertical.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
     st.write(s1, '5) 수평재')
     d = In.horizontal_d;  t = In.horizontal_t;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.horizontal_d/2);  r = np.sqrt(I/A);  Fy = 235
-    Table.Info('수평재', In.horizontal, A, -1, I, S, E, r, Fy, 40)
-    [Horizontal.A, Horizontal.I, Horizontal.S, Horizontal.E, Horizontal.r, Horizontal.Fy] = [A, I, S, 210e3, r, Fy]
+    Ib_Q = np.pi*In.horizontal_d/2*In.horizontal_t
+    Table.Info('수평재', In.horizontal, A, Ib_Q, I, S, E, r, Fy, 40)    
+    [Horizontal.A, Horizontal.I, Horizontal.S, Horizontal.E, Horizontal.r, Horizontal.Fy, Horizontal.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
     st.write(s1, '6) 가새재')
     d = In.bracing_d;  t = In.bracing_t;  d1 = d - 2*t
     A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.bracing_d/2);  r = np.sqrt(I/A);  Fy = 235
-    Table.Info('가새재', In.bracing, A, -1, I, S, E, r, Fy, 40)
-    [Bracing.A, Bracing.I, Bracing.S, Bracing.E, Bracing.r, Bracing.Fy] = [A, I, S, 210e3, r, Fy]
+    Ib_Q = np.pi*In.bracing_d/2*In.bracing_t
+    Table.Info('가새재', In.bracing, A, Ib_Q, I, S, E, r, Fy, 40)
+    [Bracing.A, Bracing.I, Bracing.S, Bracing.E, Bracing.r, Bracing.Fy, Bracing.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
@@ -217,7 +221,7 @@ def Tab(In):
     st.write(s3, rf'￭ $\small T_w$ : 재현기간(년), $\quad \small N$ : 가시실물의 존치기간(년), $\quad \small P$ : 비초과 확률(60%)')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    [col1, col2] = st.columns(In.col_span_ref)
+    [col1, col2] = st.columns([1,2])
     with col1: st.write(s1, '4) 하중조합')
     with col2: st.write(h5, ':orange[<근거 : 3.3.1 거푸집 및 동바리, 비계 및 안전시설물 (KDS 21 10 00 : 2022)>]')
     st.write(s2, '➣ 거푸집 및 동바리, 비계 및 안전시설물 설계 시 하중조합 및 허용응력증가계수는 다음과 같이 적용한다.')
@@ -231,17 +235,17 @@ def Tab(In):
     st.write(s1, '￭ 강구조 설계 일반사항(허용응력설계법) (KDS 14 30 05 : 2019, 국토교통부)')
     st.write(s1, '￭ 강구조 부재 설계기준(허용응력설계법) (KDS 14 30 10 : 2019, 국토교통부)')
     st.write(s1, '￭ 건축물 설계하중 (KDS 41 12 00 : 2022, 국토교통부)')
-    st.write(s1, '￭ 비계 및 안전시설물 설계기준 (KDS 21 60 00 : 2022, 국토교통부)')
+    # st.write(s1, '￭ 비계 및 안전시설물 설계기준 (KDS 21 60 00 : 2022, 국토교통부)')
     st.write('')
 
     st.write(s1, '￭ 거푸집 및 동바리 (KCS 14 20 12 : 2022, 국토교통부)')
     st.write(s1, '￭ 가설공사 일반사항 (KCS 21 10 00 : 2022, 국토교통부)')
     st.write(s1, '￭ 거푸집 및 동바리공사 일반사항 (KCS 21 50 05 : 2023, 국토교통부)')
-    st.write(s1, '￭ 초고층 고주탑 공사용 거푸집 및 동바리 (KCS 21 50 10 : 2022, 국토교통부)')
+    # st.write(s1, '￭ 초고층 고주탑 공사용 거푸집 및 동바리 (KCS 21 50 10 : 2022, 국토교통부)')
     st.write(s1, '￭ 노출 콘크리트용 거푸집 및 동바리 (KCS 21 50 15 : 2022, 국토교통부)')
     st.write(s1, '￭ 기타 콘크리트용 거푸집 및 동바리 (KCS 21 50 20 : 2022, 국토교통부)')
-    st.write(s1, '￭ 비계공사 일반사항 (KCS 21 60 05 : 2022, 국토교통부)')
-    st.write(s1, '￭ 비계 (KCS 21 60 10 : 2022, 국토교통부)')
+    # st.write(s1, '￭ 비계공사 일반사항 (KCS 21 60 05 : 2022, 국토교통부)')
+    # st.write(s1, '￭ 비계 (KCS 21 60 10 : 2022, 국토교통부)')
     st.write('')
 
     st.write(s1, '￭ 시스템 동바리 안전작업 지침 (2020, 한국산업안전보건공단)')

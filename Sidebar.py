@@ -1,6 +1,5 @@
 import streamlit as st
 import re
-sb = st.sidebar
 
 class In:
     pass
@@ -19,16 +18,18 @@ def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em">{txt}</div>', unsafe_allow_html=True)    
     # return st.markdown(span + f'<span style="white-space:pre-line; display:inline; font-size: {fs}; line-height: 2; padding-left: 0px; text-indent: 10em">{txt}</span>', unsafe_allow_html=True)    
 
+sb = st.sidebar
 ##### sidebar =======================================================================================================
 def Sidebar(h4, h5):
+    sb.write('# ', ':blue[[Information : 입력값 📘]]')
     sb.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
-    In.select = sb.selectbox(h5 + '✦ 숨김', ('아직 연동 안됨 (우측의 탭으로 할지 고민중...)', 'Ⅰ. 일반 사항 📝✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 요약 ✅', 'Ⅳ. 상세 해석 🎯', 'Ⅴ. 참고'), index = 0, label_visibility='collapsed')
+    In.select = sb.selectbox(h5 + '✦ 숨김', ('아직 연동 안됨 (우측의 탭으로 할지 고민중...)', 'Ⅰ. 일반 사항 📝✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 요약 ✅', 'Ⅳ. 상세 구조해석 🎯', 'Ⅴ. 참고'), index = 0, label_visibility='collapsed')
     
-    sb.write(h4, '✤ 공사명')    
-    In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
+    # sb.write(h4, '✤ 공사명')    
+    # In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
 
     sb.write(h4, '✤ 검토 유형')    
-    In.type = sb.radio('숨김', ('슬래브', '보 (단멍에)', '기타(작성중...)'), horizontal=True, label_visibility='collapsed')
+    In.type = sb.radio('숨김', ('슬래브', '보 (단멍에)', '기타(작성중...)'), horizontal=True, label_visibility='collapsed', index = 1)
 
     border = '<hr style="border-top: 2px solid purple; margin-top:15px; margin-bottom:15px;">'
     sb.markdown(border, unsafe_allow_html=True)
@@ -40,17 +41,17 @@ def Sidebar(h4, h5):
         if '슬래브' in In.type:  In.slab_t = st.number_input(h5 + '✦ 두께 [mm]', min_value = 50., value = 400., step = 10., format = '%0.f')
         if '보' in In.type:
             In.beam_b = st.number_input(h5 + '✦ 보의 폭 [mm]', min_value = 50., value = 500., step = 10., format = '%f')
-            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 900., step = 10., format = '%f')        
+            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 5700., step = 10., format = '%f')
     with col2:
-        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 1., value = 4., step = 0.1, format = '%.1f')        
+        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 0.1, value = 0.610*9., step = 0.1, format = '%.1f')        
         
     with col3:
-        In.slab_Y = st.number_input(h5 + '✦ Y 방향 길이 [m]', min_value = 1., value = 6., step = 0.1, format = '%.1f')
-        In.height = st.number_input(h5 + '✦ 높이 [m]', min_value = 1., value = 6., step = 0.1, format = '%.1f')
+        In.slab_Y = st.number_input(h5 + '✦ Y 방향 길이 [m]', min_value = .1, value = .610*3, step = 0.1, format = '%.1f')
+        In.height = st.number_input(h5 + '✦ 높이 [m]', min_value = .1, value = 8., step = 0.1, format = '%.1f')
     In.thick_height = In.slab_t if '슬래브' in In.type else In.beam_h
 
     ### 거푸집용 합판
-    sb.write(h4, '2. 거푸집용 합판')    
+    sb.write(h4, '2. 거푸집용 합판')
     [col1, col2] = sb.columns([3,2], gap = "medium")
     with col1:
         In.wood_t = st.radio(h5 + '￭ 합판 두께 [mm]', (12, 15, 18), horizontal=True)
@@ -61,16 +62,16 @@ def Sidebar(h4, h5):
     sb.write(h4, '3. 장선 규격 및 간격 [mm] [SPSR400]')  # 🔳🔘
     col = sb.columns([3,2], gap = 'medium')
     with col[0]:
-        In.joist = st.selectbox(h5 + '✦ 장선 규격 [mm]', ('🔲 50×50×2.0t', '🔲 50×50×2.3t'), index = 1, label_visibility='collapsed')
+        In.joist = st.selectbox(h5 + '✦ 장선 규격 [mm]', ('🔲 50×50×2.0t', '🔲 50×50×2.3t'), index = 0, label_visibility='collapsed')
     with col[1]:
-        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 150., step = 10., format = '%f', label_visibility='collapsed')
+        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 100., step = 10., format = '%f', label_visibility='collapsed')
 
     sb.write(h4, '4. 멍에 규격 및 간격 [mm] [SPSR400]')
     col = sb.columns([3,2], gap = 'medium')
     with col[0]:
-        In.yoke = st.selectbox(h5 + '✦ 멍에 규격 [mm]', ('🔲 75×125×2.9t', '🔲 75×125×3.2t'), index = 1, label_visibility='collapsed')
+        In.yoke = st.selectbox(h5 + '✦ 멍에 규격 [mm]', ('🔲 75×125×2.9t', '🔲 75×125×3.2t'), index = 0, label_visibility='collapsed')
     with col[1]:
-        In.Ly = st.selectbox(h5 + '✦ 멍에 간격 [mm]*', (1829, 1524, 1219, 914, 610, 305), index = 3, label_visibility='collapsed')
+        In.Ly = st.selectbox(h5 + '✦ 멍에 간격 [mm]*', (1829, 1524, 1219, 914, 610, 305), index = 4, label_visibility='collapsed')
 
     sb.write(h4, '5. 수직재 규격 및 간격* [mm] [SKT500]')
     col = sb.columns([3,2], gap = 'medium')
@@ -78,7 +79,7 @@ def Sidebar(h4, h5):
         In.vertical = st.selectbox(h5 + '✦ 수직재 규격 [mm]', ('🔘 𝜙60.5×2.5t', '🔘 𝜙60.5×2.6t'), index = 1, label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[*수직재 간격 = 수평재 좌굴길이 ($\rm{{KL_h}}$)]')
     with col[1]:
-        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 3, label_visibility='collapsed')
+        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 5, label_visibility='collapsed')
 
     sb.write(h4, '6. 수평재 규격 및 간격** [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')
@@ -86,12 +87,12 @@ def Sidebar(h4, h5):
         In.horizontal = st.selectbox(h5 + '✦ 수평재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[**수평재 간격 = 수직재 좌굴길이 ($\rm{{KL_v}}$)]')
     with col[1]:
-        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 0, label_visibility='collapsed')
+        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 2, label_visibility='collapsed')
 
     sb.write(h4, '7. 가새재 규격 [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')
     with col[0]:
-        In.bracing = st.selectbox(h5 + '✦ 가새재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), label_visibility='collapsed')
+        In.bracing = st.selectbox(h5 + '✦ 가새재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), index = 1, label_visibility='collapsed')
 
     temp = re.findall(r'\d+\.?\d*', In.joist);  temp = [float(num) for num in temp];  [In.joist_b, In.joist_h, In.joist_t] = temp
     temp = re.findall(r'\d+\.?\d*', In.yoke);   temp = [float(num) for num in temp];  [In.yoke_b,  In.yoke_h,  In.yoke_t] = temp

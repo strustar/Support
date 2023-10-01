@@ -10,7 +10,23 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.title(':blue[Ⅱ. 구조 검토 ✍️]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
-    st.write(h4, '1. 설계하중 산정')    
+    st.write(h4, '1. 설계조건')
+    if '슬래브' in In.type:  txt = f'✦ 슬래브 두께 : {In.slab_t:,.0f} mm'
+    if '보'     in In.type:  txt = f'✦ 보의 치수 : {In.beam_b:,.0f} mm × {In.beam_h:,.0f} mm &nbsp; [폭 × 높이]'
+    st.write(s1, txt)
+    txt = f'✦ 동바리 스팬 : {In.slab_X*1e3:,.0f} mm × {In.slab_Y*1e3:,.0f} mm &nbsp; [X방향 길이 × Y방향 길이]'
+    st.write(s1, txt)
+    txt = f'✦ 동바리 높이 : {In.height*1e3:,.0f} mm'
+    st.write(s1, txt)
+    txt = f'✦ 거푸집 널의 변형기준 [표면 등급] : {In.level}'
+    st.write(s1, txt)
+    txt = f'✦ 콘크리트 단위중량 : {In.concrete_weight:,.1f} kN/m³'
+    st.write(s1, txt)
+    txt = f'✦ 거푸집 단위중량 : {In.wood_weight:,.1f} kN/m²'
+    st.write(s1, txt)
+        
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.write(h4, '2. 설계하중 산정')
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '1) 연직하중 (고정하중 + 작업하중)')
     with col2: st.write(h5, ':orange[ <근거 : 1.6.2 연직하중 (KDS 21 50 00 : 2022)>]')
@@ -37,32 +53,32 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    st.write(h4, '2. 사용부재 및 설치간격')
+    st.write(h4, '3. 사용부재 및 설치간격')
     Table.Input(In)
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(h4, '3. 거푸집 널의 변형기준')
+    with col1: st.write(h4, '4. 거푸집 널의 변형기준')
     with col2: st.write(h4, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
     Table.Wood_Deformation(In)
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['합판','장선 간격', '4. '];  Check(In, opt, In.wood, Wood)
+    opt = ['합판','장선 간격', '5. '];  Check(In, opt, In.wood, Wood)
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['장선','멍에 간격', '5. '];  Check(In, opt, In.joist, Joist)
+    opt = ['장선','멍에 간격', '6. '];  Check(In, opt, In.joist, Joist)
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['멍에','수직재 간격', '6. '];  Check(In, opt, In.yoke, Yoke)
+    opt = ['멍에','수직재 간격', '7. '];  Check(In, opt, In.yoke, Yoke)
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['수직재', '7. '];  Check_Support(In, opt, In.vertical, Vertical)
+    opt = ['수직재', '8. '];  Vertical.Fca = Check_Support(In, opt, In.vertical, Vertical)
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['수평재', '8. '];  Check_Support(In, opt, In.horizontal, Horizontal)
+    opt = ['수평재', '9. '];  Horizontal.Fca = Check_Support(In, opt, In.horizontal, Horizontal)
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    opt = ['가새재', '9. '];  Check_Support(In, opt, In.bracing, Bracing)
+    opt = ['가새재', '10. '];  Bracing.Fca = Check_Support(In, opt, In.bracing, Bracing)
     
     
 def Check_Support(In, opt, section, Support):
-    [A, I, S, E, r, Fy] = [Support.A, Support.I, Support.S, Support.E, Support.r, Support.Fy]
+    [A, I, S, E, r, Fy, Ib_Q] = [Support.A, Support.I, Support.S, Support.E, Support.r, Support.Fy, Support.Ib_Q]
     P = In.design_load*In.Ly*In.Lv/1e3;  H = max(In.Hx, In.Hy)  #kN    
 
     if '수직재' in opt[0]:
@@ -77,7 +93,7 @@ def Check_Support(In, opt, section, Support):
         KL_cal = rf'$\bm{{\small{{\sqrt{{ {In.KLv:.1f}^2 + {In.KLh:.1f}^2 }} }}}}$ = '        
 
     st.write(h4, opt[1] + opt[0] + ' 검토')
-    Table.Info('수직재', section, A, -1, I, S, E, r, Fy, 20)
+    Table.Info('수직재', section, A, Ib_Q, I, S, E, r, Fy, 20)
     
 
     if '수직재' in opt[0]:
@@ -105,8 +121,7 @@ def Check_Support(In, opt, section, Support):
     st.write(s2, '➣ 세장비')
     [col1, col2] = st.columns(In.col_span_okng)
     with col1:     st.write(s3, rf'￭ $\bm{{\lambda = \large{{\frac{{{KL_str}}}{{r}}}} }}$ = ' + num_str + f'{lamda:,.1f}', rf'$\; {lgeq} \:$ 200 (최대 세장비) $\qquad$')
-    with col2: st.write(h5, okng)    
-
+    with col2: st.write(h5, okng)
 
     num_str = rf'$\bm{{\large\sqrt{{\frac{{2 \pi^2 \times {E:,.0f}}}{{{Fy:,.1f}}}}} }}$ = ';  Cc = np.sqrt(2*np.pi**2*E/Fy)
     st.write(s2, '➣ 한계 세장비')
@@ -125,19 +140,12 @@ def Check_Support(In, opt, section, Support):
     st.write(s3, rf'￭ $\bm{{F_{{ca}} = {{\large{{\frac{{{a_str}}}{{{b_str}}} }} }} \normalsize \; = \;}}$' + f'{Fca:,.1f} MPa')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    txt = '3) 가새재 수량' if '가새재' in opt[0] else '3) 안전율 검토'    
+    txt = f'3) {opt[0]} 수량' if '수직재' not in opt[0] else '3) 안전율 검토'    
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, txt)
     with col2: st.write(h5, ':orange[ <근거 : 1.8 안전율 (KDS 21 50 00 : 2022)>]')
 
-    if '가새재' in opt[0]:
-        Pa = Fca*A/1e3*np.cos(np.pi/3)  # 가새재 최대 경사(60도) 고려
-        EAx = In.Hx/Pa;  EAy = In.Hy/Pa        
-        st.write(s2, '➣ 허용압축하중* $\; : \;$', rf'$\bm{{\small{{P_a = \rm{{cos(60°)}} \times F_{{ca}} \times A}} }}$ = 0.5 x {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa:,.1f} kN')
-        st.write(s2, '➣ X방향 가새재 수량 $\; : \;$',  rf'$\bm{{\large\frac{{X방향 수평하중}}{{허용압축하중}} \normalsize = \large\frac{{ {In.Hx:,.1f} }}{{ {Pa:,.1f} }} \normalsize = \: }}$' + f'{EAx:.1f} EA 이상')
-        st.write(s2, '➣ Y방향 가새재 수량 $\; : \;$',  rf'$\bm{{\large\frac{{Y방향 수평하중}}{{허용압축하중}} \normalsize = \large\frac{{ {In.Hy:,.1f} }}{{ {Pa:,.1f} }} \normalsize = \: }}$' + f'{EAy:.1f} EA 이상')
-        st.write('###### $\quad \qquad$', ':blue[*가새재의 최대 각도(60°)를 고려한 허용압축하중]')
-    else:
+    if '수직재' in opt[0]:
         Pa = Fca*A/1e3;  SF = Pa/Load        
         st.write(s2, '➣ 허용압축하중 $\; : \;$', rf'$\bm{{\small{{P_a = F_{{ca}} \times A}} }}$ = {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa:,.1f} kN')
         [lgeq, okng] = ['\geq', In.ok] if SF >= 2.5 else ['\leq', In.ng]
@@ -145,6 +153,18 @@ def Check_Support(In, opt, section, Support):
         with col1: st.write(s2, '➣ 안전율 검토 $\; : \;$ ', rf'$\bm{{S.F = \large\frac{{P_a}}{{{Load_str}}} \normalsize = \large\frac{{ {Pa:,.1f} }}{{ {Load:,.1f} }} \normalsize = \: }}$' + f'{SF:.1f}', rf'$\; {lgeq} \;$ 2.5 (안전율*) $\qquad$')
         with col2: st.write(h5, okng)        
         st.write('###### $\quad \qquad$', ':blue[*단품 동바리 안전율 3.0, 조립식 동바리 안전율 2.5 적용]')
+    else:
+        if '수평재' in opt[0]:  Pa = Fca*A/1e3
+        if '가새재' in opt[0]:  Pa = Fca*A/1e3*np.cos(np.pi/3)  # 가새재 최대 경사(60도) 고려        
+        EAx = In.Hx/Pa;  EAy = In.Hy/Pa
+        if '수평재' in opt[0]:  txt1 = '';  txt2 = '';  txt3 = ''
+        if '가새재' in opt[0]:  txt1 = '*';  txt2 = rf'\rm{{cos(60°)}} \times';  txt3 = '0.5 x '
+        st.write(s2, f'➣ 허용압축하중{txt1} $\; : \;$', rf'$\bm{{\small{{P_a = {txt2} F_{{ca}} \times A}} }}$ = {txt3} {Fca:,.1f} MPa x {A:,.1f} mm² = {Pa:,.1f} kN')
+        st.write(s2, f'➣ X방향 {opt[0]} 수량 $\; : \;$',  rf'$\bm{{\large\frac{{X방향 수평하중}}{{허용압축하중}} \normalsize = \large\frac{{ {In.Hx:,.1f} }}{{ {Pa:,.1f} }} \normalsize = \: }}$' + f'{EAx:.1f} EA 이상')
+        st.write(s2, f'➣ Y방향 {opt[0]} 수량 $\; : \;$',  rf'$\bm{{\large\frac{{Y방향 수평하중}}{{허용압축하중}} \normalsize = \large\frac{{ {In.Hy:,.1f} }}{{ {Pa:,.1f} }} \normalsize = \: }}$' + f'{EAy:.1f} EA 이상')
+        if '가새재' in opt[0]:  st.write('###### $\quad \qquad$', ':blue[*가새재의 최대 각도(60°)를 고려한 허용압축하중]')
+        
+    return Fca
 
 
 def Check(In, opt, section, WJY):
@@ -161,7 +181,7 @@ def Check(In, opt, section, WJY):
 
     if '멍에' in opt[0]:        
         color = 'blue';  L_jyv = rf'\textcolor{{{color}}}{{L_v}}'    
-        w_str = 'ω_y';  img = 'Images/yoke.png';  L = [In.Ly, In.Ly]
+        w_str = 'ω_y';  img = 'Images/yoke.png';  L = [In.Ly, In.Lv]
 
     w = In.design_load*L[0]
     L_jyv1 = opt[1] + rf'($\bm{{{L_jyv}}}$) 검토'
