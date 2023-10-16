@@ -4,32 +4,27 @@ import streamlit.components.v1 as components
 from datetime import date
 today = date.today() # 오늘 날짜 가져오기
 
-def Contents():
-# Define some variables
-    # print("Year and month:", today.strftime("%Y-%m"))
-    title = " &nbsp; &nbsp; &nbsp; 구 조 검 토 보 고 서 &nbsp; &nbsp; &nbsp;"
-    c1 = "현장명 : "
-    c2 = "ㅇㅇ산업(주)"
-    c3 = "시스템 동바리"
-    c4 = today.strftime("%Y-%m")
-    c5 = "작성 : ㅇㅇㅇ (인)"
-    c6 = "검토 : ㅇㅇㅇ (인)"
-    c7 = "승인 : 토목구조기술사 ㅇㅇㅇ (인)"
-    c8 = "겉 표지 포멧 협의 등"
-
-    # Write the HTML code
-    html_code = f"""
+def Contents():    
+    c0 = '<u>문서번호 : 23-10-001</u>'
+    title = "&nbsp; &nbsp; &nbsp; 시스템동바리 구조검토보고서 &nbsp; &nbsp; &nbsp;"
+    c1 = "고속국도 제29호선 세종~포천 건설공사"
+    c2 = "<u>교대날개벽</u>"
+    c3 = today.strftime("%Y. %m")
+    c4 = "우림산업(주) [http://slrental.co.kr]"
+    c5 = "(검토) 박순태 &nbsp; (인) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (승인) 김상현 &nbsp; (인)"
+    c6 = "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 우림산업(주) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 토목구조기술사"
+    
+    html_code = f"""        
         <div style = "font-weight: bold;  text-align: center;  background-color: white;  margin: 0px;  padding: 10px;  border: 5px double blue; ">
-            <div style = "display:inline-block; color: black; font-size: 24px;">
-                <p style = "color: blue; font-size: 32px; border: 3px solid black; padding-top: 10px; padding-bottom: 10px">{title}</p>            
+            <p style = "text-align: left;  font-size: 20px">{c0}</p>
+            <div style = "display:inline-block; color: black; font-size: 28px;">                
+                <p style = "color: blue; font-size: 38px; border: 3px solid black; margin-top: 80px;  padding-top: 10px; padding-bottom: 10px">{title}</p>            
                 <p style = "margin-top:120px">{c1}</p>
-                <p style = "margin-top: 80px">{c2}</p>
-                <p style = "margin-top: 30px">{c3}</p>
-                <p style = "margin-top:100px">{c4}</p>
-                <p style = "margin-top:100px">{c5}</p>
-                <p style = "margin-top: 30px">{c6}</p>
-                <p style = "margin-top: 30px">{c7}</p>
-                <p style = "margin-top:330px;  color: red;  font-size: 32px;  ">{c8}</p>
+                <p style = "margin-top: 40px">{c2}</p>
+                <p style = "margin-top:280px">{c3}</p>
+                <p style = "margin-top:280px">{c4}</p>
+                <p style = "margin-top: 80px">{c5}</p>
+                <p style = "margin-bottom: 40px;  padding-top: 0px;  font-size: 20px">{c6}</p>
             </div>
         </div>
     """    
@@ -73,10 +68,14 @@ def Contents():
     c3_7 = '7. 상세 구조해석 결과'
     
     c4   = 'Ⅳ. 검토 결과'
-    # c4_1 = '1. 해석 결과 요약'
+    c4_1 = '1. 검토 결과'
+    c4_2 = '2. 요 약'
     
-    st.write('');  st.write('');  st.write('')
-    st.write('# ' + c1);  st.write('')
+    c5   = '[부 록]'
+    c5_1   = '# ANSYS 상세 구조해석 코드'
+    
+    st.write('');  st.write('')
+    st.write('# ' + c1)
     col = st.columns([1, 1])    
     with col[0]:
         st.write('##  &nbsp;&nbsp;&nbsp;' + c1_1)
@@ -86,8 +85,8 @@ def Contents():
         st.write('##  &nbsp;&nbsp;&nbsp;' + c1_4)
         st.write('##  &nbsp;&nbsp;&nbsp;' + c1_5)
         
-    st.write('');  st.write('');  st.write('')
-    st.write('# ' + c2);  st.write('')
+    st.write('');  st.write('')
+    st.write('# ' + c2)
     col = st.columns([1, 1])    
     with col[0]:
         st.write('##  &nbsp;&nbsp;&nbsp;' + c2_1)
@@ -102,8 +101,8 @@ def Contents():
         st.write('##  &nbsp;&nbsp;&nbsp;' + c2_9)
         st.write('##  &nbsp;&nbsp;&nbsp;' + c2_10)
         
-    st.write('');  st.write('');  st.write('')
-    st.write('# ' + c3);  st.write('')
+    st.write('');  st.write('')
+    st.write('# ' + c3)
     col = st.columns([1, 1])    
     with col[0]:
         st.write('##  &nbsp;&nbsp;&nbsp;' + c3_1)
@@ -115,12 +114,17 @@ def Contents():
         st.write('##  &nbsp;&nbsp;&nbsp;' + c3_6)
         st.write('##  &nbsp;&nbsp;&nbsp;' + c3_7)
     
-    st.write('');  st.write('');  st.write('')
-    st.write('# ' + c4);  st.write('')
-    
-    st.write('');  st.write('');  st.write('')
-    st.write('');  st.write('');  st.write('')
-    st.write('');  st.write('');  st.write('')
-    st.write('');  st.write('');  st.write('')
+    st.write('');  st.write('')
+    st.write('# ' + c4)
+    col = st.columns([1, 1])    
+    with col[0]:
+        st.write('##  &nbsp;&nbsp;&nbsp;' + c4_1)
+    with col[1]:        
+        st.write('##  &nbsp;&nbsp;&nbsp;' + c4_2)
+            
+    st.write('');  st.write('')
+    st.write('# ' + c5)
+    st.write('##  &nbsp;&nbsp;&nbsp;' + c5_1)
+        
     st.write('');  st.write('');  st.write('')
 

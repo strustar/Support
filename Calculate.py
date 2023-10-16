@@ -93,7 +93,7 @@ def Check_Support(In, opt, section, Support):
         KL_cal = rf'$\bm{{\small{{\sqrt{{ {In.KLv:.1f}^2 + {In.KLh:.1f}^2 }} }}}}$ = '        
 
     st.write(h4, opt[1] + opt[0] + ' 검토')
-    Table.Info('수직재', section, A, Ib_Q, I, S, E, r, Fy, 20)
+    Table.Info(opt[0], section, A, Ib_Q, I, S, E, r, Fy, 20)
     
 
     if '수직재' in opt[0]:
@@ -204,14 +204,28 @@ def Check(In, opt, section, WJY):
         st.image(img, width=500)
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    st.write(s1, '3) 휨응력 검토') #\color{red}, \textcolor{blue}{}, \bm, \textbf, \boldsymbol [\pmb], \small, \normalize, \Large, \large ①②③
-    st.write(s2, rf'✦ $\bm{{M_{{max}} \; = \; \Large{{\frac{{{w_str} {L_jyv}^2}}{{8}}}} \normalsize \; \leq \; f_{{ba}}\,S}}$')
-    num_str = rf"$\bm{{\large{{\sqrt{{\frac{{8 \times {fba:.1f} \times {S:,.1f}}}{{{w:.4f}}} }} }} \normalsize \; = \;}}$";  Lm = (8*fba*S/w)**(1/2)
-    st.write(s2, rf'✦ $\bm{{{L_jyv} \; \leq \; \Large\sqrt{{\frac{{8\,f_{{ba}}\,S}}{{{w_str}}}}} \normalsize \; = \;}} $', num_str + f'{Lm:,.1f} mm')
-    [lgeq, okng] = ['\leq', In.ok] if L[1] <= Lm else ['\geq', In.ng]
+    st.write(s1, '3) 응력 검토') #\color{red}, \textcolor{blue}{}, \bm, \textbf, \boldsymbol [\pmb], \small, \normalize, \Large, \large ①②③
+    st.write(s2, '① 휨응력 검토')
+    Mmax = w*L[1]**2/8;  fb = Mmax/S
+    num_str = rf'$\boldsymbol{{\large{{\frac{{ {w:,.4f} \times {L[1]:,.1f}^2}}{{8}} }} \normalsize \; = \;}} $'
+    st.write(s3, rf'✦ $\bm{{M_{{max}} \; = \; \Large{{\frac{{{w_str} {L_jyv}^2}}{{8}}}} \normalsize \; = \;}} $', num_str, rf'{Mmax:,.1f} N&#8226;mm')
+    [lgeq, okng] = ['\leq', In.ok] if fb <= fba else ['\geq', In.ng]
+    num_str = rf'$\bm{{\large{{\frac{{ {Mmax:,.1f}}}{{{S:,.1f}}} }} \normalsize \; = \;}} $'
     [col1, col2] = st.columns(In.col_span_okng)
-    with col1: st.write(s2, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Lm:,.1f} mm $\qquad$')
-    with col2: st.write(h5, okng)    
+    with col1:     st.write(s3, rf'✦ $\boldsymbol{{f_b \; = \; \Large{{\frac{{M_{{max}}}}{{S}} }} \normalsize \; = \;}}$', num_str, f'{fb:.1f} MPa', rf'$\: \bm \; {lgeq} \;$', f'{fba:.1f} MPa', r'$\bm {( \; = \; f_{ba})} \qquad$')
+    with col2: st.write(h5, okng)
+    
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
+    st.write(s2, '② 전단응력 검토')
+    Vmax = w*L[1]/2;  fs = Vmax/Ib_Q
+    # fs_str = 'Ib/Q' if '합판' in opt[0] else 'A'
+    num_str = rf'$\boldsymbol{{\large{{\frac{{ {w:,.4f} \times {L[1]:,.1f}}}{{2}} }} \normalsize \; = \;}} $'
+    st.write(s3, rf'✦ $\bm{{V_{{max}} \; = \; \Large{{\frac{{ {{{w_str}}} {L_jyv}}}{{2}}}} \normalsize \; = \;}} $', num_str, rf'{Vmax:,.2f} N')        
+    [lgeq, okng] = ['\leq', In.ok] if fs <= fsa else ['\geq', In.ng]
+    num_str = rf'$\bm{{\large{{\frac{{ {Vmax:,.1f}}}{{{Ib_Q:,.1f}}} }} \normalsize \; = \;}} $'
+    [col1, col2] = st.columns(In.col_span_okng)
+    with col1:     st.write(s3, rf'✦ $\boldsymbol{{f_s \; = \; \Large{{\frac{{V_{{max}}}}{{Ib/Q}} }} \normalsize \; = \;}}$', num_str, f'{fs:.2f} MPa', rf'$\: \bm \; {lgeq} \;$', f'{fsa:.2f} MPa', r'$\bm {( \; = \; f_{sa})} \qquad$')
+    with col2: st.write(h5, okng)
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     [col1, col2] = st.columns(In.col_span_ref)
@@ -219,7 +233,7 @@ def Check(In, opt, section, WJY):
     with col2: st.write(h5, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
 
     Ld1 = (384*E*I*L[1]/(5*w*In.d1))**(1/4);  Ld2 = (384*E*I*In.d2/(5*w))**(1/4)
-    st.write(s2, '① 상대변형 검토')    
+    st.write(s2, '① 상대변형 검토')
     st.write(s3, rf'✦ $\bm{{\delta_{{max}} \;= \; \Large{{\frac{{5\,{{{w_str}}} {L_jyv}^4}}{{384\,E\,I}}}} \normalsize{{\; \leq \;}}}} $', In.d1_str)
     num_str = rf"$\bm{{\large{{\sqrt[4]{{\frac{{384 \times {E:,.1f} \times {I:,.1f} \times {L[1]:,.1f}}}{{5 \times {w:,.4f} \times 360 }}}} }} \; \normalsize = \;}}$"
     st.write(s3, rf'✦ $\bm{{{L_jyv} \; \leq \; \Large\sqrt[4]{{\frac{{384\,E\,I\,L_n}}{{{{5\,{{{w_str}}}}}\,{{{In.d1:.0f}}} }}}} \; \normalsize = \;}} $', num_str + f'{Ld1:,.1f} mm')
@@ -228,6 +242,7 @@ def Check(In, opt, section, WJY):
     with col1: st.write(s3, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Ld1:,.1f} mm $\qquad$')
     with col2: st.write(h5, okng)    
 
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s2, '② 절대변형 검토')
     st.write(s3, rf'✦ $\bm{{\delta_{{max}} \; = \; \Large{{\frac{{5\,{{{w_str}}} {L_jyv}^4}}{{384\,E\,I}}}} \normalsize \; \leq \;}} $', In.d2_str)
     num_str = rf'$\bm{{\large{{\sqrt[4]{{\frac{{384 \times {E:,.1f} \times {I:,.1f} \times 3}}{{5 \times {w:,.4f} }}}} }} \normalsize \; = \;}}$'
@@ -236,16 +251,3 @@ def Check(In, opt, section, WJY):
     [col1, col2] = st.columns(In.col_span_okng)
     with col1: st.write(s3, '✦ ', L_jyv2, rf'$\bm{{\; {lgeq} \;}}$' + f'{Ld2:,.1f} mm $\qquad$')
     with col2: st.write(h5, okng)    
-
-    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    st.write(s1, '5) 전단응력 검토')
-    Vmax = w*L[1]/2;  fs = Vmax/Ib_Q
-    # fs_str = 'Ib/Q' if '합판' in opt[0] else 'A'
-    num_str = rf'$\boldsymbol{{\large{{\frac{{ {w:,.4f} \times {L[1]:,.1f}}}{{2}} }} \normalsize \; = \;}} $'    
-    st.write(s2, rf'✦ $\bm{{V_{{max}} \; = \; \Large{{\frac{{ {{{w_str}}} {L_jyv}}}{{2}}}} \normalsize \; = \;}} $', num_str, rf'{Vmax:,.2f} N')        
-    [lgeq, okng] = ['\leq', In.ok] if fs <= fsa else ['\geq', In.ng]
-    num_str = rf'$\bm{{\large{{\frac{{ {Vmax:,.1f}}}{{{Ib_Q:,.1f}}} }} \normalsize \; = \;}} $'
-    [col1, col2] = st.columns(In.col_span_okng)
-    with col1:     st.write(s2, rf'✦ $\boldsymbol{{f_s \; = \; \Large{{\frac{{V_{{max}}}}{{Ib/Q}} }} \normalsize \; = \;}}$', num_str, f'{fs:.2f} MPa', rf'$\: \bm \; {lgeq} \;$', f'{fsa:.2f} MPa', r'$\bm {( \; = \; f_{sa})} \qquad$')
-    with col2: st.write(h5, okng)    
-

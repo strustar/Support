@@ -171,7 +171,7 @@ def Report():
     st.write('');  st.write('');  st.write('')
     Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
     st.write('');  st.write('');  st.write('')    
-    Detail.Analysis(In, h4, h5, s1, s2, 'both', Vertical, Horizontal, Bracing)   # opt : both, result, code
+    Detail.Analysis(In, h4, h5, s1, s2, 'result', Vertical, Horizontal, Bracing)   # opt : both, result, code
     st.write('');  st.write('');  st.write('')
     Summary.Info(In)
 

@@ -41,13 +41,13 @@ def Sidebar(h4, h5):
         if '슬래브' in In.type:  In.slab_t = st.number_input(h5 + '✦ 두께 [mm]', min_value = 50., value = 400., step = 10., format = '%0.f')
         if '보' in In.type:
             In.beam_b = st.number_input(h5 + '✦ 보의 폭 [mm]', min_value = 50., value = 500., step = 10., format = '%f')
-            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 5700., step = 10., format = '%f')
+            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 5600., step = 10., format = '%f')
     with col2:
-        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 0.1, value = 0.610*9., step = 0.1, format = '%.1f')        
+        In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 0.1, value = 0.305*17., step = 0.1, format = '%.1f')        
         
     with col3:
         In.slab_Y = st.number_input(h5 + '✦ Y 방향 길이 [m]', min_value = .1, value = .610*3, step = 0.1, format = '%.1f')
-        In.height = st.number_input(h5 + '✦ 높이 [m]', min_value = .1, value = 8., step = 0.1, format = '%.1f')
+        In.height = st.number_input(h5 + '✦ 높이 [m]', min_value = .1, value = 6.5, step = 0.1, format = '%.1f')
     In.thick_height = In.slab_t if '슬래브' in In.type else In.beam_h
 
     ### 거푸집용 합판
@@ -56,7 +56,7 @@ def Sidebar(h4, h5):
     with col1:
         In.wood_t = st.radio(h5 + '￭ 합판 두께 [mm]', (12, 15, 18), horizontal=True)
     with col2:
-        In.wood_angle = st.radio(h5 + '￭ 하중 방향 [각도]', (0, 90), horizontal=True, index = 1)
+        In.wood_angle = st.radio(h5 + '￭ 하중 방향 [각도]', (0, 90), horizontal=True, index = 0)
     In.wood = str(In.wood_t)+' / '+str(In.wood_angle)+'°'
 
     sb.write(h4, '3. 장선 규격 및 간격 [mm] [SPSR400]')  # 🔳🔘
@@ -64,14 +64,14 @@ def Sidebar(h4, h5):
     with col[0]:
         In.joist = st.selectbox(h5 + '✦ 장선 규격 [mm]', ('🔲 50×50×2.0t', '🔲 50×50×2.3t'), index = 0, label_visibility='collapsed')
     with col[1]:
-        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 100., step = 10., format = '%f', label_visibility='collapsed')
+        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 90., step = 10., format = '%f', label_visibility='collapsed')
 
     sb.write(h4, '4. 멍에 규격 및 간격 [mm] [SPSR400]')
     col = sb.columns([3,2], gap = 'medium')
     with col[0]:
         In.yoke = st.selectbox(h5 + '✦ 멍에 규격 [mm]', ('🔲 75×125×2.9t', '🔲 75×125×3.2t'), index = 0, label_visibility='collapsed')
     with col[1]:
-        In.Ly = st.selectbox(h5 + '✦ 멍에 간격 [mm]*', (1829, 1524, 1219, 914, 610, 305), index = 4, label_visibility='collapsed')
+        In.Ly = st.selectbox(h5 + '✦ 멍에 간격 [mm]*', (1829, 1524, 1219, 914, 610, 305), index = 5, label_visibility='collapsed')
 
     sb.write(h4, '5. 수직재 규격 및 간격* [mm] [SKT500]')
     col = sb.columns([3,2], gap = 'medium')
@@ -79,15 +79,15 @@ def Sidebar(h4, h5):
         In.vertical = st.selectbox(h5 + '✦ 수직재 규격 [mm]', ('🔘 𝜙60.5×2.5t', '🔘 𝜙60.5×2.6t'), index = 1, label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[*수직재 간격 = 수평재 좌굴길이 ($\rm{{KL_h}}$)]')
     with col[1]:
-        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 5, label_visibility='collapsed')
+        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 4, label_visibility='collapsed')
 
     sb.write(h4, '6. 수평재 규격 및 간격** [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')
     with col[0]:
-        In.horizontal = st.selectbox(h5 + '✦ 수평재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), label_visibility='collapsed')
+        In.horizontal = st.selectbox(h5 + '✦ 수평재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), index = 1, label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[**수평재 간격 = 수직재 좌굴길이 ($\rm{{KL_v}}$)]')
     with col[1]:
-        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 2, label_visibility='collapsed')
+        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 1, label_visibility='collapsed')
 
     sb.write(h4, '7. 가새재 규격 [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')

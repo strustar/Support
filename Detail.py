@@ -55,13 +55,22 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '2. 변위 및 응력 검토')
+    st.write(s1, '1) 수직변위 검토 (절대 최댓값)')
+    Fy = min(Vertical.Fy, Horizontal.Fy, Bracing.Fy)
+    Table.Section_Check(In, '', '', '', '수직변위', uz, '')
+    st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*LC2의 경우 허용응력 증가계수 1.25를 고려한다. (변위값/1.25)]')
+    
+    st.write(s1, '2) 등가응력 검토 (절대 최댓값)')
+    Table.Section_Check(In, '', '', Fy, '등가응력', seqv, '')
+    st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*LC2의 경우 허용응력 증가계수 1.25를 고려한다. (응력값/1.25)]')
+
 
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '3. 단면력 집계')
     st.write(s1, '1) 단면력 (절대 최댓값)')
     Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, '')
     st.write(s1, '2) 허용응력 증가계수를 고려한 단면력')
-    st.write(s2, '➣ 하중조합 2(LC2)의 경우 허용응력 증가계수 1.25를 고려한다.')
+    st.write(s2, '➣ LC2(하중조합 2)의 경우 허용응력 증가계수 1.25를 고려한다.')
     st.write(s2, '➣ 허용응력 증가는 단면력을 1.25로 나눈 것과 같다.')
     [Axial, Moment, Shear] = Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, 1.25)
     
@@ -86,7 +95,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     working_dir = 'pyAPDL';  jobname = 'file';  png = []
     for i in range(0, 18):
         if i < 10:  name = os.path.join(working_dir, jobname + '00' + str(i) + '.png')
-        if i >= 10: name = os.path.join(working_dir, jobname + '0' + str(i) + '.png')
+        if i >= 10: name = os.path.join(working_dir, jobname + '0'  + str(i) + '.png')
         png.append(name)
     
     [col1, col2] = st.columns(In.col_span_ref)
@@ -101,22 +110,22 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     [col1, col2] = st.columns(In.col_span_ref)        
     with col1:
         st.write(h4, '[Load Case 1 (LC1)]')
-        st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')            
+        st.write(h5, f':blue[<Displacement [u$_z$, 변위 (mm)]>]')
         st.write(s1, f'➣ 최대 변위 : {uz[0]} mm')
         st.image(png[2])
 
         st.write('');  st.write('')
-        st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
+        st.write(h5, f':blue[<von Mises Stress [$\sigma_{{eqv}}$, 등가응력 (MPa)]>]')
         st.write(s1, f'➣ 최대 등가응력 : {seqv[0]:,.1f} MPa')
         st.image(png[3])
     with col2:
         st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-        st.write(h5, f':blue[[Displacement (u$_z$, 변위 (mm)]]')
+        st.write(h5, f':blue[<Displacement [u$_z$, 변위 (mm)]>]')
         st.write(s1, f'➣ 최대 변위 : {uz[1]:,.3f} mm')
         st.image(png[2+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[von Mises Stress ($\sigma_{{eqv}}$, 등가응력 (MPa)]]')
+        st.write(h5, f':blue[<von Mises Stress [$\sigma_{{eqv}}$, 등가응력 (MPa)]>]')
         st.write(s1, f'➣ 최대 등가응력 : {seqv[1]:,.1f} MPa')
         st.image(png[3+9])
 
@@ -124,61 +133,61 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     [col1, col2] = st.columns(In.col_span_ref)        
     with col1:
         st.write(h4, '[Load Case 1 (LC1)]')
-        st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
+        st.write(h5, f':blue[<Axial Force [F$_x$, 축방향력 (N)]>]')
         st.write(s1, f'➣ 최대 축방향력 : {Fx1[0]:,.3f} kN')
         st.write(s1, f'➣ 최소 축방향력 : {Fx2[0]:,.3f} kN')
         st.image(png[4])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')            
+        st.write(h5, f':blue[<Moment [M$_y$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {My1[0]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {My2[0]:,.3f} kN·m')
         st.image(png[5])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')
+        st.write(h5, f':blue<[Moment [M$_z$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m')
         st.image(png[6])
 
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
+        st.write(h5, f':blue[<Shear Force [S$_z$, 전단력 (N)]>]')
         st.write(s1, f'➣ 최대 전단력 : {SFz1[0]:,.3f} kN')
         st.write(s1, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN')
         st.image(png[7])
 
-        st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
+        st.write(h5, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
         st.write(s1, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN')
         st.write(s1, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN')
         st.image(png[8])
 
     with col2:
         st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-        st.write(h5, f':blue[[Axial Force (F$_x$, 축방향력 (N)]]')            
+        st.write(h5, f':blue[<Axial Force [F$_x$, 축방향력 (N)]>]')
         st.write(s1, f'➣ 최대 축방향력 : {Fx1[1]:,.3f} kN')
         st.write(s1, f'➣ 최소 축방향력 : {Fx2[1]:,.3f} kN')
         st.image(png[4+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Moment (M$_z$, 모멘트 (N·mm)]]')            
+        st.write(h5, f':blue[<Moment [M$_y$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {Mz1[1]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {Mz2[1]:,.3f} kN·m')
         st.image(png[5+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Moment (M$_y$, 모멘트 (N·mm)]]')            
+        st.write(h5, f':blue<[Moment [M$_z$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m')
         st.image(png[6+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Shear Force (S$_z$, 전단력 (N)]]')
+        st.write(h5, f':blue[<Shear Force [S$_z$, 전단력 (N)]>]')
         st.write(s1, f'➣ 최대 전단력 : {SFz1[1]:,.3f} kN')
         st.write(s1, f'➣ 최소 전단력 : {SFz2[1]:,.3f} kN')
         st.image(png[7+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue[[Shear Force (S$_y$, 전단력 (N)]]')
+        st.write(h5, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
         st.write(s1, f'➣ 최대 전단력 : {SFy1[1]:,.3f} kN')
         st.write(s1, f'➣ 최소 전단력 : {SFy2[1]:,.3f} kN')
         st.image(png[8+9])

@@ -33,14 +33,34 @@ def common_table(headers, data, columnwidth, cells_align, cells_fill_color, heig
             # format=[None, None]  # '나이' 열의 데이터를 실수 형태로 변환하여 출력  '.2f'
         ), )],
     )
-    fig.update_layout(width = width, height = height, margin = dict(l = left, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정
+    fig.update_layout(width = width, height = height, margin = dict(l = left, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정    
     st.plotly_chart(fig)
 
+def Summary(In):
+    headers = [
+        '<b><br>구 분</b>',
+        '<b>보의 높이*<br>5,600 mm</b>',
+        '<b>보의 높이*<br>3,550 mm</b>',
+        '<b>보의 높이*<br>1,500 mm</b>',
+        '<b><br>비 고</b>',]
+    data = [
+        ['<b>합판',       f'<b>{In.wood} (하중방향)', '<b>좌동', '<b>좌동', ''],
+        ['<b><br>장선',   f'<b>{In.joist}<br>       @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
+        ['<b><br>멍에',   f'<b>{In.yoke}<br>        @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b><br>수직재', f'<b>{In.vertical}<br>       @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b><br>수평재', f'<b>{In.horizontal}<br>       @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
+    
+    columnwidth = [1, 1.5, 1.5, 1.5, 1];  height = 385;  left = 20
+    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
+    
 def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
     if '수직재' in txt:  index = 0
     if '수평재' in txt:  index = 2
     if '가새재' in txt:  index = 4
-    print(index)
+    height = 120
+        
     if force == '':
         columnwidth = [1]
         headers = [        
@@ -52,9 +72,39 @@ def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
         data = [
             ['<b>LC1', f'<b>{Axial[index]:,.3f}', f'<b>{Moment[index]:,.3f}', f'<b>{Shear[index]:,.3f}', '<b>1.0'],
             ['<b>LC2', f'<b>{Axial[index+1]:,.3f}', f'<b>{Moment[index+1]:,.3f}', f'<b>{Shear[index+1]:,.3f}', '<b>1.0'],  ]
+    elif '변위' in force:
+        columnwidth = [1];  height = 159
+        headers = [
+            '<b>구 분</b>',
+            f'<b>{force} [mm]</b>',
+            '<b>허용변위 [mm]</b>',             
+            '<b>변위 검토</b>',
+            ]
+        uz = Support;  Fy = txt
+        check1 = 'OK (✅)' if uz[0] < In.d2 else 'NG (❌)'
+        check2 = 'OK (✅)' if uz[1] < In.d2 else 'NG (❌)'        
+        data = [
+            ['<b>LC1', f'<b>{uz[0]:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check1}'],
+            ['<b>LC2', f'<b>{uz[1]:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check2}'],
+            ['<b>LC2*', f'<b>{uz[1]/1.25:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check2}'], ]
+    elif '응력' in force:
+        columnwidth = [1];  height = 159
+        headers = [
+            '<b>구 분</b>',
+            f'<b>{force} [MPa]</b>',
+            '<b>허용응력 [MPa]</b>',             
+            '<b>응력 검토</b>',
+            ]
+        seqv = Support;  Fy = Shear
+        check1 = 'OK (✅)' if seqv[0] < Fy else 'NG (❌)'
+        check2 = 'OK (✅)' if seqv[1] < Fy else 'NG (❌)'        
+        data = [
+            ['<b>LC1', f'<b>{seqv[0]:,.1f}', f'<b>{Fy:,.1f}', f'<b>{check1}'],
+            ['<b>LC2', f'<b>{seqv[1]:,.1f}', f'<b>{Fy:,.1f}', f'<b>{check2}'],
+            ['<b>LC2*', f'<b>{seqv[1]/1.25:,.1f}', f'<b>{Fy:,.1f}', f'<b>{check2}'], ]
     else:
-        columnwidth = [0.8, 4.8, 1.4, 0.8, 0.9]
-        headers = [        
+        columnwidth = [0.8, 4.8, 1.4, 0.8, 0.9]        
+        headers = [
             '<b>구 분</b>',
             '<b>응력계산 [MPa]</b>',
             '<b>허용응력 [MPa]</b>',
@@ -85,14 +135,14 @@ def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
             ['<b>LC1', f'<b>{txt1} = {F1:,.3f} {txt2} / {A:,.1f} {txt3} = {stress1:,.1f} MPa', f'<b>{allowable:,.1f}', f'<b>{ratio1:,.3f}', f'<b>{check1}'],
             ['<b>LC2', f'<b>{txt1} = {F2:,.3f} {txt2} / {A:,.1f} {txt3} = {stress2:,.1f} MPa', f'<b>{allowable:,.1f}', f'<b>{ratio2:,.3f}', f'<b>{check2}'], ]
             
-    height = 120;  left = 40
+    left = 40
     cells_align = 'center';  cells_fill_color = ['lightblue', 'white']
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left, fill_color = cells_fill_color[0])
         
 
 def Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, opt):
     headers = [
-        '<b></b>',
+        '<b>부 재<br>종 류</b>',
         '<b>축방향력<br>   [kN] </b>',
         '<b>축방향력<br>   [kN]</b>',
         '<b>휨모멘트<br> [kN&#8226;m] </b>',
@@ -107,7 +157,7 @@ def Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, opt):
         Shear.append(np.max([np.abs(SFz1[i]), np.abs(SFz2[i]), np.abs(SFy1[i]), np.abs(SFy2[i])]))
     if opt == '':
         data = [
-            ['<b>부 재', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>'],
+            ['<b>', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>'],
             ['<b>수직재', f'<b>{Axial[0]:,.3f}', f'<b>{Axial[1]:,.3f}', f'<b>{Moment[0]:,.3f}', f'<b>{Moment[1]:,.3f}', f'<b>{Shear[0]:,.3f}', f'<b>{Shear[1]:,.3f}', '<b>'],
             ['<b>수평재', f'<b>{Axial[2]:,.3f}', f'<b>{Axial[3]:,.3f}', f'<b>{Moment[2]:,.3f}', f'<b>{Moment[3]:,.3f}', f'<b>{Shear[2]:,.3f}', f'<b>{Shear[3]:,.3f}', '<b>'],
             ['<b>가새재', f'<b>{Axial[4]:,.3f}', f'<b>{Axial[5]:,.3f}', f'<b>{Moment[4]:,.3f}', f'<b>{Moment[5]:,.3f}', f'<b>{Shear[4]:,.3f}', f'<b>{Shear[5]:,.3f}', '<b>'],
@@ -117,7 +167,7 @@ def Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, opt):
             Axial[i] = Axial[i]/opt;  Moment[i] = Moment[i]/opt;  Shear[i] = Shear[i]/opt
         
         data = [
-            ['<b>부 재', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>'],
+            ['<b>', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>LC1', '<b>LC2', '<b>'],
             ['<b>수직재', f'<b>{Axial[0]:,.3f}', f'<b>{Axial[1]:,.3f}', f'<b>{Moment[0]:,.3f}', f'<b>{Moment[1]:,.3f}', f'<b>{Shear[0]:,.3f}', f'<b>{Shear[1]:,.3f}', '<b>'],
             ['<b>수평재', f'<b>{Axial[2]:,.3f}', f'<b>{Axial[3]:,.3f}', f'<b>{Moment[2]:,.3f}', f'<b>{Moment[3]:,.3f}', f'<b>{Shear[2]:,.3f}', f'<b>{Shear[3]:,.3f}', '<b>'],
             ['<b>가새재', f'<b>{Axial[4]:,.3f}', f'<b>{Axial[5]:,.3f}', f'<b>{Moment[4]:,.3f}', f'<b>{Moment[5]:,.3f}', f'<b>{Shear[4]:,.3f}', f'<b>{Shear[5]:,.3f}', '<b>'],

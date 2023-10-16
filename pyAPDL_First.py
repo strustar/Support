@@ -1,13 +1,10 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 from ansys.mapdl.core import launch_mapdl
 
 import os;  import json
 os.system('cls')  # 터미널 창 청소, clear screen
-
-# 스트림릿 웹상에서 실행되지 않게
-if __name__ != "streamlit.script_runner":
-    a = 3    
 
 # 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import subprocess
@@ -15,20 +12,50 @@ subprocess.run(['taskkill', '/F', '/IM', 'ANSYS*'])
 subprocess.run(['taskkill', '/F', '/IM', 'APDL*'])
 # 실행중인 프로그램(ANSYS) 강제 종료  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class In:
-    pass
-with open('Input.json', 'r') as f:
-    item = json.load(f)        
+# Input 불러오기
+xea = 18;  zea = 20;  yea = 4  # X 절점개수 18, Z 절점개수 20
+Lv = 305;  Ly = 610;  Lh = 863   # Lh : Check!!
+vertical_d = 60.5;    vertical_t = 2.6
+horizontal_d = 42.7;  horizontal_t = 2.3
+bracing_d = 42.7;     bracing_t = 2.3
 
-eshape_th = 2.5
-In.Ly = item['Ly']
-In.vertical_d = item['vertical_d'];      In.vertical_t = item['vertical_t'];      In.Lv = item['Lv']
-In.horizontal_d = item['horizontal_d'];  In.horizontal_t = item['horizontal_t'];  In.Lh = item['Lh']
-In.bracing_d = item['bracing_d'];        In.bracing_t = item['bracing_t']
-In.slab_X = item['slab_X'];              In.slab_Y = item['slab_Y'];              In.height = item['height']  # Unit : m
-In.dead_load = item['dead_load'];        In.design_load = item['design_load']     # N/mm2
-In.Hx2 = item['Hx2'];                    In.Hy2 = item['Hy2'];                    In.wind2 = item['wind2']  # kN/m2
-        
+# slab_X = Lv*17;  slab_Y = Ly*3       !$  height = 9500
+dead_load = 0.1372;  design_load = 0.1422;  Hx2 = 0.915e-3;  Hy2 = 8.232e-3;  wind2 = 0.286e-3  # N/mm2
+Ex = 200e3
+
+dataZ = np.full((zea+1, xea+1), None)   # +1은 빈공간, 정보 등, X간격 동일 : In.Lv
+dataZ[1:, 0] = [1 + (i-1)*100 for i in range(1, 20+1)]
+dataZ[ 1, 1:] = 0
+dataZ[ 2, 1:] = 200
+dataZ[ 3, 1:] = 216
+dataZ[ 4, 1:] = 1291 + 216
+dataZ[ 5, 1:-1] = 1725 - dataZ[4, 1]
+dataZ[ 6, 1:-2] = 432
+dataZ[ 7, 1:-3] = 216
+dataZ[ 8, 1:-4] = 432
+dataZ[ 9, 1:-5] = 216
+dataZ[10, 1:-6] = 216
+dataZ[11, 1:-7] = 216
+dataZ[12, 1:-7] = 216
+dataZ[13, 1:-8] = 216
+dataZ[14, 1:-9] = 432
+dataZ[15, 1:-10] = 216
+dataZ[16, 1:-11] = 216
+dataZ[17, 1:-12] = 432
+dataZ[18, 1:-13] = 216
+dataZ[19, 1:-14] = 432
+dataZ[20, 1:-15] = 216
+dataZ
+
+load_loc = [None]
+for i in range(1, xea+1):
+    s = 0
+    for k in range(1, zea+1):
+        if dataZ[k, i] == None:  continue
+        s += dataZ[k, i]
+    load_loc.append(s)
+# Input 불러오기
+
 working_dir = 'pyAPDL';  jobname = 'file'
 ma = launch_mapdl(run_location = working_dir, jobname = jobname, override = True)
 ma.sys('del/q/f *.png')    # png 모든 파일 지우기
@@ -41,70 +68,98 @@ ma.rgb('INDEX',80,80,80, 13)
 ma.rgb('INDEX',60,60,60, 14)
 ma.rgb('INDEX',0,0,0, 15)
 
+eshape_th = 2.
 results = [];  verticals = [];  horizontals = [];  bracings = []
-def analysis(In, LC):   # Load Case
-    factor = 1e3
+def analysis(LC):   # Load Case    
     if LC == 1:
-        ver = In.design_load;  horx = In.Hx2;    hory = In.Hy2
+        ver = design_load;  horx = Hx2;    hory = Hy2
     if LC == 2:  # 풍하중
-        ver = In.dead_load;    horx = In.wind2;  hory = In.wind2
-    
-    P = ver*In.Ly*In.Lv                                          # N/mm2 *mm *mm
-    Hx = horx*In.Ly*In.Lh/factor;  Hy = hory*In.Lv*In.Lh/factor  # kN/m2 = 1e3 N/(mm*mm*1e6) *mm*mm = N / 1e3
+        ver = dead_load;    horx = wind2;  hory = wind2    
+    P = ver*Ly*Lv                            # N/mm2 *mm *mm
+    Hx = horx*Ly*Lh;  Hy = hory*Lv*Lh        # N/mm2 *mm *mm
 
+    # import sys
+    # sys.exit()    
     # !! ===============================================> Preprocessing 
     ma.clear();  ma.prep7()
-
-    # !!! Modelling
-    xea = int(np.ceil(In.slab_X*factor/In.Lv) + 1)
-    yea = int(np.ceil(In.slab_Y*factor/In.Ly) + 1)
-    zea = int(np.ceil(In.height*factor/In.Lh) + 1)    
-
-    ma.k(1, 0,0,0)
-    ma.kgen(xea, 1,1,1, In.Lv,0,0, 1)
-    ma.kgen(yea, 'all','','', 0,In.Ly,0, 100)
-    ma.kgen(zea, 'all','','', 0,0,In.Lh, 10000)
-    # ma.allsel()    
-
-    for i in range(1, xea + 1):   # 수직재
-        for j in range(1, yea + 1):
+    for i in range(1, xea+1):
+        z = 0
+        for k in range(1, zea+1):
+            if dataZ[k, i] == None:  continue
+            z += dataZ[k, i]
+            ma.k(i-1 + dataZ[k, 0], Lv*(i-1),0, z)
+    ma.kgen(yea, 'all','','', 0,Ly,0, 10000)
+        
+    for i in range(1, xea+1):   # 수직재
+        for j in range(1, yea+1):
             for k in range(1, zea):
-                ma.l(i + 100*(j-1) + 10000*(k-1), i + 10000 + 100*(j-1) + 10000*(k-1))    
+                if dataZ[k  , i] == None:  continue
+                if dataZ[k+1, i] == None:  continue
+                ma.l(i + 100*(k-1) + (j-1)*10000, i + 100*k + (j-1)*10000)
     ma.allsel();  ma.cm('ver',  'line');  ma.color('line', 'magenta')
 
-    for i in range(1, xea):   # 수평재 (x방향)
-        for j in range(1, yea + 1):
-            for k in range(1, zea):
-                ma.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1))
-    for i in range(1, xea + 1):   # 수평재 (y방향)
+    for i in range(1, xea):   # 수평재 (X방향)
+        for j in range(1, yea+1):
+            for k in range(2, zea+1):
+                if dataZ[k, i  ] == None:  continue
+                if dataZ[k, i+1] == None:  continue
+                if k == 4 and i <= 16:  continue
+                if k == 6 and i <= 14:  continue
+                if k == 7 and i <= 13:  continue
+                if k == 8 and i <= 12:  continue
+                if k == 9 and i <= 11:  continue
+                if k ==10 and i <= 10:  continue
+                
+                if k ==12 and i <=  9:  continue
+                if k ==13 and i <=  8:  continue
+                if k ==14 and i <=  7:  continue
+                if k ==15 and i <=  6:  continue
+                if k ==16 and i <=  5:  continue
+                
+                if k ==18 and i <=  4:  continue
+                if k ==19 and i <=  3:  continue                
+                ma.l(i + 100*(k-1) + 10000*(j-1), i + 1 + 100*(k-1) + 10000*(j-1))                
+    for i in range(1, xea+1):   # 수평재 (Y방향)
         for j in range(1, yea):
-            for k in range(1, zea):
-                ma.l(i + 10000 + 100*(j-1) + 10000*(k-1), i + 10100 + 100*(j-1) + 10000*(k-1))
+            for k in range(2, zea+1):
+                if dataZ[k, i] == None:  continue
+                if k == 4 and i <= 16:  continue
+                if k == 6 and i <= 14:  continue
+                if k == 7 and i <= 13:  continue
+                if k == 8 and i <= 12:  continue
+                if k == 9 and i <= 11:  continue
+                if k ==10 and i <= 10:  continue
+                
+                if k ==12 and i <=  9:  continue
+                if k ==13 and i <=  8:  continue
+                if k ==14 and i <=  7:  continue
+                if k ==15 and i <=  6:  continue
+                if k ==16 and i <=  5:  continue
+                
+                if k ==18 and i <=  4:  continue
+                if k ==19 and i <=  3:  continue
+                ma.l(i + 100*(k-1) + 10000*(j-1), i + 100*(k-1) + 10000*j)
     ma.allsel();  ma.cmsel('u', 'ver');  ma.cm('hor',  'line');  ma.color('line', 'cyan')
 
-    for i in range(1, xea, 2):   # 가새재
-        for j in range(1, yea + 1, 2):
-            for k in range(1, zea, 2):
-                ma.l(i + 100*(j-1) + 10000*(k-1), i + 10001 + 100*(j-1) + 10000*(k-1))
-    ma.allsel();  ma.cmsel('u', 'ver');  ma.cmsel('u', 'hor');  ma.cm('bra', 'line');  ma.color('line', 'blue')
     ma.vup('', 'z');  ma.view('', 1, -1, 1)
     ma.allsel();  ma.nummrg('all')
+    # ma.lplot(vtk=False, off_screen=True)    
     # !!! Modelling
 
     # !!! Attributes & Meshing
-    i = 1;  ma.et(i, 'beam188');  ma.mp('ex', i, 200e3);  ma.mp('prxy', i, 0.3)
-    ma.sectype(1, 'beam', 'ctube');  ma.secdata(In.vertical_d/2 - In.vertical_t, In.vertical_d/2)
-    ma.sectype(2, 'beam', 'ctube');  ma.secdata(In.horizontal_d/2 - In.horizontal_t, In.horizontal_d/2)
-    ma.sectype(3, 'beam', 'ctube');  ma.secdata(In.bracing_d*0.99/2 - In.bracing_t, In.bracing_d*0.99/2)    
+    i = 1;  ma.et(i, 'beam188');  ma.mp('ex', i, Ex);  ma.mp('prxy', i, 0.3)
+    ma.sectype(1, 'beam', 'ctube');  ma.secdata(vertical_d/2 - vertical_t, vertical_d/2)
+    ma.sectype(2, 'beam', 'ctube');  ma.secdata(horizontal_d/2 - horizontal_t, horizontal_d/2)
+    # ma.sectype(3, 'beam', 'ctube');  ma.secdata(bracing_d/2 - bracing_t, bracing_d/2)
 
     ma.cmsel('s', 'ver');  ma.latt(1,'',1,'','',1)
     ma.cmsel('s', 'hor');  ma.latt(1,'',1,'','',2)
-    ma.cmsel('s', 'bra');  ma.latt(1,'',1,'','',3)
+    # ma.cmsel('s', 'bra');  ma.latt(1,'',1,'','',3)
     ma.allsel();  ma.lesize('all', 200);  ma.lmesh('all')
 
     ma.esel('s', 'sec', '', 1);  ma.cm('v', 'elem');  ma.color('elem', 'magenta')
     ma.esel('s', 'sec', '', 2);  ma.cm('h', 'elem');  ma.color('elem', 'cyan')
-    ma.esel('s', 'sec', '', 3);  ma.cm('b', 'elem');  ma.color('elem', 'blue')    
+    # ma.esel('s', 'sec', '', 3);  ma.cm('b', 'elem');  ma.color('elem', 'blue')    
         
     ma.allsel();  ma.eshape(eshape_th)  # ma.replot()
     ma.eplot(vtk=False, off_screen=True)  # png_model 000.png
@@ -112,50 +167,52 @@ def analysis(In, LC):   # Load Case
     ma.finish()
     # !! ===============================================> Preprocessing
 
-
     # !! ===============================================> Solution
     ma.slashsolu()
     ma.nsel('s', 'loc', 'z', 0)
     ma.d('all', 'all', 0)
 
     ma.allsel()
-    ma.cmsel('s', 'v')
-    ma.nsle('s')
-    ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))    
-    ma.f('all', 'fz', -P)
+    for j in range(yea+1):
+        for i in range(1, xea+1):
+            ma.nsel('s', 'loc', 'z', load_loc[i])
+            ma.nsel('r', 'loc', 'x', (i-1)*Lv)
+            ma.nsel('r', 'loc', 'y', (j-1)*Ly)
+            ma.f('all', 'fz', -P)
 
-    ma.allsel()
-    ma.cmsel('s', 'v')
-    ma.nsle('s')
-    ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))
-    ma.nsel('r', 'loc', 'y', 0)
-    ma.f('all', 'fy', Hy)
+    ma.allsel()    
+    for i in range(1, xea+1):
+        ma.nsel('s', 'loc', 'z', load_loc[i])
+        ma.nsel('r', 'loc', 'x', (i-1)*Lv)
+        ma.nsel('r', 'loc', 'y', 0)
+        ma.f('all', 'fy', Hy)
 
-    ma.allsel()
-    ma.cmsel('s', 'v')
-    ma.nsle('s')
-    ma.nsel('r', 'loc', 'z', In.Lh*(zea - 1))
-    ma.nsel('r', 'loc', 'x', In.Lv*(xea - 1))
-    ma.f('all', 'fx', -Hx)
+    ma.allsel()    
+    for j in range(yea+1):        
+        ma.nsel('s', 'loc', 'z', load_loc[i])
+        ma.nsel('r', 'loc', 'x', (xea-1)*Lv)
+        ma.nsel('r', 'loc', 'y', (j-1)*Ly)
+        ma.f('all', 'fx', -Hx)
 
     ma.allsel('all');  ma.eshape(0.1)
     ma.vscale('','',1)  # 하중 재하시 화살표 크기 동일하게 (작은 것은 안보이는 현상 발생)
     ma.pbc('f',1);  ma.pbc('u',1);  ma.pbc('rot',1)  # ma.replot()
-    ma.eplot(vtk=False, off_screen=True)    # png_bc  001.png
+    ma.eplot(vtk=False, off_screen=True)    # png_bc  001.png    
 
-    # png_model = os.path.join(working_dir, jobname + '000.png')
-    # png_bc = os.path.join(working_dir, jobname + '001.png')
-        
+    png_model = os.path.join(working_dir, jobname + '000.png')
+    png_bc = os.path.join(working_dir, jobname + '001.png')
+    st.image(png_model)
+    st.image(png_bc)
+    
+    # ma.open_gui()
     output = ma.solve()    
     # output
     ma.finish()
     # !! ===============================================> Solution
 
-
     # !! ===============================================> Postprocessing
     ma.post1()
     ma.set('last')
-    # ma.open_gui()
     result = {'Load Case':LC, 'uz':0, 'seqv':0, 'Fx1': 0, 'Fx2': 0, 'My1':0, 'My2':0, 'Mz1':0, 'Mz2':0, 'SFz1':0, 'SFz2':0, 'SFy1':0, 'SFy2':0}
     vertical = {'Load Case':LC, 'Fx1': 0, 'Fx2': 0, 'My1':0, 'My2':0, 'Mz1':0, 'Mz2':0, 'SFz1':0, 'SFz2':0, 'SFy1':0, 'SFy2':0}
     horizontal = {'Load Case':LC, 'Fx1': 0, 'Fx2': 0, 'My1':0, 'My2':0, 'Mz1':0, 'Mz2':0, 'SFz1':0, 'SFz2':0, 'SFy1':0, 'SFy2':0}
@@ -176,6 +233,11 @@ def analysis(In, LC):   # Load Case
     ma.plnsol('s', 'eqv')  # seqv, 003.png
     result['seqv'] = round(ma.get('seqv_max', 'plnsol',0,'max'), 1)
     ma.show('close')
+        
+    st.image(os.path.join(working_dir, jobname + '002.png'))
+    st.image(os.path.join(working_dir, jobname + '003.png'))
+
+    # ma.open_gui()
 
     ma.etable('Fx1', 'SMISC', 1)
     ma.etable('Fx2', 'SMISC', 14)
@@ -223,7 +285,7 @@ def analysis(In, LC):   # Load Case
         if i == 0:  opt = 'total'
         if i == 1:  opt = 'v'
         if i == 2:  opt = 'h'
-        if i == 3:  opt = 'b'        
+        # if i == 3:  opt = 'b'
         section_force('Fx1', 'Fx2', fact, opt)   # Fx, 004.png
         section_force('My1', 'My2', fact, opt)   # My, 005.png
         section_force('Mz1', 'Mz2', fact, opt)   # Mz, 006.png
@@ -234,9 +296,10 @@ def analysis(In, LC):   # Load Case
     verticals.append(vertical)
     horizontals.append(horizontal)
     bracings.append(bracing)
+    
 
-analysis(In, 1)  # Load Case
-analysis(In, 2)  # Load Case
+analysis(1)  # Load Case
+analysis(2)  # Load Case
 
 import json
 with open('Result.json', 'w') as f:
