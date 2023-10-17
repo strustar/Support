@@ -145,7 +145,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
         st.image(png[5])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue<[Moment [M$_z$, 모멘트 (N·mm)]>]')
+        st.write(h5, f':blue[<Moment [M$_z$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m')
         st.image(png[6])
@@ -156,6 +156,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
         st.write(s1, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN')
         st.image(png[7])
 
+        st.write('');  st.write('')
         st.write(h5, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
         st.write(s1, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN')
         st.write(s1, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN')
@@ -175,7 +176,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
         st.image(png[5+9])
         
         st.write('');  st.write('')
-        st.write(h5, f':blue<[Moment [M$_z$, 모멘트 (N·mm)]>]')
+        st.write(h5, f':blue[<Moment [M$_z$, 모멘트 (N·mm)]>]')
         st.write(s1, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m')
         st.write(s1, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m')
         st.image(png[6+9])

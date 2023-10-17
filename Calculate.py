@@ -47,7 +47,7 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     Table.Load(In, 'horizontal')
     st.write(s2, f'➣ ∴ X방향 수평하중 (H$_{{x}}$) = {In.Hx:.1f} kN')
     st.write(s2, f'➣ ∴ Y방향 수평하중 (H$_{{y}}$) = {In.Hy:.1f} kN')
-
+    
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.write(s1, '3) 풍하중')
     st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    

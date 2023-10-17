@@ -13,6 +13,7 @@ In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '
 color = 'green'
 In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
 In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
+In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
 
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em">{txt}</div>', unsafe_allow_html=True)    
@@ -23,7 +24,7 @@ sb = st.sidebar
 def Sidebar(h4, h5):
     sb.write('# ', ':blue[[Information : 입력값 📘]]')
     sb.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
-    In.select = sb.selectbox(h5 + '✦ 숨김', ('아직 연동 안됨 (우측의 탭으로 할지 고민중...)', 'Ⅰ. 일반 사항 📝✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 요약 ✅', 'Ⅳ. 상세 구조해석 🎯', 'Ⅴ. 참고'), index = 0, label_visibility='collapsed')
+    In.select = sb.selectbox(h5 + '✦ 숨김', ('O. 표지 및 목차 📝', 'Ⅰ. 일반 사항 ✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 상세 구조해석 🎯', 'Ⅳ. 검토 결과 ✅', '[부 록]', '[전체 보고서]'), index = 6, label_visibility='collapsed')
     
     # sb.write(h4, '✤ 공사명')    
     # In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')

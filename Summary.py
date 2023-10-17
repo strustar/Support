@@ -8,15 +8,11 @@ def Info(In):
     st.title(':green[Ⅳ. 검토 결과 ✅]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
     
-    st.write(h4, '1. 검토 결과')
+    st.write(h4, '1. 검토 의견')
     st.write(s1, '➣ 구조검토 결과 :blue[변위와 내력이 허용범위 이내인 것을 확인함]')
     
     st.write(h4, '2. 요약')
     st.write(s1, '➣ 부재 설치간격은 설치가 가능한 :blue[최대간격]으로, 제시된 :blue[간격 이하로 설치]하더라도 :blue[구조적으로 안전]함')
     Table.Summary(In)
     st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*가장 가혹한 조건인 보의 높이 5,600mm인 경우에 대해서만 구조 검토를 실시하였고, 나머지 보의 높이의 경우는 결과만 표시하였음]')
-    
-    st.write('');  st.write('');  st.write('')
-    Detail.Analysis(In, h4, h5, s1, s2, 'code', '', '', '')   # opt : both, result, code
-    
     
