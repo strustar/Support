@@ -7,7 +7,7 @@ today = date.today() # 오늘 날짜 가져오기
 def Contents():
     c0 = '<u>문서번호 : 23-10-001</u>'
     title = "&nbsp; &nbsp; &nbsp; 시스템동바리 구조검토보고서 &nbsp; &nbsp; &nbsp;"
-    c1 = "세종~안성 고속도로 건설공사"
+    c1 = "팔당대교~와부 도로건설 공사"
     c2 = "<u>교대날개벽</u>"
     c3 = today.strftime("%Y. %m")
     c4 = "우림산업(주)"
@@ -17,14 +17,14 @@ def Contents():
             <p style = "text-align: left;  font-size: 20px">{c0}</p>
             <div style = "display:inline-block; color: black; font-size: 28px;">                
                 <p style = "color: blue; font-size: 38px; border: 3px solid black; margin-top: 80px;  padding-top: 10px; padding-bottom: 10px">{title}</p>            
-                <p style = "margin-top:120px">{c1}</p>
-                <p style = "margin-top: 40px;  color: blue;">{c2}</p>
+                <p style = "margin-top:120px;  font-size: 32px">{c1}</p>
+                <p style = "margin-top: 40px;  font-size: 32px;  color: blue;">{c2}</p>
                 <p style = "margin-top:240px">{c3}</p>
-                <p style = "margin-top:240px;  margin-bottom:80px">{c4}</p>
+                <p style = "margin-top:240px;  margin-bottom:200px">{c4}</p>
             </div>
         </div>
         <table style = 'text-align: center;  width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-weight: bold;  font-size: 28px'>
-            <tr style = 'width: 100%;  border-collapse: collapse;  border: 2px solid black'>
+            <tr style = 'width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-size: 20px'>
                 <td style = 'border-collapse: collapse;  border: 2px solid black;  width: 8%;  padding: 20px'> 작<br><br>성 </td>
                 <td style = 'border-collapse: collapse;  border: 2px solid black;  width:26%'> 우림산업(주)<br><br>박 순 태</td>
                 <td style = 'border-collapse: collapse;  border: 2px solid black;  width:15%'> </td>
@@ -37,7 +37,8 @@ def Contents():
     """    
     components.html(html_code, width = 1000, height = 1400, scrolling = True)
     
-    html_code = f"""        
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    html_code = f"""
         <div style="font-weight: bold; text-align: center; background-color: white; margin: 0px; padding: 10px; ">
             <div style="display:inline-block; ">
                 <p style="color: blue; font-size: 36px; padding-left: 80px;  padding-right: 80px; padding-bottom: 10px; padding-top: 10px"><u>목 &nbsp; 차</p>
@@ -81,10 +82,10 @@ def Contents():
     c5   = ':blue[[부 록]]'
     c5_1   = '# ANSYS 상세 구조해석 코드'
     
-    s1 = '##  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-    s2 = '##  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+    s1 = '###  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+    s2 = '###  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
     st.write('');  st.write('')
-    st.write('# &nbsp;&nbsp;' + c1)
+    st.write('## &nbsp;&nbsp;' + c1)
     col = st.columns([1, 1])    
     with col[0]:
         st.write(s1 + c1_1)
@@ -95,7 +96,7 @@ def Contents():
         st.write(s2 + c1_5)
         
     st.write('');  st.write('')
-    st.write('# &nbsp;&nbsp;' + c2)
+    st.write('## &nbsp;&nbsp;' + c2)
     col = st.columns([1, 1])    
     with col[0]:
         st.write(s1 + c2_1)
@@ -111,7 +112,7 @@ def Contents():
         st.write(s2 + c2_10)
         
     st.write('');  st.write('')
-    st.write('# &nbsp;&nbsp;' + c3)
+    st.write('## &nbsp;&nbsp;' + c3)
     col = st.columns([1, 1])    
     with col[0]:
         st.write(s1 + c3_1)
@@ -124,18 +125,18 @@ def Contents():
         st.write(s2 + c3_7)
     
     st.write('');  st.write('')
-    st.write('# &nbsp;&nbsp;' + c4)
+    st.write('## &nbsp;&nbsp;' + c4)
     col = st.columns([1, 1])    
     with col[0]:
         st.write(s1 + c4_1)
     with col[1]:
         st.write(s2 + c4_2)
             
-    st.write('');  st.write('')
-    st.write('# &nbsp;&nbsp;' + c5)
-    st.write(s1 + c5_1)
+    # st.write('');  st.write('')
+    # st.write('## &nbsp;&nbsp;' + c5)
+    # st.write(s1 + c5_1)
         
-    st.write('');  st.write('');  st.write('')
+    # st.write('');  st.write('');  st.write('')
 
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 나중에 참조??

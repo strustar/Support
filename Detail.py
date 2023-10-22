@@ -69,12 +69,16 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     st.write(h4, '3. 단면력 집계')
     st.write(s1, '1) 단면력 (절대 최댓값)')
     Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, '')
+    
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.write(s1, '2) 허용응력 증가계수를 고려한 단면력')
     st.write(s2, '➣ LC2(하중조합 2)의 경우 허용응력 증가계수 1.25를 고려한다.')
     st.write(s2, '➣ 허용응력 증가는 단면력을 1.25로 나눈 것과 같다.')
     [Axial, Moment, Shear] = Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, 1.25)
     
     for i in [1, 2, 3]:
+        if i != 1:
+            st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         txt = ['4. ', '수직재'];  opt = ['축방향력', '휨모멘트', '전단력', Vertical]
         if i == 2:  txt = ['5. ', '수평재'];  opt[3] = Horizontal
@@ -90,6 +94,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
         st.write(s1, f'4) {opt[2]}에 대한 검토')
         Table.Section_Check(In, Axial, Moment, Shear, opt[2], opt[3], txt[1])
     
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '7. 상세 구조해석 결과')    
     working_dir = 'pyAPDL';  jobname = 'file';  png = []
@@ -98,100 +103,118 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
         if i >= 10: name = os.path.join(working_dir, jobname + '0'  + str(i) + '.png')
         png.append(name)
     
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1:
+    col = st.columns([1,8,1])
+    with col[1]:
         st.write(h4, '[해석 모델]')
-        st.image(png[0])
-    with col2:
+        st.image(png[0], width=800)
+        
+    col = st.columns([1,8,1])
+    with col[1]:
         st.write(h4, '[경계조건 및 하중조건]')    
-        st.image(png[1])
+        st.image(png[1], width=800)
     
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    [col1, col2] = st.columns(In.col_span_ref)        
-    with col1:
-        st.write(h4, '[Load Case 1 (LC1)]')
-        st.write(h5, f':blue[<Displacement [u$_z$, 변위 (mm)]>]')
-        st.write(s1, f'➣ 최대 변위 : {uz[0]} mm')
-        st.image(png[2])
-
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<von Mises Stress [$\sigma_{{eqv}}$, 등가응력 (MPa)]>]')
-        st.write(s1, f'➣ 최대 등가응력 : {seqv[0]:,.1f} MPa')
-        st.image(png[3])
-    with col2:
-        st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-        st.write(h5, f':blue[<Displacement [u$_z$, 변위 (mm)]>]')
-        st.write(s1, f'➣ 최대 변위 : {uz[1]:,.3f} mm')
-        st.image(png[2+9])
+    st.write(h4, f':blue[<Displacement [u$_z$, 변위 (mm)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:        
+        st.write(h5, f'➣ 최대 변위 : {uz[0]:,.3f} mm [LC1]')
+        st.image(png[2], width=800)
         
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<von Mises Stress [$\sigma_{{eqv}}$, 등가응력 (MPa)]>]')
-        st.write(s1, f'➣ 최대 등가응력 : {seqv[1]:,.1f} MPa')
-        st.image(png[3+9])
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 변위 : {uz[1]:,.3f} mm [LC2 : 풍하중 고려]')
+        st.image(png[2+9], width=800)
 
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    [col1, col2] = st.columns(In.col_span_ref)        
-    with col1:
-        st.write(h4, '[Load Case 1 (LC1)]')
-        st.write(h5, f':blue[<Axial Force [F$_x$, 축방향력 (N)]>]')
-        st.write(s1, f'➣ 최대 축방향력 : {Fx1[0]:,.3f} kN')
-        st.write(s1, f'➣ 최소 축방향력 : {Fx2[0]:,.3f} kN')
-        st.image(png[4])
-        
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Moment [M$_y$, 모멘트 (N·mm)]>]')
-        st.write(s1, f'➣ 최대 모멘트 : {My1[0]:,.3f} kN·m')
-        st.write(s1, f'➣ 최소 모멘트 : {My2[0]:,.3f} kN·m')
-        st.image(png[5])
-        
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Moment [M$_z$, 모멘트 (N·mm)]>]')
-        st.write(s1, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m')
-        st.write(s1, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m')
-        st.image(png[6])
+    st.write(h4, f':blue[<von Mises Stress [$\sigma_{{eqv}}$, 등가응력 (MPa)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 등가응력 : {seqv[0]:,.1f} MPa [LC1]')
+        st.image(png[3], width=800)
+    
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 등가응력 : {seqv[1]:,.1f} MPa [LC2 : 풍하중 고려]')
+        st.image(png[3+9], width=800)
 
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Shear Force [S$_z$, 전단력 (N)]>]')
-        st.write(s1, f'➣ 최대 전단력 : {SFz1[0]:,.3f} kN')
-        st.write(s1, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN')
-        st.image(png[7])
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########    
+    st.write(h4, f':blue[<Axial Force [F$_x$, 축방향력 (N)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 축방향력 : {Fx1[0]:,.3f} kN [LC1]')
+        st.write(h5, f'➣ 최소 축방향력 : {Fx2[0]:,.3f} kN [LC1]')
+        st.image(png[4], width=800)
+        
+    col = st.columns([1,8,1])
+    with col[1]:        
+        st.write(h5, f'➣ 최대 축방향력 : {Fx1[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.write(h5, f'➣ 최소 축방향력 : {Fx2[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.image(png[4+9], width=800)
 
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
-        st.write(s1, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN')
-        st.write(s1, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN')
-        st.image(png[8])
+    
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.write(h4, f':blue[<Moment [M$_y$, 모멘트 (N·mm)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 모멘트 : {My1[0]:,.3f} kN·m [LC1]')
+        st.write(h5, f'➣ 최소 모멘트 : {My2[0]:,.3f} kN·m [LC1]')
+        st.image(png[5], width=800)
 
-    with col2:
-        st.write(h4, '[Load Case 2 (LC2) : 풍하중 고려]')
-        st.write(h5, f':blue[<Axial Force [F$_x$, 축방향력 (N)]>]')
-        st.write(s1, f'➣ 최대 축방향력 : {Fx1[1]:,.3f} kN')
-        st.write(s1, f'➣ 최소 축방향력 : {Fx2[1]:,.3f} kN')
-        st.image(png[4+9])
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m [LC2 : 풍하중 고려]')
+        st.write(h5, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m [LC2 : 풍하중 고려]')
+        st.image(png[5+9], width=800)
+
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.write(h4, f':blue[<Moment [M$_z$, 모멘트 (N·mm)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 모멘트 : {Mz1[0]:,.3f} kN·m [LC1]')
+        st.write(h5, f'➣ 최소 모멘트 : {Mz2[0]:,.3f} kN·m [LC1]')
+        st.image(png[6], width=800)
+
+    col = st.columns([1,8,1])
+    with col[1]:    
+        st.write(h5, f'➣ 최대 모멘트 : {Mz1[1]:,.3f} kN·m [LC2 : 풍하중 고려]')
+        st.write(h5, f'➣ 최소 모멘트 : {Mz2[1]:,.3f} kN·m [LC2 : 풍하중 고려]')
+        st.image(png[6+9], width=800)    
+    
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.write(h4, f':blue[<Shear Force [S$_z$, 전단력 (N)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 전단력 : {SFz1[0]:,.3f} kN [LC1]')
+        st.write(h5, f'➣ 최소 전단력 : {SFz2[0]:,.3f} kN [LC1]')
+        st.image(png[7], width=800)
+
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 전단력 : {SFz1[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.write(h5, f'➣ 최소 전단력 : {SFz2[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.image(png[7+9], width=800)
+    
         
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Moment [M$_y$, 모멘트 (N·mm)]>]')
-        st.write(s1, f'➣ 최대 모멘트 : {Mz1[1]:,.3f} kN·m')
-        st.write(s1, f'➣ 최소 모멘트 : {Mz2[1]:,.3f} kN·m')
-        st.image(png[5+9])
-        
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Moment [M$_z$, 모멘트 (N·mm)]>]')
-        st.write(s1, f'➣ 최대 모멘트 : {My1[1]:,.3f} kN·m')
-        st.write(s1, f'➣ 최소 모멘트 : {My2[1]:,.3f} kN·m')
-        st.image(png[6+9])
-        
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Shear Force [S$_z$, 전단력 (N)]>]')
-        st.write(s1, f'➣ 최대 전단력 : {SFz1[1]:,.3f} kN')
-        st.write(s1, f'➣ 최소 전단력 : {SFz2[1]:,.3f} kN')
-        st.image(png[7+9])
-        
-        st.write('');  st.write('')
-        st.write(h5, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
-        st.write(s1, f'➣ 최대 전단력 : {SFy1[1]:,.3f} kN')
-        st.write(s1, f'➣ 최소 전단력 : {SFy2[1]:,.3f} kN')
-        st.image(png[8+9])
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.write(h4, f':blue[<Shear Force [S$_y$, 전단력 (N)]>]')
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 전단력 : {SFy1[0]:,.3f} kN [LC1]')
+        st.write(h5, f'➣ 최소 전단력 : {SFy2[0]:,.3f} kN [LC1]')
+        st.image(png[8], width=800)
+    
+    col = st.columns([1,8,1])
+    with col[1]:
+        st.write(h5, f'➣ 최대 전단력 : {SFy1[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.write(h5, f'➣ 최소 전단력 : {SFy2[1]:,.3f} kN [LC2 : 풍하중 고려]')
+        st.image(png[8+9], width=800)
 
 def Code():
     file_path = 'pyAPDL.py';  encoding = 'utf-8'    
@@ -202,8 +225,10 @@ def Code():
 
 def Analysis(In, h4, h5, s1, s2, opt, Vertical, Horizontal, Bracing):
     if 'code' in opt:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.title(':orange[부 록 🎯] (ANSYS 3차원 상세 구조해석 코드)')
     else:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.title(':orange[Ⅲ. 상세 구조해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
     

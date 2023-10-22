@@ -7,6 +7,7 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
 def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.title(':blue[Ⅱ. 구조 검토 ✍️]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
@@ -32,9 +33,13 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     with col2: st.write(h5, ':orange[ <근거 : 1.6.2 연직하중 (KDS 21 50 00 : 2022)>]')
 
     st.write(s2, '➣ 고정하중은 철근콘크리트와 거푸집의 무게를 합한 하중이다.')
-    st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')    
+    txt = '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.'
+    word_wrap_style(s2+' ', txt, In.font_h5)
+    # st.write(s2, '➣ 작업하중은 작업원, 경량의 장비하중, 충격하중, 기타 콘크리트 타설에 필요한 자재 및 공구 등의 하중을 포함한다.')    
     Table.Load(In, 'vertical')    
-    st.write('###### $\quad \qquad$', '*작업하중은 콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용')
+    txt = '*작업하중은 콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용'
+    word_wrap_style(s2, txt, '15px')
+    # st.write('###### $\quad \qquad$', '*작업하중은 콘크리트 타설 높이가 0.5m 미만인 경우 :blue[2.5kN/m²], 0.5m 이상 1m 미만인 경우 :blue[3.5kN/m²], 1m 이상인 경우 :blue[5kN/m² 이상] 적용')
     
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    # st.write('&nbsp;', unsafe_allow_html=True)
     [col1, col2] = st.columns(In.col_span_ref)
@@ -49,9 +54,10 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     st.write(s2, f'➣ ∴ Y방향 수평하중 (H$_{{y}}$) = {In.Hy:.1f} kN')
     
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.write(s1, '3) 풍하중')
     st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    
-
+    
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '3. 사용부재 및 설치간격')
     Table.Input(In)
@@ -62,17 +68,22 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     with col2: st.write(h4, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')
     Table.Wood_Deformation(In)
 
-    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########    
     opt = ['합판','장선 간격', '5. '];  Check(In, opt, In.wood, Wood)
-    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########    
     opt = ['장선','멍에 간격', '6. '];  Check(In, opt, In.joist, Joist)
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['멍에','수직재 간격', '7. '];  Check(In, opt, In.yoke, Yoke)
-
+    
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['수직재', '8. '];  Vertical.Fca = Check_Support(In, opt, In.vertical, Vertical)
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['수평재', '9. '];  Horizontal.Fca = Check_Support(In, opt, In.horizontal, Horizontal)
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     opt = ['가새재', '10. '];  Bracing.Fca = Check_Support(In, opt, In.bracing, Bracing)
     

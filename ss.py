@@ -20,52 +20,6 @@ st.set_page_config(page_title = "System support 구조검토", page_icon = "🌈
                     })
 ### * -- Set page config
 
-# 맨 윗쪽 정보, 이메일 등 기본 정보 (필요 없음?)
-# css_intro = """
-# <style>
-#     .boxed {
-#         border: 3px solid blue;
-#         border-radius: 100px;
-#         padding: 20px;
-#         padding-left: 30px;
-#         margin: 20px;
-#         margin-left: -30px;
-#         margin-right: 0px;
-#         margin-top: 30px;
-#         margin-bottom: 0px;
-#         font-size: 22px;
-#         # line-height: 1.5;
-#         background-color: yellow;
-#         color: black;
-#         width: 515px;
-#         # height: 100px;
-#     }
-#     .small {
-#         color: green;
-#         padding: 10px;
-#         font-size: 16px;
-#         display: inline-block;
-#         # text-decoration: underline;
-#         # line-height: 1.2;
-#     }
-# </style>
-# """
-# txt =''' ￭ 계속해서 실시간 업데이트 되고 있습니다.
-#     <br> ￭ 궁금한 사항은 이메일로 문의 해 주세요 (건양대 손병직)
-#     <br> ￭ 이메일 문의 환영 (<a href="mailto:strustar@konyang.ac.kr">strustar@konyang.ac.kr</a>)
-# '''
-# txt1 ='''￭ 표 등이 겹쳐서 보일 때는 새로 고침을 해 주세요
-#     <br> ￭ Edge, Chrome 브라우저 등에서 실행
-#     <br> ￭ Light Mode, Dark Mode 둘 다 가능 (Light Mode 추천)
-#     <br> ￭ 브라우저 특성상 잘 안보일 수 있습니다. (Edge 브라우저 추천)
-# '''
-# [col1, col2] = st.columns([1.15,1])
-# st.markdown(css_intro, unsafe_allow_html=True)
-# with col1:
-#     st.markdown(f'<div class="boxed"> [가칭] 동바리 설계 자동화 프로그램 (초안)<br><span class="small">{txt}</span></div>', unsafe_allow_html=True)
-# with col2:
-#     st.markdown(f'<div class="boxed"> ✦ 프로그램 사용 유의사항<br><span class="small">{txt1}</span></div>', unsafe_allow_html=True)
-
 
 # 메인바 윗쪽 여백 줄이기 & 텍스트, 숫자 상자 스타일,  # Adding custom style with font
 css = f""" <style>
@@ -110,7 +64,7 @@ css = f""" <style>
         margin-top: -100px !important;        
         padding-bottom: 100px !important;
         height: 110% !important;
-        # max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
+        max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
         width: 100% !important;  /* 이렇게 하면 사이드 바 폭을 고정할수 있음. */
     }}
         /* CSS to set font for everything except code blocks */
@@ -127,14 +81,30 @@ css = f""" <style>
 </style> """
 st.markdown(css, unsafe_allow_html=True)
 
-# 왼쪽 사이드바 인쇄하지 않기 설정
+# 왼쪽 사이드바 인쇄하지 않기 설정 등
 st.markdown("""
 <style>
 @media print {
     [data-testid=stSidebar] {
         display: none;
     }
-    header, footer, .no-print { display:none }
+    header, footer, .no-print {display:none}
+    @page {
+        size: A4;
+        margin-left: 50px;
+    }
+    body {
+        width: 100%; /* 전체 너비 사용 */
+    }
+    @page :first {
+        page-number: 0;
+    }
+    @page {
+        counter-increment: page;
+    }
+    .page:after {
+        content: counter(page);
+    }
     # .print{zoom: 78%}   # 동작이 안됨 ??
     # body {   # 동작이 안됨 ??
     #     font-size: 24px;
@@ -142,9 +112,19 @@ st.markdown("""
     #     background-dolor: red;
     # }
 }
-@page {size: A4;}
 </style>
 """, unsafe_allow_html=True)
+
+# 페이지 간 구분을 위한 CSS 스타일 정의
+page_break_style = """
+<style>
+.page-break {
+    page-break-before: always;
+}
+</style>
+"""
+st.markdown(page_break_style, unsafe_allow_html=True)
+
 
 # 모든 글씨 및 라텍스 수식 진하게 설정
 st.markdown('''
@@ -182,7 +162,7 @@ if ('보고서' in In.select) or ('상세' in In.select):
 if ('보고서' in In.select) or ('결과' in In.select):
     Summary.Info(In)
     st.write('');  st.write('');  st.write('')
-if ('보고서' in In.select) or ('부 록' in In.select):
+if '부 록' in In.select:
     Detail.Analysis(In, h4, h5, s1, s2, 'code', '', '', '')   # opt : both, result, code
 
 # ##### tab ==========================================================================================

@@ -13,7 +13,7 @@ def common_table(headers, data, columnwidth, cells_align, cells_fill_color, heig
         data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
     df = pd.DataFrame(data_dict)
     
-    fill_color = ['silver']
+    fill_color = ['gainsboro']
     if len(kargs) > 0:  fill_color = kargs['fill_color']
     fig = go.Figure(data = [go.Table(        
         columnwidth = columnwidth,
@@ -39,8 +39,8 @@ def common_table(headers, data, columnwidth, cells_align, cells_fill_color, heig
 def Summary(In):
     headers = [
         '<b><br>구 분</b>',
-        '<b>보의 높이*<br>5,600 mm</b>',
-        '<b>보의 높이*<br>3,550 mm</b>',
+        '<b>보의 높이*<br>5,800 mm</b>',
+        '<b>보의 높이*<br>3,650 mm</b>',
         '<b>보의 높이*<br>1,500 mm</b>',
         '<b><br>비 고</b>',]
     data = [
@@ -51,8 +51,8 @@ def Summary(In):
         ['<b><br>수평재', f'<b>{In.horizontal}<br>       @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
         ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
     
-    columnwidth = [1, 1.5, 1.5, 1.5, 1];  height = 385;  left = 20
-    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    columnwidth = [1, 1.5, 1.5, 1.5, 1];  height = 387;  left = 20
+    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
     
 def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
@@ -136,7 +136,7 @@ def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
             ['<b>LC2', f'<b>{txt1} = {F2:,.3f} {txt2} / {A:,.1f} {txt3} = {stress2:,.1f} MPa', f'<b>{allowable:,.1f}', f'<b>{ratio2:,.3f}', f'<b>{check2}'], ]
             
     left = 40
-    cells_align = 'center';  cells_fill_color = ['lightblue', 'white']
+    cells_align = 'center';  cells_fill_color = ['gainsboro', 'white']
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left, fill_color = cells_fill_color[0])
         
 
@@ -173,7 +173,7 @@ def Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, opt):
             ['<b>가새재', f'<b>{Axial[4]:,.3f}', f'<b>{Axial[5]:,.3f}', f'<b>{Moment[4]:,.3f}', f'<b>{Moment[5]:,.3f}', f'<b>{Shear[4]:,.3f}', f'<b>{Shear[5]:,.3f}', '<b>'],
         ]
     columnwidth = [1];  height = 220;  left = 40
-    cells_align = 'center';  cells_fill_color = ['lightblue', 'white']
+    cells_align = 'center';  cells_fill_color = ['gainsboro', 'white']
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left, fill_color = cells_fill_color[0])
     return Axial, Moment, Shear
 
@@ -210,7 +210,7 @@ def Input(In):
         ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''], ]    
     
     columnwidth = [0.8, 1.4, 1,1.2, 3];  height = 286;  left = 20
-    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
 
 
@@ -224,8 +224,8 @@ def Load_Case():
         ['<b>LC2', '<b>D + W (고정하중 + 풍하중)', '<b>1.25',],
         ['<b>LC3', '<b>D + L<sub>i</sub> + M + S (고정하중 + 작업하중 + 수평하중 + 특수하중)', '<b>1.50',],   ]    
 
-    columnwidth = [1., 3.2, 1., 1];  height = 165;  left = 40
-    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    columnwidth = [1., 3.2, 1., 1];  height = 165;  left = 50
+    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
     
 
@@ -273,8 +273,8 @@ def Load(In, verhor):
             ['<b>단위 면적당 수평하중<br><b>         [kN/m²]', txt2],
             ['<b>수평하중 (P<sub>h</sub>)<br>      [kN]', txt3], ]
         
-    left = 40
-    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['silver', 'white']    
+    left = 50
+    cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
 
 
@@ -313,5 +313,5 @@ def Info(opt, section, A, Ib_Q, I, S, E, fba, fsa, l_margin):
         headers[8] = f'<b>항복강도<br><i>F<sub>y</sub></i> [MPa]</b>'        
 
     columnwidth = [0.7, 1.6, 0.9, 1.1, 1.2, 0.9, 0.9, 1,1.1];  height = 106;  left = l_margin
-    cells_align = ['center'];  cells_fill_color = ['silver', 'white']    
+    cells_align = ['center'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)

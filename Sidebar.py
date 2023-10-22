@@ -8,7 +8,7 @@ In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
 In.space = '<div style="margin:0px">'
 In.background_color = 'linen'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
-In.font_h1 = '28px';  In.font_h2 = '24px';  In.font_h3 = '22px';  In.font_h4 = '20px';  In.font_h5 = '18px';  In.font_h6 = '15px'
+In.font_h1 = '30px';  In.font_h2 = '28px';  In.font_h3 = '26px';  In.font_h4 = '24px';  In.font_h5 = '20px';  In.font_h6 = '16px'
 
 color = 'green'
 In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
@@ -16,12 +16,13 @@ In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margi
 In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
 
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
-    return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em">{txt}</div>', unsafe_allow_html=True)    
+    return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em; text-align: justify">{txt}</div>', unsafe_allow_html=True)    
     # return st.markdown(span + f'<span style="white-space:pre-line; display:inline; font-size: {fs}; line-height: 2; padding-left: 0px; text-indent: 10em">{txt}</span>', unsafe_allow_html=True)    
 
 sb = st.sidebar
 ##### sidebar =======================================================================================================
 def Sidebar(h4, h5):
+    h4 = h5
     sb.write('# ', ':blue[[Information : 입력값 📘]]')
     sb.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
     In.select = sb.selectbox(h5 + '✦ 숨김', ('O. 표지 및 목차 📝', 'Ⅰ. 일반 사항 ✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 상세 구조해석 🎯', 'Ⅳ. 검토 결과 ✅', '[부 록]', '[전체 보고서]'), index = 6, label_visibility='collapsed')
@@ -41,8 +42,8 @@ def Sidebar(h4, h5):
     with col1:
         if '슬래브' in In.type:  In.slab_t = st.number_input(h5 + '✦ 두께 [mm]', min_value = 50., value = 400., step = 10., format = '%0.f')
         if '보' in In.type:
-            In.beam_b = st.number_input(h5 + '✦ 보의 폭 [mm]', min_value = 50., value = 500., step = 10., format = '%f')
-            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 5600., step = 10., format = '%f')
+            In.beam_b = st.number_input(h5 + '✦ 보의 폭 [mm]', min_value = 50., value = 450., step = 10., format = '%f')
+            In.beam_h = st.number_input(h5 + '✦ 보의 높이 [mm]', min_value = 50., value = 5800., step = 10., format = '%f')
     with col2:
         In.slab_X = st.number_input(h5 + '✦ X 방향 길이 [m]', min_value = 0.1, value = 0.305*17., step = 0.1, format = '%.1f')        
         
@@ -65,7 +66,7 @@ def Sidebar(h4, h5):
     with col[0]:
         In.joist = st.selectbox(h5 + '✦ 장선 규격 [mm]', ('🔲 50×50×2.0t', '🔲 50×50×2.3t'), index = 0, label_visibility='collapsed')
     with col[1]:
-        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 90., step = 10., format = '%f', label_visibility='collapsed')
+        In.Lj = st.number_input(h5 + '✦ 장선 간격 [mm]', min_value = 10., value = 85., step = 10., format = '%f', label_visibility='collapsed')
 
     sb.write(h4, '4. 멍에 규격 및 간격 [mm] [SPSR400]')
     col = sb.columns([3,2], gap = 'medium')
@@ -80,7 +81,7 @@ def Sidebar(h4, h5):
         In.vertical = st.selectbox(h5 + '✦ 수직재 규격 [mm]', ('🔘 𝜙60.5×2.5t', '🔘 𝜙60.5×2.6t'), index = 1, label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[*수직재 간격 = 수평재 좌굴길이 ($\rm{{KL_h}}$)]')
     with col[1]:
-        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 4, label_visibility='collapsed')
+        In.Lv = st.selectbox(h5 + '✦ 수직재 간격 [mm]', (1829, 1524, 1219, 914, 610, 305), index = 5, label_visibility='collapsed')
 
     sb.write(h4, '6. 수평재 규격 및 간격** [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')
@@ -88,7 +89,7 @@ def Sidebar(h4, h5):
         In.horizontal = st.selectbox(h5 + '✦ 수평재 규격 [mm]', ('🔘 𝜙42.7×2.2t', '🔘 𝜙42.7×2.3t'), index = 1, label_visibility='collapsed')
         st.write('###### $\,$', rf':blue[**수평재 간격 = 수직재 좌굴길이 ($\rm{{KL_v}}$)]')
     with col[1]:
-        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 1, label_visibility='collapsed')
+        In.Lh = st.selectbox(h5 + '✦ 수평재 간격 [mm]', (1725, 1291, 863, 432, 216), index = 0, label_visibility='collapsed')
 
     sb.write(h4, '7. 가새재 규격 [mm] [SKT400]')
     col = sb.columns([3,2], gap = 'medium')

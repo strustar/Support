@@ -5,6 +5,7 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
 def Info(In):
+    # st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.title(':green[Ⅳ. 검토 결과 ✅]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
     
@@ -14,5 +15,5 @@ def Info(In):
     st.write(h4, '2. 요약')
     st.write(s1, '➣ 부재 설치간격은 설치가 가능한 :blue[최대간격]으로, 제시된 :blue[간격 이하로 설치]하더라도 :blue[구조적으로 안전]함')
     Table.Summary(In)
-    st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*가장 가혹한 조건인 보의 높이 5,600mm인 경우에 대해서만 구조 검토를 실시하였고, 나머지 보의 높이의 경우는 결과만 표시하였음]')
+    st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*가장 가혹한 조건인 보의 높이 5,800mm인 경우에 대해서만 구조 검토를 실시하였고, 나머지 보의 높이의 경우는 결과만 표시하였음]')
     

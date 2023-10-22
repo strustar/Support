@@ -14,6 +14,7 @@ h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
 s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
 
 def Tab(In):
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.title(':green[Ⅰ. 일반 사항 ✍️]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########
 
@@ -44,6 +45,7 @@ def Tab(In):
     word_wrap_style(s1, txt, In.font_h5)
     
 
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########    
     st.write(h4, '2. 사용부재 제원')
 
@@ -113,6 +115,7 @@ def Tab(In):
     [Bracing.A, Bracing.I, Bracing.S, Bracing.E, Bracing.r, Bracing.Fy, Bracing.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
 
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '3. 설계조건')  # \enspace : 1/2 em space, \quad : 1 em space, \qquad : 2 em space
 
@@ -155,6 +158,7 @@ def Tab(In):
     txt = '￭ 콘크리트 타설 두께가 큰 구조물을 지지하는 동바리에 의해 하부의 지지 구조물에 전달되는 하중이 구조계산서에서 제시한 설계하중을 상회하는 경우에는 :blue[하부 지지구조물의 구조 안전성을 검토]한다. 이 때, 하부 지지구조물이 콘크리트 구조물인 경우 :blue[재령에 따른 콘크리트 압축강도를 고려]한다.'
     word_wrap_style(s2, txt, In.font_h5)
 
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '4. 설계하중 및 하중조합')
     [col1, col2] = st.columns(In.col_span_ref)  # \enspace : 1/2 em space, \quad : 1 em space, \qquad : 2 em space
@@ -203,7 +207,7 @@ def Tab(In):
     with col2: st.write(h5, ':green[[1.0으로 계산 : 최솟값 0.85]]')
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s3, rf'￭ $\small K_{{zr}}$ : 풍속고도 분포계수 (5.5.4에 따른다)')
-    with col2: st.write(h5, ':green[[1.0으로 계산 : 평탄한 지역에 0.58(A), 0.81(B), 1.0(C), 1.13(D) 적용]]')
+    with col2: st.write(h5, ':green[[1.0으로 계산 : 0.58(A), 0.81(B), 1.0(C), 1.13(D) 적용]]')
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s3, rf'￭ $\small K_{{zt}}$ : 지형계수 (5.5.5에 따른다)')
     with col2: st.write(h5, ':green[[1.0으로 계산 : 평탄한 지역에 대한 지형계수는 1.0이다]]')
@@ -213,9 +217,9 @@ def Tab(In):
     
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s2, rf'➣ 가시설물의 재현기간에 따른 중요도계수 $\small I_w(T_w)$')
+    with col1: st.write(s2, rf'➣ 가시설물의 재현기간에 따른 중요도계수 $\small I_w$')
     with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')    
-    st.write(s3, rf'￭ 재현기간($\small I_w(T_w)$)이 1년 이하의 경우에는 0.60을 적용하고, 이 외 기간에 대해서는 다음 식에 의해 산정할 수 있다.')
+    st.write(s3, rf'￭ 재현기간($\small I_w(T_w)$)이 1년 이하의 경우에는 0.60을 적용하고, 이 외 기간에 대해서는 다음 식에 의해 산정.')
     st.write(s3, rf'￭ $\small I_w = 0.56 + 0.1 ln(T_w)$')
     st.write(s3, rf'￭ $\bm{{\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }} }}$')
     st.write(s3, rf'￭ $\small T_w$ : 재현기간(년), $\quad \small N$ : 가시실물의 존치기간(년), $\quad \small P$ : 비초과 확률(60%)')
