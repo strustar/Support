@@ -4,17 +4,19 @@ import pandas as pd
 import numpy as np
 
 fn1 = 'Nanum Gothic';  fn2 = 'Gungsuhche';  fn3 = 'Lora';  fn4 = 'Noto Sans KR'
-table_font = fn1;  fs = 17;  lw = 2;  width = 980
+table_font = fn1;  fs = 17;  lw = 2;  #width = 1000
 
 def common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left, **kargs):
     if np.ndim(data) == 1:
         data_dict = {header: [value] for header, value in zip(headers, data)}  # 행이 한개 일때
     else:
         data_dict = {header: values for header, values in zip(headers, zip(*data))}  # 행이 여러개(2개 이상) 일때
-    df = pd.DataFrame(data_dict)
+    df = pd.DataFrame(data_dict)    
     
-    fill_color = ['gainsboro']
-    if len(kargs) > 0:  fill_color = kargs['fill_color']
+    fill_color = kargs['fill_color'] if 'fill_color' in kargs else ['gainsboro']
+    width = kargs['width'] if 'width' in kargs else 1000
+    # if len(kargs) > 0:  fill_color = kargs['fill_color']
+        
     fig = go.Figure(data = [go.Table(        
         columnwidth = columnwidth,
         header = dict(
@@ -36,24 +38,98 @@ def common_table(headers, data, columnwidth, cells_align, cells_fill_color, heig
     fig.update_layout(width = width, height = height, margin = dict(l = left, r = 1, t = 1, b = 1))  # 테이블 여백 제거  # 표의 크기 지정    
     st.plotly_chart(fig)
 
+def Kzr(In, txt):
+    fill_color = ['gainsboro']
+    
+    if '1' in txt:
+        headers = [
+            '<b>지표면조도구분</b>',
+            '<b>주변지역의 지표면 상태</b>', ]
+        data = [
+            ['<b>A', f'<b>대도시 중심부에서 고층건축구조물(10층 이상)이 밀집해 있는 지역'],
+            ['<b><br>B', f'<b>수목⋅높이 3.5 m 정도의 주택과 같은 건축구조물이 밀집해 있는 지역<br>중층건물(4~9층)이 산재해 있는 지역 '],
+            ['<b><br>C', f'<b>높이 1.5~10 m 정도의 장애물이 산재해 있는 지역<br>수목⋅저층 건축구조물이 산재해 있는 지역'],
+            ['<b><br>D', f'<b>장애물이 거의 없고, 주변 장애물의 평균높이가 1.5 m 이하인 지역<br>해안, 초원, 비행장 '], ]
+        columnwidth = [1, 2.2];  height = 270;  cells_align = ['center', 'left']
+
+        cells_fill_color = [['gainsboro', 'gainsboro','gainsboro','gainsboro'], ['white','white','white','white']]
+        cells_fill_color[0][ord(In.Kzr_txt)-65] = 'lightblue'
+        cells_fill_color[1][ord(In.Kzr_txt)-65] = 'lightblue'
+
+    if '2' in txt:
+        headers = [
+            '<b>지표면으로부터의 높이 Z(m)</b>',
+            '<b>A</b>',
+            '<b>B</b>',
+            '<b>C</b>',
+            '<b>D</b>',
+            ]
+        data = [
+            ['<b>z ≤ z<sub>b</sub>', f'<b>0.58', f'<b>0.81', f'<b>1.00', f'<b>1.13', ],
+            ['<b>z<sub>b</sub> < z ≤ Z<sub>g</sub>', f'<b>0.22 z<sup>α</sup>', f'<b>0.45 z<sup>α</sup>', f'<b>0.71 z<sup>α</sup>', f'<b>0.98 z<sup>α</sup>', ], ]        
+        columnwidth = [2, 1.1, 1.1, 1.1, 1.1];  height = 126;  cells_align = ['center', 'center']
+
+        fill_color = ['gainsboro', 'gainsboro', 'gainsboro', 'gainsboro', 'gainsboro']
+        fill_color[ord(In.Kzr_txt)-65 + 1] = 'lightblue'
+        cells_fill_color = [['gainsboro', 'gainsboro'], ['white','white'], ['white','white'], ['white','white'], ['white','white']]
+        cells_fill_color[ord(In.Kzr_txt)-65 + 1][0] = 'lightblue'
+        cells_fill_color[ord(In.Kzr_txt)-65 + 1][1] = 'lightblue'        
+
+    if '3' in txt:
+        headers = [
+            '<b>지표조도구분</b>',
+            '<b>A</b>',
+            '<b>B</b>',
+            '<b>C</b>',
+            '<b>D</b>',
+            ]
+        data = [
+            ['<b>z<sub>b</sub> (m)', f'<b>20 m', f'<b>15 m', f'<b>10 m', f'<b>5 m', ],
+            ['<b>Z<sub>g</sub> (m)', f'<b>550 m', f'<b>450 m', f'<b>350 m', f'<b>250 m', ],
+            ['<b>α', f'<b>0.33', f'<b>0.22', f'<b>0.15', f'<b>0.10', ], ]        
+        columnwidth = [2, 1.1, 1.1, 1.1, 1.1];  height = 164;  cells_align = ['center', 'center'];  
+        
+        fill_color = ['gainsboro', 'gainsboro', 'gainsboro', 'gainsboro', 'gainsboro']
+        fill_color[ord(In.Kzr_txt)-65 + 1] = 'lightblue'
+        cells_fill_color = [['gainsboro', 'gainsboro', 'gainsboro'], ['white','white','white'], ['white','white','white'], ['white','white','white'], ['white','white','white']]
+        cells_fill_color[ord(In.Kzr_txt)-65 + 1][0] = 'lightblue'
+        cells_fill_color[ord(In.Kzr_txt)-65 + 1][1] = 'lightblue'
+        cells_fill_color[ord(In.Kzr_txt)-65 + 1][2] = 'lightblue'
+
+    left = 80;  #cells_fill_color = ['gainsboro', 'white']    
+    common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left, width = 950, fill_color=fill_color)
+
+
 def Summary(In):
+    # headers = [
+    #     '<b><br>구 분</b>',
+    #     '<b>보의 높이*<br>5,800 mm</b>',
+    #     '<b>보의 높이*<br>3,650 mm</b>',
+    #     '<b>보의 높이*<br>1,500 mm</b>',
+    #     '<b><br>비 고</b>',]
+    # data = [
+    #     ['<b>합판',       f'<b>{In.wood} (하중방향)', '<b>좌동', '<b>좌동', ''],
+    #     ['<b><br>장선',   f'<b>{In.joist}<br>       @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
+    #     ['<b><br>멍에',   f'<b>{In.yoke}<br>        @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+    #     ['<b><br>수직재', f'<b>{In.vertical}<br>       @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+    #     ['<b><br>수평재', f'<b>{In.horizontal}<br>       @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+    #     ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
+
     headers = [
         '<b><br>구 분</b>',
-        '<b>보의 높이*<br>5,800 mm</b>',
-        '<b>보의 높이*<br>3,650 mm</b>',
-        '<b>보의 높이*<br>1,500 mm</b>',
-        '<b><br>비 고</b>',]
+        '<b>보 [600mm × 700mm]</b>', ]
     data = [
         ['<b>합판',       f'<b>{In.wood} (하중방향)', '<b>좌동', '<b>좌동', ''],
-        ['<b><br>장선',   f'<b>{In.joist}<br>       @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
-        ['<b><br>멍에',   f'<b>{In.yoke}<br>        @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
-        ['<b><br>수직재', f'<b>{In.vertical}<br>       @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
-        ['<b><br>수평재', f'<b>{In.horizontal}<br>       @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b><br>장선',   f'<b>{In.joist}  @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
+        ['<b><br>멍에',   f'<b>{In.yoke}  @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b><br>수직재', f'<b>{In.vertical}  @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+        ['<b><br>수평재', f'<b>{In.horizontal}  @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
         ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
     
     columnwidth = [1, 1.5, 1.5, 1.5, 1];  height = 387;  left = 20
     cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
+    # st.write('###### $\,\,\,\,\,\,\,\,\,\,$', rf':blue[*가장 가혹한 조건인 보의 높이 5,800mm인 경우에 대해서만 구조 검토를 실시하였고, 나머지 보의 높이의 경우는 결과만 표시하였음]')
     
 def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
     if '수직재' in txt:  index = 0
@@ -240,13 +316,13 @@ def Load(In, verhor):
     if In.thick_height/1e3 >= 0.5: live_load = 3.5
     if In.thick_height/1e3 >= 1.0: live_load = 5.0
     dead_load = concrete_load + wood_load;  design_load = dead_load + live_load
-    [In.design_load, In.dead_load] = [design_load/1e3, dead_load/1e3]  # N/mm
+    [In.design_load, In.dead_load] = [design_load/1e3, dead_load/1e3]  # N/mm2
 
     data = [
         ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{In.concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{In.thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
         ['<b>거푸집 자중', f'<b>{wood_load/1e3:.4f}', f'<b>{wood_load:.2f}', '<b>최소 0.4 kN/m²'],
         ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
-        ['<b>∑ (합계)', f'<b>{design_load/1e3:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
+        ['<b>∑ (합계)', f'<b>{In.design_load:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
         
     columnwidth = [1., 1., 1., 1.8];  height = 198    
     if 'hor' in verhor:

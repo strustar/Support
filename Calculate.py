@@ -55,9 +55,158 @@ def Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing):
     
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
-    st.write(s1, '3) 풍하중')
-    st.write(s2, '➣ 3D 상세 구조 해석에 적용된 풍하중 참고')    
+
+    ###! 설계풍속 산정용
+    z = In.height
+    if 'A' in In.Kzr_txt:
+        zb = 20;  Zg = 550;  alpha = 0.33;  Kzr_txt = 'A'
+        In.Kzr = 0.58 if z <= zb else 0.22*z**alpha
+        Kzr_text = rf'∴ $\small K_{{zr}} = 0.22 z^{{\alpha}} = 0.22 × {z:,.1f}^{{{alpha:.2f}}}$ = {In.Kzr:.2f}'
+    if 'B' in In.Kzr_txt:
+        zb = 15;  Zg = 450;  alpha = 0.22;  Kzr_txt = 'B'
+        In.Kzr = 0.81 if z <= zb else 0.45*z**alpha
+        Kzr_text = rf'∴ $\small K_{{zr}} = 0.45 z^{{\alpha}} = 0.45 × {z:,.1f}^{{{alpha:.2f}}}$ = {In.Kzr:.2f}'
+    if 'C' in In.Kzr_txt:
+        zb = 10;  Zg = 350;  alpha = 0.15;  Kzr_txt = 'C'
+        In.Kzr = 1.0 if z <= zb else 0.71*z**alpha
+        Kzr_text = rf'∴ $\small K_{{zr}} = 0.71 z^{{\alpha}} = 0.71 × {z:,.1f}^{{{alpha:.2f}}}$ = {In.Kzr:.2f}'
+    if 'D' in In.Kzr_txt:
+        zb =  5;  Zg = 250;  alpha = 0.10;  Kzr_txt = 'D'
+        In.Kzr = 1.13 if z <= zb else 0.98*z**alpha
+        Kzr_text = rf'∴ $\small K_{{zr}} = 0.98 z^{{\alpha}} = 0.98 × {z:,.1f}^{{{alpha:.2f}}}$ = {In.Kzr:.2f}'
+    In.Kzr_txt = Kzr_txt
+    In.Tw = 1 / (1 - 0.6**(1/In.N))
+    In.Iw = 0.56 + 0.1*np.log(In.Tw)
+
+    In.VH = In.V0*In.KD*In.Kzr*In.Kzt*In.Iw
+    In.qH = 1.225*In.VH**2 / 2
+
+    ###! 가스트영향계수 산정용
+    B = max(In.slab_X, In.slab_Y);  H = In.height    
+    IH = 0.1*(H/Zg)**(-alpha-0.05) if H > zb else 0.1*(zb/Zg)**(-alpha-0.05)
+    LH = 100*(H/30)**(0.5) if H > 30 else 100
+    k = 0.33 if H >= B else -0.33
+    gammaD = IH*(3 + 3*alpha) / (2 + alpha)
+    BD = 1 - 1 / (1 + 5.1*(LH/np.sqrt(H*B))**1.3 * (B/H)**k)**(1/3)
+    GD = 1 + 4*gammaD*np.sqrt(BD)
+    In.wind2 = In.qH*GD / 1e3   # kN/m2
+
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s1, '3) 풍하중 (W)')
+    with col1: st.write(s2, rf'➣ 설계풍압 = $\small q_{{H}} \; G_D$ = {In.qH:,.1f} × {GD:.3f} = {In.wind2*1e3:,.1f} N/m$^2$ = {In.wind2:,.3f} kN/m$^2$')
+    with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')
+
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s1, '① 속도압 ($q_H$)')
+    with col2: st.write(h5, ':orange[<근거 : 5.5 속도압 (KDS 41 12 00 : 2022)>]')
     
+    st.write(s2, rf'기준높이 $\small H$에서의 속도압($\small q_H$)은 다음과 같이 산정한다.')    
+    st.write(s2, rf'➣ $\bm{{q_{{H}} \; = \; \Large{{\frac{{1}}{2}}} \small \, \rho \, V^2_H}}$ [N/m$^2$] = {In.qH:,.1f} N/m$^2$ = {In.qH/1e3:,.3f} kN/m$^2$')
+    
+    st.write(s3, rf'￭ $\rho$ : 공기밀도로써 균일하게 1.225 kg/m$^3$으로 한다.')
+    st.write(s3, rf'￭ $\small V_H$ : 설계풍속 [m/s] [5.5.1]')
+
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    
+    st.write(s2, rf'➣ $\bm{{\small{{V_{{H}} \; = \; V_0 \, K_D \, K_{{zr}} \, K_{{zt}} \, I_w(T)}} }}$ [m/s] = {In.V0:.1f} × {In.KD:.2f} × {In.Kzr:.2f} × {In.Kzt:.2f} × {In.Iw:.2f} = {In.VH:,.1f} m/s')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s3, rf'￭ $\small V_0$ = {In.V0:,.1f}m/s : 기본풍속 [5.5.2]')
+    with col2: st.write(h5, ':green[[제주도 등 섬 제외 28~42m/s로 분포]]')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s3, rf'￭ $\small K_D$ = {In.KD:,.2f} : 풍향계수 [5.5.3]')
+    with col2: st.write(h5, ':green[[최솟값 0.85]]')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s3, rf'￭ $\small K_{{zr}}$  = {In.Kzr:,.2f} : 풍속고도분포계수 [5.5.4]')
+    with col2: st.write(h5, ':green[[최댓값 1.765, 아래 참조]]')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s3, rf'￭ $\small K_{{zt}}$ = {In.Kzt:,.2f} : 지형계수 [5.5.5]')
+    with col2: st.write(h5, ':green[[평탄한 지역에 대한 지형계수는 1.0이다]]')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s3, rf'￭ $\small I_w (T)$ = {In.Iw:,.2f} : 건축구조물의 중요도계수')
+    with col2: st.write(h5, ':green[[존치기간 1년이하 0.6, 아래 참조]]')
+    
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
+    st.write(s2, r'➣ 풍속고도분포계수($\small K_{zr}$)')
+    st.write(s3, '￭ 표 5.5-1 지표면조도구분')
+    Table.Kzr(In, '표1')
+    st.write(s3, r'￭ 표 5.5-2 평탄한 지역에 대한 풍속고도분포계수 $\small K_{zr}$')
+    Table.Kzr(In, '표2')
+    col = st.columns([1, 2])
+    with col[0]:
+        st.write(h6, r':blue[$\qquad \qquad 1) \, \small z$ : 지표면에서의 높이 (m)]')
+        st.write(h6, r':blue[$\qquad \qquad 2) \, \small z_b$ : 대기경계층시작 높이 (m)]')
+    with col[1]:
+        st.write(h6, r':blue[$\qquad \qquad 3) \, \small Z_g$ : 기준경도풍 높이 (m)]')
+        st.write(h6, r':blue[$\qquad \qquad 4) \, \small \alpha$ : 풍속고도분포지수]')
+
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    st.write(s3, r'￭ 표 5.5-3 $\small z_b, Z_g, \alpha$')
+    Table.Kzr(In, '표3')
+
+    if z <= zb:
+        st.write(s3, rf'⇒ 지표면조도구분이 :blue[{Kzr_txt}]이고, 높이 $\small z$({z:.1f}m) ≤ $\small z_{{b}}$({zb:.1f}m) 이므로')
+        st.write(s3, rf'∴ $\small K_{{zr}}$ = {In.Kzr:.2f}')
+    else:
+        st.write(s3, rf'⇒ 지표면조도구분이 :blue[{Kzr_txt}]이고, 높이 $\small z_{{b}}$({zb:.1f}m) ≤ z({z:.1f}m) ≤ $\small Z_{{g}}$({Zg:.1f}m) 이므로')
+        st.write(s3, Kzr_text)
+
+    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s2, r'➣ 가시설물의 재현기간에 따른 중요도계수($\small I_w$)')
+    with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')    
+    st.write(s3, rf'￭ 존치기간(N)이 1년 이하의 경우에는 0.60을 적용하고, 이 외 기간에 대해서는 다음 식에 의해 산정.')
+    st.write(s3, rf'￭ $\small I_w = 0.56 + 0.1 \ln(T_w)$')
+    st.write(s3, rf'￭ $\bm{{\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }} }}$')
+    st.write(s3, rf'￭ $\small T_w$ : 재현기간(년), $\quad \small N$ : 가시설물의 존치기간(년), $\quad \small P$ : 비초과 확률(60%)')
+    st.write('')
+    if In.N <= 1:
+        st.write(s3, rf'⇒ 존치기간(N)이 1년 이하이므로')
+        st.write(s3, rf'∴ $\small I_{{W}}$ = 0.60')
+    else:
+        st.write(s3, rf'⇒ 존치기간(N)이 1년을 초과하므로 다음과 같이 산정한다.')
+        st.write(s3, rf'∴ $\small I_{{W}} = 0.56 + 0.1 \ln(T_W) = 0.56 + 0.1 × \ln({In.Tw:.2f})$ = {In.Iw:.2f}')
+        st.write(s3, rf' where, $\left[\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }}\; \small = \; \Large{{\frac{{1}}{{1 \,-\, (0.6)^\frac{{1}}{{{In.N:.1f}}}}} }} \small \;= \;{In.Tw:.2f} \right]$')
+
+    st.write('')
+    [col1, col2] = st.columns(In.col_span_ref)
+    with col1: st.write(s1, '② 가스트영향계수 ($G_D$)')
+    with col2: st.write(h5, ':orange[<근거 : 5.6 가스트영향계수 (KDS 41 12 00 : 2022)>]')    
+    word_wrap_style(s2, r'대부분 건축구조물의 풍방향 고유진동수($\small n_D$)가 1Hz를 초과하기 때문에, 바람에 의한 동적 효과를 무시할 수 있는 강체 건축구조물로 볼 수 있다.', In.font_h5)
+    st.write(s2, rf'➣ $\bm{{\small{{G_D = 1 + 4 \, \gamma_D \sqrt{{B_D}} }} }} = 1 + 4 × {gammaD:.3f} × \sqrt{{{BD:.3f}}} = {GD:.3f}$')
+    st.write(s3, rf'￭ $\small \gamma_D$ : 풍속변동계수 [식 5.6-1.c]')
+    st.write(s3, rf'￭ $\small B_D$ : 비공진계수 [식 5.6-1.d]')
+
+    st.write('')
+    st.write(s2, rf'➣ $\small \gamma_D = \left( \Large{{\frac{{3 + 3\alpha}}{{2 + \alpha}} }} \right) I_H = \left( \Large{{\frac{{3 + 3 × {alpha:.2f}}}{{2 + {alpha:.2f}}} }} \right) \small × {IH:.3f} = {gammaD:.3f} $')
+    st.write(s3, rf'￭ $\small I_H$ : 기준높이(H)에서의 난류강도 [식 5.5-3.a]')
+    st.write(s3, r'￭ $I_H = \begin{cases} {0.1 \left( \Large \frac{H}{Z_g} \right)^{-\alpha - 0.05} } & \small \text{for} & \small z_b < H ≤ Z_g \\[12pt] {0.1 \left( \Large \frac{z_b}{Z_g} \right)^{-\alpha - 0.05} } & \small \text{for} & \small H ≤ z_b \end{cases}$')
+    if H > zb:
+        st.write(s3, rf'⇒ $z_b < H ≤ Z_g$ 이므로')        
+        st.write(s3, rf'∴ $\small I_{{H}} = 0.1 \left( \Large \frac{{H}}{{Z_g}} \right)^{{-\alpha - 0.05}} = 0.1 × \left( \Large \frac{{{H:.1f}}}{{{Zg:.1f}}} \right)^{{{-alpha:.2f} - 0.05}} = {IH:.3f}$')        
+    else:
+        st.write(s3, rf'⇒ $H ≤ z_b$ 이므로')        
+        st.write(s3, rf'∴ $\small I_{{H}} = 0.1 \left( \Large \frac{{z_b}}{{Z_g}} \right)^{{-\alpha - 0.05}} = 0.1 × \left( \Large \frac{{{zb:.1f}}}{{{Zg:.1f}}} \right)^{{{-alpha:.2f} - 0.05}} = {IH:.3f}$')        
+
+    # st.write(s2, rf'➣ $\small B_D = 1 - \left[ \Large{{\frac{{1}}{{\left[ 1 \; + \; 5.1 \left( \frac{{L_H}}{{\sqrt{{HB}}}} \right)^{{1.3}} \left( \frac{{B}}{{H}} \right)^{{k}} \right]^\frac{{1}}{{3}} }} }} \right] = \small 1 - \left[ \Large{{\frac{{1}}{{\left[ 1 \; + \; 5.1 \left( \frac{{{LH:.1f}}}{{\sqrt{{{H:.1f} × {B:.1f}}}}} \right)^{{1.3}} \left( \frac{{{B:.1f}}}{{{H:.1f}}} \right)^{{{k:.2f}}} \right]^\frac{{1}}{{3}} }} }} \right] = {BD:.3f} $')
+    st.write(s2, rf'➣ $\small B_D = 1 - \left[ \Large{{\frac{{1}}{{\left[ 1 \; + \; 5.1 \left( \frac{{L_H}}{{\sqrt{{HB}}}} \right)^{{1.3}} \left( \frac{{B}}{{H}} \right)^{{k}} \right]^\frac{{1}}{{3}} }} }} \right] = {BD:.3f} $')
+    st.write(s3, rf'￭ $\small L_H$ : 기준높이(H)에서의 난류스케일(m) [식 5.6-1.e]')
+    st.write(s3, r'￭ $L_H = \begin{cases} {100 \left( \Large \frac{H}{30} \right)^{0.5} } & \small \text{for} & \small 30m < H ≤ Z_g \\[12pt] 100 & \small \text{for} & \small H ≤ 30m \end{cases}$')
+    if H > 30:
+        st.write(s3, rf'⇒ $30m < H ≤ Z_g$ 이므로')        
+        st.write(s3, rf'∴ $\small L_{{H}} = 100 \left( \Large \frac{{H}}{{30}} \right)^{{0.5}} = 100 × \left( \Large \frac{{{H:.1f}}}{{30}} \right)^{{0.5}} = {LH:.1f}$')
+    else:
+        st.write(s3, rf'⇒ $H ≤ 30m$ 이므로')        
+        st.write(s3, rf'∴ $\small L_{{H}} = {LH:.1f}$')
+    
+    st.write('')
+    st.write(s3, r'￭ $k = \begin{cases} {0.33} & \small \text{for} & \small H ≥ B \\[12pt] -0.33 & \small \text{for} & \small{H < B} \end{cases}$')
+    if H >= B:
+        st.write(s3, rf'⇒ $\small H ≥ B$ 이므로')        
+        st.write(s3, rf'∴ $\small k = {k:.2f}$')
+    else:
+        st.write(s3, rf'⇒ $\small H < B$ 이므로')        
+        st.write(s3, rf'∴ $\small k = {k:.2f}$')
+
+
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '3. 사용부재 및 설치간격')
     Table.Input(In)

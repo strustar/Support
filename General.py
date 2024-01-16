@@ -21,7 +21,7 @@ def Tab(In):
     st.write(h4, '1. 검토 개요 및 주의사항')    
     # txt = ':red[ [공사명을 입력하세요 (좌측 사이드바에서 입력)] ]' if In.title == '' else f':blue[ {In.title} ]'    
     # txt = f'본 검토서는 {txt} 현장에서 의뢰한 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
-    txt = f'본 검토보고서는 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
+    txt = f'본 검토 보고서는 시스템 동바리에 대한 구조 안전성 검토를 위한 것임.'
     word_wrap_style(s1, txt, In.font_h5)
     txt = '시스템 동바리의 하부구조는 :blue[충분한 지지력을 확보한 것으로 가정]하고 구조검토를 실시 하였음.'
     word_wrap_style(s1, txt, In.font_h5)    
@@ -88,36 +88,33 @@ def Tab(In):
     I = b*h**3/12 - b1*h1**3/12
     S = I/(In.yoke_h/2)    
     A1 = b*t;  A2 = 2*t*(h/2 - t);  y1 = (h - t)/2;  y2 = (h/2 - t)/2    # 전단상수, 전단 단면적 계산
-    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q    
+    y_bar = (A1*y1 + A2*y2)/(A1 + A2);  Q = A/2*y_bar;  Ib_Q = I*(2*t)/Q
     Table.Info('멍에', In.yoke, A, Ib_Q, I, S, E, fba, fsa, 40)
     [Yoke.A, Yoke.I, Yoke.S, Yoke.E, Yoke.fba, Yoke.fsa, Yoke.Ib_Q] = [A, I, S, E, fba, fsa, Ib_Q]
 
     # 수직재, 수평재, 가새재 (중공 원형)
     st.write(s1, '4) 수직재')
-    d = In.vertical_d;  t = In.vertical_t;  d1 = d - 2*t
-    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.vertical_d/2);  r = np.sqrt(I/A);  Fy = 355
-    Ib_Q = np.pi*In.vertical_d/2*In.vertical_t
+    d = In.vertical_d;  t = In.vertical_t;  d1 = d - 2*t;  Fy = 355
+    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(d/2);  r = np.sqrt(I/A);  Ib_Q = np.pi*d/2*t
     Table.Info('수직재', In.vertical, A, Ib_Q, I, S, E, r, Fy, 40)
     [Vertical.A, Vertical.I, Vertical.S, Vertical.E, Vertical.r, Vertical.Fy, Vertical.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
     st.write(s1, '5) 수평재')
-    d = In.horizontal_d;  t = In.horizontal_t;  d1 = d - 2*t
-    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.horizontal_d/2);  r = np.sqrt(I/A);  Fy = 235
-    Ib_Q = np.pi*In.horizontal_d/2*In.horizontal_t
+    d = In.horizontal_d;  t = In.horizontal_t;  d1 = d - 2*t;  Fy = 235
+    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(d/2);  r = np.sqrt(I/A);  Ib_Q = np.pi*d/2*t
     Table.Info('수평재', In.horizontal, A, Ib_Q, I, S, E, r, Fy, 40)    
     [Horizontal.A, Horizontal.I, Horizontal.S, Horizontal.E, Horizontal.r, Horizontal.Fy, Horizontal.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
     st.write(s1, '6) 가새재')
-    d = In.bracing_d;  t = In.bracing_t;  d1 = d - 2*t
-    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(In.bracing_d/2);  r = np.sqrt(I/A);  Fy = 235
-    Ib_Q = np.pi*In.bracing_d/2*In.bracing_t
+    d = In.bracing_d;  t = In.bracing_t;  d1 = d - 2*t;  Fy = 235
+    A = np.pi*(d**2 - d1**2)/4;  I = np.pi*(d**4 - d1**4)/64;  S = I/(d/2);  r = np.sqrt(I/A);  Ib_Q = np.pi*d/2*t
     Table.Info('가새재', In.bracing, A, Ib_Q, I, S, E, r, Fy, 40)
     [Bracing.A, Bracing.I, Bracing.S, Bracing.E, Bracing.r, Bracing.Fy, Bracing.Ib_Q] = [A, I, S, 210e3, r, Fy, Ib_Q]
 
 
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
-    st.write(h4, '3. 설계조건')  # \enspace : 1/2 em space, \quad : 1 em space, \qquad : 2 em space
+    st.write(h4, '3. 설계 일반사항')  # \enspace : 1/2 em space, \quad : 1 em space, \qquad : 2 em space
 
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s1, '1) 거푸집 설계')
@@ -183,46 +180,17 @@ def Tab(In):
     
     st.write(s2, '① 동바리 상단에 고정하중의 :blue[2% 이상]')
     st.write(s2, '② 동바리 상단에 수평방향으로 단위길이당 :blue[1.5kN/m 이상]')
-    st.write(s2, '➣ 최소 수평하중은 동바리 설치면에 대하여 X방향 및 Y방향에 대하여 각각 적용한다.')
+    st.write(s3, '➣ 최소 수평하중은 동바리 설치면에 대하여 X방향 및 Y방향에 대하여 각각 적용한다.')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    VH = 36*1*1*1*0.6;  wind2 = 1.225*VH**2/2/1e3;  In.wind2 = wind2
     [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s1, '3) 픙하중 [3D 상세 구조 해석에 적용된 풍하중]')
-    with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')
-    st.write(s2, rf'➣ 기준 높이 $\small H$에서의 속도압($\small q_H$)은 다음과 같이 산정한다.')    
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s2, rf'➣ $\bm{{q_{{H}} \; = \; \Large{{\frac{{1}}{2}}} \small \, \rho \, V^2_H}}$ (N/m$^2$) = {wind2:,.3f} kN/m$^2$')
-    with col2: st.write(h5, ':orange[<근거 : 5.5 속도압 (KDS 41 12 00 : 2022)>]')
-    st.write(s3, rf'￭ $\rho$ : 공기밀도로써 균일하게 1.225 kg/m$^3$으로 한다.')
-    st.write(s3, rf'￭ $\small V_H$ : 설계풍속 (m/s) (5.5.1에 따른다)')
-
-    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간    
-    st.write(s2, rf'➣ $\bm{{\small{{V_{{H}} \; = \; V_0 \, K_D \, K_{{zr}} \, K_{{zt}} \, I_w(T)}} }}$ (m/s) = {VH:,.1f} m/s')
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s3, rf'￭ $\small V_0$ : 기본풍속 (m/s) (5.5.2에 따른다)')
-    with col2: st.write(h5, ':green[[36m/s로 계산 : 제주도 제외 28 ~ 40m/s로 분포]]')
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s3, rf'￭ $\small K_D$ : 풍향계수 (5.5.3에 따른다)')
-    with col2: st.write(h5, ':green[[1.0으로 계산 : 최솟값 0.85]]')
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s3, rf'￭ $\small K_{{zr}}$ : 풍속고도 분포계수 (5.5.4에 따른다)')
-    with col2: st.write(h5, ':green[[1.0으로 계산 : 0.58(A), 0.81(B), 1.0(C), 1.13(D) 적용]]')
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s3, rf'￭ $\small K_{{zt}}$ : 지형계수 (5.5.5에 따른다)')
-    with col2: st.write(h5, ':green[[1.0으로 계산 : 평탄한 지역에 대한 지형계수는 1.0이다]]')
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s3, rf'￭ $\small I_w (T)$ : 건축구조물의 중요도계수')
-    with col2: st.write(h5, ':green[[0.6으로 계산 : 아래 계산의 0.60 적용]]')
-    
-    st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
-    [col1, col2] = st.columns(In.col_span_ref)
-    with col1: st.write(s2, rf'➣ 가시설물의 재현기간에 따른 중요도계수 $\small I_w$')
-    with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')    
-    st.write(s3, rf'￭ 재현기간($\small I_w(T_w)$)이 1년 이하의 경우에는 0.60을 적용하고, 이 외 기간에 대해서는 다음 식에 의해 산정.')
-    st.write(s3, rf'￭ $\small I_w = 0.56 + 0.1 ln(T_w)$')
-    st.write(s3, rf'￭ $\bm{{\small T_{{w}} \; = \; \Large{{\frac{{1}}{{1 \,-\, (P)^\frac{{1}}{{N}}}} }} }}$')
-    st.write(s3, rf'￭ $\small T_w$ : 재현기간(년), $\quad \small N$ : 가시실물의 존치기간(년), $\quad \small P$ : 비초과 확률(60%)')
+    with col1: st.write(s1, '3) 풍하중')
+    n = 60 if '비계' in In.type else 50
+    with col2: st.write(h5, f':orange[<근거 : 1.6.4 풍하중 (KDS 21 {n} 00 : 2022)>]')
+    st.write(s2, '① 이 기준에서 규정한 사항 이외의 경우에는 KDS 41 12 00에 따른다.')
+    st.write(s2, '② 가시설물의 재현기간에 따른 중요도계수($\small I_{w}$)는 KDS 21 50 00(1.6.4(2))에 따른다.')    
+    if '비계' in In.type:
+        st.write(s2, '③ 안전시설물의 풍력계수($\small C_{f}$)는 충실률에 따라 KDS 21 60 00(1.6.4(3))와 같이 산정한다.')
 
     st.write(In.space, unsafe_allow_html=True)  ## 빈줄 공간
     [col1, col2] = st.columns([1,2])
@@ -231,7 +199,7 @@ def Tab(In):
     st.write(s2, '➣ 거푸집 및 동바리, 비계 및 안전시설물 설계 시 하중조합 및 허용응력증가계수는 다음과 같이 적용한다.')
     Table.Load_Case()
 
-
+    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '5. 적용기준 및 참고문헌')
     st.write(s1, '￭ 가시설물 설계 일반사항 (KDS 21 10 00 : 2022, 국토교통부)')

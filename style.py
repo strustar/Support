@@ -11,11 +11,13 @@ def radio(color, width):
         div.row-widget.stRadio > div[role='radiogroup'] > label input[type=radio] {{
             display: none;   /*기본 스타일 옵션 제거, 없어도 될거 같은데?? */
             font-weight: bold !important;
+            font-size: 18px !important;
         }}
         div.row-widget.stRadio > div[role='radiogroup'] {{
             display: flex;
             justify-content: space-between;
-            width: 100%;            
+            width: 100%;
+            font-size: 18px !important;
             flex-direction: row;
             font-weight: bold !important;
         }}
@@ -24,6 +26,7 @@ def radio(color, width):
             # justify-content: center;
             # align-items: center;            
             font-weight: bold !important;
+            font-size: 18px !important;
             padding: 2px;
             padding-left: 10px;
             padding-right: 15px;
@@ -41,7 +44,8 @@ def radio(color, width):
             # justify-content: center;
             # align-items: center;
             font-weight: bold !important;
-            font-size: 28px !important;
+            font-size: 18px !important;
+            margin-top: -5px;
             padding: 5px;
             padding-left: 10px;
             padding-right: 5px;
@@ -58,7 +62,7 @@ def radio(color, width):
         div.row-widget.stSelectbox > div[data-baseweb='select'] > div {{
             display: inline-flex;            
             justify-content: center;
-            align-items: center;
+            align-items: center;            
             margin-top: -5px;
             padding: 0px;
             padding-left: 5px;
@@ -72,10 +76,12 @@ def radio(color, width):
             # width: {width};
         }}
         div.row-widget.stSelectbox > div[data-baseweb='select'] > div:hover {{
+            font-size: 18px !important;
             {aa}
         }}
         div.row-widget.stRadio > div[role='radiogroup'] > label:hover {{
             font-weight: bold !important;
+            font-size: 18px !important;
             background-color: lightblue;    
         }}
     </style> """

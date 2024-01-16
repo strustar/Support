@@ -229,7 +229,7 @@ def Analysis(In, h4, h5, s1, s2, opt, Vertical, Horizontal, Bracing):
         st.title(':orange[부 록 🎯] (ANSYS 3차원 상세 구조해석 코드)')
     else:
         st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
-        st.title(':orange[Ⅲ. 상세 구조해석 🎯] (ANSYS 상용 프로그램을 이용한 3차원 상세 구조해석)')
+        st.title(':orange[Ⅲ. 3차원 상세 구조해석 🎯]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
     
     if 'result' in opt:  Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing)

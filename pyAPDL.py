@@ -49,8 +49,8 @@ def analysis(In, LC):   # Load Case
     if LC == 2:  # 풍하중
         ver = In.dead_load;    horx = In.wind2;  hory = In.wind2
     
-    P = ver*In.Ly*In.Lv                                          # N/mm2 *mm *mm
-    Hx = horx*In.Ly*In.Lh/factor;  Hy = hory*In.Lv*In.Lh/factor  # kN/m2 = 1e3 N/(mm*mm*1e6) *mm*mm = N / 1e3
+    P = ver*In.Ly*In.Lv                                          # N/mm2 *mm *mm = N
+    Hx = horx*In.Ly*In.Lh/factor;  Hy = hory*In.Lv*In.Lh/factor  # kN/m2 *mm *mm / 1e3 = 1e3 N/(m*m) *m/1e3*m/1e3 = N    
 
     # !! ===============================================> Preprocessing 
     ma.clear();  ma.prep7()

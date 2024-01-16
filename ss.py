@@ -26,6 +26,7 @@ css = f""" <style>
     .block-container {{
         margin-top: 20px;
         padding-top: 0px;
+        font-size: 18px !important;
         max-width: 1000px !important;
     }}
     .element-container {{
@@ -40,9 +41,9 @@ css = f""" <style>
         font-weight: bold !important;
         border: 1px solid black !important;
         border-radius: 100px;
-    }}
-    
-    input[type="number"] {{
+    }}    
+    input[type="number"] {{      
+        # margin-top: -5px;        
         padding: 5px;
         padding-left: 15px;
         # color: blue;
@@ -53,13 +54,28 @@ css = f""" <style>
         border-radius: 100px;
         # width: 100%
     }}
-    # input[type="number"]::-ms-clear {{
-    #     display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
+    input[type="number"]::-ms-clear {{
+        display: none; /* 숫자 입력창 오른쪽에 있는 지우기(x) 버튼을 숨깁니다 */
+    }}
+    # [data-testid=stNumberInput-Input] {{
+    #     margin-top: -5px;
+    #     background-color: yellow !important;
+    #     color: red;
+    #     /* border: 3px dashed lightblue !important; */
+    #     font-weight: bold !important;
+    #     font-size: 18px !important;
+    #     padding: 5px !important;
+    #     # margin-top: -100px !important;        
+    #     # padding-bottom: 100px !important;
+    #     # height: 110% !important;
+    #     # max-width: 600px !important;  /* 사이드바의 최대 크기를 조절합니다 */
+    #     width: 100% !important;  /* 이렇게 하면 사이드 바 폭을 고정할수 있음. */
     # }}
     [data-testid=stSidebar] {{
         background-color: whitesmoke !important;
         /* border: 3px dashed lightblue !important; */
-        font-weight: bold !important;        
+        font-weight: bold !important;
+        font-size: 18px !important;
         padding: 5px !important;
         margin-top: -100px !important;        
         padding-bottom: 100px !important;

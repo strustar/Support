@@ -1,40 +1,73 @@
 import streamlit as st
 import streamlit.components.v1 as components
+from Sidebar import In
 
 from datetime import date
 today = date.today() # 오늘 날짜 가져오기
 
 def Contents():
-    c0 = '<u>문서번호 : 23-10-001</u>'
-    title = "&nbsp; &nbsp; &nbsp; 시스템동바리 구조검토보고서 &nbsp; &nbsp; &nbsp;"
-    c1 = "팔당대교~와부 도로건설 공사"
-    c2 = "<u>교대날개벽</u>"
-    c3 = today.strftime("%Y. %m")
-    c4 = "우림산업(주)"
-    
-    html_code = f"""        
-        <div style = "font-weight: bold;  text-align: center;  background-color: white;  margin: 0px;  padding: 10px ">
-            <p style = "text-align: left;  font-size: 20px">{c0}</p>
-            <div style = "display:inline-block; color: black; font-size: 28px;">                
-                <p style = "color: blue; font-size: 38px; border: 3px solid black; margin-top: 80px;  padding-top: 10px; padding-bottom: 10px">{title}</p>            
-                <p style = "margin-top:120px;  font-size: 32px">{c1}</p>
-                <p style = "margin-top: 40px;  font-size: 32px;  color: blue;">{c2}</p>
-                <p style = "margin-top:240px">{c3}</p>
-                <p style = "margin-top:240px;  margin-bottom:200px">{c4}</p>
+    txt = '비계' if '비계' in In.type else '동바리'
+    # service = '이경민'
+    service = '김상현'
+    if '김상현' in service:
+        c0 = '<u>문서번호 : 23-10-001</u>'
+        title = f"&nbsp; &nbsp; &nbsp; 시스템{txt} 구조검토보고서 &nbsp; &nbsp; &nbsp;"
+        c1 = "팔당대교~와부 도로건설 공사"
+        c2 = "<u>교대날개벽</u>"
+        c3 = today.strftime("%Y. %m")
+        c4 = "**산업(주)"
+
+        html_code = f"""
+            <div style = "font-weight: bold;  text-align: center;  background-color: white;  margin: 0px;  padding: 10px ">
+                <p style = "text-align: left;  font-size: 20px">{c0}</p>
+                <div style = "display:inline-block; color: black; font-size: 28px;">                
+                    <p style = "color: blue; font-size: 38px; border: 3px solid black; margin-top: 80px;  padding-top: 10px; padding-bottom: 10px">{title}</p>            
+                    <p style = "margin-top:120px;  font-size: 32px">{c1}</p>
+                    <p style = "margin-top: 40px;  font-size: 32px;  color: blue;">{c2}</p>
+                    <p style = "margin-top:240px">{c3}</p>
+                    <p style = "margin-top:240px;  margin-bottom:200px">{c4}</p>
+                </div>
             </div>
-        </div>
-        <table style = 'text-align: center;  width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-weight: bold;  font-size: 28px'>
-            <tr style = 'width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-size: 20px'>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width: 8%;  padding: 20px'> 작<br><br>성 </td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width:26%'> 우림산업(주)<br><br>박 순 태</td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width:15%'> </td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width:.1%'> </td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width: 8%'> 승<br><br>인 </td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width:27%'> 토목구조기술사<br><br>김 상 현</td>
-                <td style = 'border-collapse: collapse;  border: 2px solid black;  width:15%'> </td>
-            </tr>
-        </table>
-    """    
+            <table style = 'text-align: center;  width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-weight: bold;  font-size: 28px'>
+                <tr style = 'width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-size: 20px'>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width: 8%;  padding: 20px'> 작<br><br>성 </td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:26%'> **산업(주)<br><br>* * *</td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:15%'> </td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:.1%'> </td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width: 8%'> 승<br><br>인 </td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:27%'> 토목구조기술사<br><br>* * *</td>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:15%'> </td>
+                </tr>
+            </table>
+        """        
+    else:  # 이경민
+        c0 = '<u>문서번호 : D24-01-1</u>'
+        title = f"&nbsp; &nbsp; &nbsp; 시스템{txt} 구조검토보고서 &nbsp; &nbsp; &nbsp;"        
+        c1 = '양산시 신도시 정수장 증설공사'
+        c2 = f"<u>시스템 {txt}</u>"
+        c3 = today.strftime("%Y. %m")
+        c4 = "두원엔지니어링"
+
+        html_code = f"""        
+            <div style = "font-weight: bold;  text-align: center;  background-color: white;  margin: 0px;  padding: 10px ">
+                <p style = "text-align: left;  font-size: 20px">{c0}</p>
+                <div style = "display:inline-block; color: black; font-size: 28px;">                
+                    <p style = "color: blue; font-size: 38px; border: 3px solid black; margin-top: 80px;  padding-top: 10px; padding-bottom: 10px">{title}</p>            
+                    <p style = "margin-top:120px;  font-size: 32px">{c1}</p>
+                    <p style = "margin-top: 40px;  font-size: 32px;  color: blue;">{c2}</p>
+                    <p style = "margin-top: 40px;  font-size: 32px;  color: blue;">보 (600mm × 700mm)</p>
+                    <p style = "margin-top:160px">{c3}</p>
+                    <p style = "margin-top:160px;  margin-bottom:200px">{c4}</p>
+                </div>
+            </div>
+            <table style = 'text-align: center;  height: 180px;  width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-weight: bold;  font-size: 38px'>
+                <tr style = 'width: 100%;  border-collapse: collapse;  border: 2px solid black;  font-size: 24px'>
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:25%'> 검토 및 승인<br> </td>                
+                    <td style = 'border-collapse: collapse;  border: 2px solid black;  width:65%'> </td>
+                </tr>
+            </table>
+        """
+
     components.html(html_code, width = 1000, height = 1400, scrolling = True)
     
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
@@ -50,7 +83,7 @@ def Contents():
     c1   = ':blue[Ⅰ. 일반 사항]'
     c1_1 = '1. 검토 개요 및 주의사항'
     c1_2 = '2. 사용부재 제원'
-    c1_3 = '3. 설계조건'
+    c1_3 = '3. 설계 일반사항'
     c1_4 = '4. 설계하중 및 하중조합'
     c1_5 = '5. 적용기준 및 참고문헌'
     
@@ -66,7 +99,7 @@ def Contents():
     c2_9 = '9. 수평재 검토'
     c2_10= '10. 가새재 검토'
  
-    c3   = ':blue[Ⅲ. 상세 구조해석]'
+    c3   = ':blue[Ⅲ. 3차원 상세 구조해석]'
     c3_1 = '1. 하중 조합'
     c3_2 = '2. 변위 및 응력 검토'
     c3_3 = '3. 단면력 집계'
