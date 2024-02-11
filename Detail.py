@@ -4,8 +4,6 @@ import Table, os, json
 
 def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     # Input file
-    print(In.Lbottom)
-    print(In.type)
     if '비계' in In.type:
         inputs = {
             'type':In.type,

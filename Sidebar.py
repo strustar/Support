@@ -40,7 +40,7 @@ def Sidebar(h4, h5):
     # In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
 
     sb.write(h4, '✤ 검토 유형 [시스템 동바리 & 시스템 비계]')
-    In.type = sb.radio('숨김', ('슬래브', '보 (단멍에)', '시스템 비계'), horizontal=True, label_visibility='collapsed', index=2)
+    In.type = sb.radio('숨김', ('슬래브', '보 (단멍에)', '시스템 비계'), horizontal=True, label_visibility='collapsed', index=1)
     
     if '비계' in In.type:
         sb.markdown(side_border, unsafe_allow_html=True)   #  구분선 ------------------------------------        

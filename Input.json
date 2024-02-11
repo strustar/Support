@@ -1,5 +1,5 @@
 {
-    "type": "슬래브",
+    "type": "보 (단멍에)",
     "Ly": 610,
     "Lv": 1219,
     "Lh": 1725,
@@ -12,9 +12,9 @@
     "horizontal_t": 2.2,
     "bracing_d": 42.7,
     "bracing_t": 2.2,
-    "dead_load": 0.01,
-    "design_load": 0.0125,
-    "Hx2": 0.5222,
-    "Hy2": 0.0766,
+    "dead_load": 0.0172,
+    "design_load": 0.0207,
+    "Hx2": 0.8982,
+    "Hy2": 0.1317,
     "wind2": 0.3668
 }

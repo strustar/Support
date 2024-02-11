@@ -111,6 +111,7 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         word_wrap_style(s2, '*작업하중은 경작업에 대해서는 :blue[1.25kN/m² 이상], 중작업에 대해서는 :blue[2.5kN/m² 이상], 돌 붙임 공사 등 무거운 작업인 경우 :blue[3.5kN/m² 이상] 적용', '15px')
 
         st.write('')  ## 빈줄 공간
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         [col1, col2] = st.columns(In.col_span_ref)
         with col1: st.write(s1, '2) 수평하중')
         with col2: st.write(h5, ':orange[ <근거 : 1.6.3 수평하중 (KDS 21 60 00 : 2022)>]')
@@ -181,6 +182,8 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
     st.write(s3, rf'￭ $\small V_H$ : 설계풍속 [m/s] [5.5.1]')
 
     st.write('')  ## 빈줄 공간
+    if '비계' in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.write(s2, rf'➣ $\small{{V_{{H}} \; = \; V_0 \, K_D \, K_{{zr}} \, K_{{zt}} \, I_w(T)}}$ [m/s] = {In.V0:.1f} × {In.KD:.2f} × {In.Kzr:.2f} × {In.Kzt:.2f} × {In.Iw:.2f} = {In.VH:,.1f} m/s')
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s3, rf'￭ $\small V_0$ = {In.V0:,.1f}m/s : 기본풍속 [5.5.2]')
@@ -212,7 +215,8 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         st.write(h6, r':blue[$\qquad \qquad 3) \, \small Z_g$ : 기준경도풍 높이 (m)]')
         st.write(h6, r':blue[$\qquad \qquad 4) \, \small \alpha$ : 풍속고도분포지수]')
 
-    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    if '비계' not in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.write(s3, r'￭ 표 5.5-3 $\small z_b, Z_g, \alpha$')
     Table.Kzr(In, '표3')
 
@@ -224,6 +228,8 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         st.write(s3, Kzr_text)
 
     st.write('')  ## 빈줄 공간
+    if '비계' in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     [col1, col2] = st.columns(In.col_span_ref)
     with col1: st.write(s2, r'➣ 가시설물의 재현기간에 따른 중요도계수($\small I_w$)')
     with col2: st.write(h5, ':orange[<근거 : 1.6.4 풍하중 (KDS 21 50 00 : 2022)>]')    
@@ -295,9 +301,10 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '3. 사용부재 및 설치간격')
     Table.Input(In)
-
-    st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
+    
     if '비계' in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         st.write(h4, '4. 작업발판 검토')
         st.image('Images/working2.png', width=900)
 
@@ -322,19 +329,24 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         with col1: st.write(s2, '➣ 안전율 검토 $\; : \;$ ', rf'S.F = $\large\frac{{M_a}}{{{{M_{{max}}}}}} \normalsize = \large\frac{{ {Ma:,.2f} }}{{ {Mmax:,.2f} }} \normalsize = \: $' + f'{SF:.1f}', rf'$\; {lgeq} \;$ 2.0 (휨 안전율) $\qquad$')
         with col2: st.write(h5, okng)
 
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         opt = ['장선','', '5. '];  userFcn.Check(In, opt, In.joist, Joist)
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         opt = ['띠장','', '6. '];  userFcn.Check(In, opt, In.waling, Waling)
 
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         opt = ['수직재', '7. '];  Vertical.Fca = userFcn.Check_Support(In, opt, In.vertical, Vertical)
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         opt = ['수평재', '8. '];  Horizontal.Fca = userFcn.Check_Support(In, opt, In.horizontal, Horizontal)
         st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         opt = ['가새재', '9. '];  Bracing.Fca = userFcn.Check_Support(In, opt, In.bracing, Bracing)
 
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         st.write(h4, '10. 벽연결용 철물 및 받침철물 검토')
         st.write('')  ## 빈줄 공간
@@ -374,7 +386,8 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         with col2: st.write(h5, okng)
         st.write('###### $\quad \qquad$', ':blue[*압축 안전율 3.0 적용]')
 
-    else:
+    else:   # 동바리
+        st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         [col1, col2] = st.columns(In.col_span_ref)
         with col1: st.write(h4, '4. 거푸집 널의 변형기준')
         with col2: st.write(h4, ':orange[ <근거 : 1.9 변형기준 (KDS 21 50 00 : 2022)>]')

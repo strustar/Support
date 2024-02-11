@@ -205,7 +205,8 @@ def Info(In):
         for txt in txts:
             word_wrap_style(s2, txt, In.font_h5)
 
-    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    if '비계' not in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '4. 설계하중 및 하중조합')  #!!!!!!!!!!!!!!!!!!!!!!
     [col1, col2] = st.columns(In.col_span_ref)
@@ -265,6 +266,8 @@ def Info(In):
     if '비계' in In.type:
         st.write(s2, '③ 안전시설물의 풍력계수($\small C_{f}$)는 충실률에 따라 KDS 21 60 00(1.6.4(3))와 같이 산정한다.')
 
+    if '비계' in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.write('')  ## 빈줄 공간
     [col1, col2] = st.columns([1,2])
     with col1: st.write(s1, '4) 하중조합')
@@ -272,7 +275,8 @@ def Info(In):
     st.write(s2, '➣ 거푸집 및 동바리, 비계 및 안전시설물 설계 시 하중조합 및 허용응력증가계수는 다음과 같이 적용한다.')
     Table.Load_Case()
 
-    st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
+    if '비계' not in In.type:
+        st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################    
     st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
     st.write(h4, '5. 적용기준 및 참고문헌')  #!!!!!!!!!!!!!!!!!!!!!!
     st.write(s1, '￭ 가시설물 설계 일반사항 (KDS 21 10 00 : 2022, 국토교통부)')    
