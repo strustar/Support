@@ -95,7 +95,7 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
             st.write(s1, f'✦ 작업발판 중량 : {In.working_weight1:,.2f} kN/m²')
             st.write(s1, f'✦ 작업하중 : {In.working_weight2:,.2f} kN/m² (:blue[{In.working_txt}])')
         with col[1]:
-            st.image('Images\scaffolding.png', width=470)
+            st.image('Images/scaffolding.png', width=470)
         
         st.markdown(In.border1, unsafe_allow_html=True) ########### border ##########
         st.write(h4, '2. 설계하중 산정')
