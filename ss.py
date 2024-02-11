@@ -167,10 +167,10 @@ if ('보고서' in In.select) or ('표지' in In.select):
     Cover.Contents()
     st.write('');  st.write('');  st.write('')
 if ('보고서' in In.select) or ('일반 사항' in In.select):
-    [Wood, Joist, Yoke, Vertical, Horizontal, Bracing] = General.Tab(In)
+    [Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing] = General.Info(In)
     st.write('');  st.write('');  st.write('')
 if ('보고서' in In.select) or ('구조 검토' in In.select):
-    Calculate.Info(In, Wood, Joist, Yoke, Vertical, Horizontal, Bracing)
+    Calculate.Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing)
     st.write('');  st.write('');  st.write('')
 if ('보고서' in In.select) or ('상세' in In.select):
     Detail.Analysis(In, h4, h5, s1, s2, 'result', Vertical, Horizontal, Bracing)   # opt : both, result, code
@@ -220,6 +220,18 @@ if '부 록' in In.select:
 # # ============================================================================================================================================
 # st.write('Example (아래는 나중에 참조할 사항)')
 
+# import streamlit.components.v1 as components
+
+# # Write some simple HTML code
+# html_code = """
+#     <div style="background-color: lightblue; padding: 10px;">
+#         <h1>Hello, Streamlit!</h1>
+#         <p>This is a simple example of inserting HTML code into a Streamlit app.</p>
+#     </div>
+# """
+
+# # Use the 'components.html' function to insert the HTML code
+# components.html(html_code)
 
 # text = 'Hello Streamlit!'
 # latex_formula = r'\(E = mc^2\)'  # Example LaTeX formula

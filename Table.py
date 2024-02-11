@@ -115,16 +115,28 @@ def Summary(In):
     #     ['<b><br>수평재', f'<b>{In.horizontal}<br>       @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
     #     ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
 
-    headers = [
-        '<b><br>구 분</b>',
-        '<b>보 [600mm × 700mm]</b>', ]
-    data = [
-        ['<b>합판',       f'<b>{In.wood} (하중방향)', '<b>좌동', '<b>좌동', ''],
-        ['<b><br>장선',   f'<b>{In.joist}  @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
-        ['<b><br>멍에',   f'<b>{In.yoke}  @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
-        ['<b><br>수직재', f'<b>{In.vertical}  @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
-        ['<b><br>수평재', f'<b>{In.horizontal}  @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
-        ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
+    if '비계' in In.type:
+        headers = [
+            '<b>구 분</b>',
+            '<b>상 세', ]
+        data = [
+            ['<b>작업발판',       f'<b>{In.Lj:,.0f} mm × {In.Lw:,.0f} mm'],
+            ['<b>장선',   f'<b>{In.joist}  @{In.Lj:,.0f} mm'],
+            ['<b>띠장',   f'<b>{In.waling}  @{In.Lw:,.0f} mm'],
+            ['<b>수직재', f'<b>{In.vertical}  @{In.Lw:,.0f} mm'],
+            ['<b>수평재', f'<b>{In.horizontal}  @{In.Lh:,.0f} mm'],
+            ['<b>가새재',     f'<b>{In.bracing}  @{In.Lw*In.bracing_N:,.0f} mm'],   ]
+    else:  # 동바리
+        headers = [
+            '<b>구 분</b>',
+            '<b>보 [600mm × 700mm]</b>', ]
+        data = [
+            ['<b>합판',       f'<b>{In.wood} (하중방향)', '<b>좌동', '<b>좌동', ''],
+            ['<b>장선',   f'<b>{In.joist}  @{In.Lj:,.0f}', f'<b>{In.joist}<br>       @130', f'<b>{In.joist}<br>       @170', ''],
+            ['<b>멍에',   f'<b>{In.yoke}  @{In.Ly:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+            ['<b>수직재', f'<b>{In.vertical}  @{In.Lv:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+            ['<b>수평재', f'<b>{In.horizontal}  @{In.Lh:,.0f}', '<b><br>좌동', '<b><br>좌동', ''],
+            ['<b>가새재',     f'<b>{In.bracing}', '<b>좌동', '<b>좌동', ''],   ]
     
     columnwidth = [1, 1.5, 1.5, 1.5, 1];  height = 387;  left = 20
     cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
@@ -157,12 +169,16 @@ def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
             '<b>변위 검토</b>',
             ]
         uz = Support;  Fy = txt
+        if '비계' in In.type: In.d2 = 10;  In.level = ''
+        dtxt = f'<b>{In.d2:,.1f} [{In.level}]'
+        if '비계' in In.type: dtxt = f'<b>{In.d2:,.1f}'
         check1 = 'OK (✅)' if uz[0] < In.d2 else 'NG (❌)'
-        check2 = 'OK (✅)' if uz[1] < In.d2 else 'NG (❌)'        
+        check2 = 'OK (✅)' if uz[1] < In.d2 else 'NG (❌)'
         data = [
-            ['<b>LC1', f'<b>{uz[0]:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check1}'],
-            ['<b>LC2', f'<b>{uz[1]:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check2}'],
-            ['<b>LC2*', f'<b>{uz[1]/1.25:,.3f}', f'<b>{In.d2:,.1f} [{In.level}]', f'<b>{check2}'], ]
+            ['<b>LC1', f'<b>{uz[0]:,.3f}', dtxt, f'<b>{check1}'],
+            ['<b>LC2', f'<b>{uz[1]:,.3f}', dtxt, f'<b>{check2}'],
+            ['<b>LC2*', f'<b>{uz[1]/1.25:,.3f}', dtxt, f'<b>{check2}'], ]
+            
     elif '응력' in force:
         columnwidth = [1];  height = 159
         headers = [
@@ -202,7 +218,7 @@ def Section_Check(In, Axial, Moment, Shear, force, Support, txt):
             F1 = Moment[index];  F2 = Moment[index+1];  A = Support.S
             txt1 = '휨모멘트/단면계수';  txt2 = 'kN&#8226;m';  txt3 = 'mm³'
             
-        f = 1e6 if '휨' in force else 1e3
+        f = 1e6 if '휨' in force else 1e3        
         stress1 = f*F1/A;  ratio1 = stress1/allowable
         stress2 = f*F2/A;  ratio2 = stress2/allowable
         check1 = 'OK (✅)' if stress1 < allowable else 'NG (❌)'
@@ -271,21 +287,37 @@ def Wood_Deformation(In):
 
 
 def Input(In):
-    headers = [
-        '<b>부재</b>',
-        '<b>규격 [mm]</b>',
-        '<b>재료</b>',
-        '<b>설치간격 [mm]</b>',
-        '<b>비 고</b>',]
-    data = [
-        ['<b>합판',   f'<b>{In.wood} (하중방향)', '<b>거푸집용', f'<b>-', ''],
-        ['<b>장선',   f'<b>{In.joist}', '<b>SPSR400', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
-        ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
-        ['<b>수직재', f'<b>{In.vertical}', '<b>SKT500', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
-        ['<b>수평재', f'<b>{In.horizontal}', '<b>SKT400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
-        ['<b>가새재', f'<b>{In.bracing}', '<b>SKT400', f'<b>-', ''], ]    
-    
-    columnwidth = [0.8, 1.4, 1,1.2, 3];  height = 286;  left = 20
+    if '비계' in In.type:
+        headers = [
+            '<b>부재</b>',
+            '<b>규격 [mm]</b>',
+            '<b>항복강도</b>',
+            '<b>설치간격</b>',
+            '<b>비 고</b>',]        
+        data = [
+            ['<b>작업발판',f'<b>{In.Lj:,.0f} × {In.Lw:,.0f}', '<b>-', '<b>-', f'<b>휨강도 : 안전인증기준[{In.P:.0f} N/mm] × 나비[mm]'],
+            ['<b>장선',   f'<b>{In.joist}', f'<b>{In.joist_Fy:,.0f} MPa', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
+            ['<b>띠장',   f'<b>{In.waling}', f'<b>{In.waling_Fy:,.0f} MPa', f'<b><i>L<sub>w</sub></i> = {In.Lw:,.0f} mm', ''],
+            ['<b>수직재', f'<b>{In.vertical}', f'<b>{In.vertical_Fy:,.0f} MPa', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
+            ['<b>수평재', f'<b>{In.horizontal}', f'<b>{In.horizontal_Fy:,.0f} MPa', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
+            ['<b>가새재', f'<b>{In.bracing}', f'<b>{In.bracing_Fy:,.0f} MPa', f'<b>{In.bracing_N:.0f}개마다 설치', f'<b>가새재 설치는 띠장방향 {In.bracing_N:.0f}개마다 설치'], ]
+        columnwidth = [0.8, 1.3, 1.2,1.2, 3];  height = 286;  left = 20
+    else:
+        headers = [
+            '<b>부재</b>',
+            '<b>규격 [mm]</b>',
+            '<b>재료</b>',
+            '<b>설치간격</b>',
+            '<b>비 고</b>',]
+        data = [
+            ['<b>합판',   f'<b>{In.wood} (하중방향)', '<b>거푸집용', f'<b>-', ''],
+            ['<b>장선',   f'<b>{In.joist}', '<b>SPSR400', f'<b><i>L<sub>j</sub></i> = {In.Lj:,.0f} mm', ''],
+            ['<b>멍에',   f'<b>{In.yoke}', '<b>SPSR400', f'<b><i>L<sub>y</sub></i> = {In.Ly:,.0f} mm', ''], #f'<b>멍에의 간격은 수직재의 간격과 같다'],
+            ['<b>수직재', f'<b>{In.vertical}', '<b>STK500', f'<b><i>L<sub>v</sub></i> = {In.Lv:,.0f} mm', f'<b>수직재의 간격은 수평재 좌굴길이(KL<sub>h</sub>)와 같다'],
+            ['<b>수평재', f'<b>{In.horizontal}', '<b>STK400', f'<b><i>L<sub>h</sub></i> = <b>{In.Lh:,.0f} mm', f'<b>수평재의 간격은 수직재 좌굴길이(KL<sub>v</sub>)와 같다'],
+            ['<b>가새재', f'<b>{In.bracing}', '<b>STK400', f'<b>-', ''], ]
+        columnwidth = [0.8, 1.4, 1,1.2, 3];  height = 286;  left = 20
+
     cells_align = ['center', 'center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    
     common_table(headers, data, columnwidth, cells_align, cells_fill_color, height, left)
 
@@ -306,48 +338,96 @@ def Load_Case():
     
 
 def Load(In, verhor):
-    headers = [
+    headers = [    # 공통
         '<b>구분</b>',
         '<b>하중 [N/mm²]</b>',
         '<b>하중 [kN/m²]</b>',
-        '<b>하중 산정</b>', ]
+        '<b>산정 근거</b>', ]
+
+    if '비계' in In.type:
+        if 'scaffold' in verhor:
+            headers = [
+                '<b>연직하중</b>',
+                '<b>수평하중 산정</b>',
+                '<b>수직재 검토</b>', ]
+            
+            In.P1 = In.working_weight1 * In.Lj/1e3 * In.Lw/1e3 * In.nZ  # kN
+            In.P2 = In.working_weight2 * In.Lj/1e3 * In.Lw/1e3  # kN
+
+            d = In.joist_d;  t = In.joist_t;  d1 = d - 2*t;  Ajoist = np.pi*(d**2 - d1**2)/4
+            In.Pjoist = 7850 * 9.8 * Ajoist * In.Lj * In.nZ / 1e12   # kN
+            d = In.waling_d;  t = In.waling_t;  d1 = d - 2*t;  Awaling = np.pi*(d**2 - d1**2)/4
+            In.Pwaling = 7850 * 9.8 * Awaling * In.Lw * In.nZ / 1e12   # kN
+            d = In.vertical_d;  t = In.vertical_t;  d1 = d - 2*t;  Aver = np.pi*(d**2 - d1**2)/4
+            In.Pver = 7850 * 9.8 * Aver * In.Lh * In.nZ / 1e12   # kN
+            d = In.horizontal_d;  t = In.horizontal_t;  d1 = d - 2*t;  Ahor = np.pi*(d**2 - d1**2)/4
+            In.Phor = 7850 * 9.8 * Ahor * In.Lv * In.nZ / 1e12   # kN
+            d = In.bracing_d;  t = In.bracing_t;  d1 = d - 2*t;  Abra = np.pi*(d**2 - d1**2)/4;  Lb = np.sqrt(In.Lv**2 + In.Lh**2)
+            In.Pbra = 7850 * 9.8 * Abra * Lb * In.nZ / In.bracing_N / 1e12   # kN
+            In.Pg = 0.02418 * In.Lw * (In.nZ - 1) * 2 / 1e3   # kN
+
+            In.Pv1 = In.P1 + In.P2 + In.Pjoist + In.Pwaling + In.Pver + In.Phor + In.Pbra + In.Pg
+            In.Pv2 = In.P1/2 + In.P2/2 + In.Pjoist/2 + In.Pwaling + In.Pver + In.Phor + In.Pbra + In.Pg
+            data = [
+                ['<b>작업발판 자중 <br>       [kN]', f'<b> 작업발판 자중 × 장선재 길이 × 띠장재 길이 × 층수 <br> {In.working_weight1:,.2f} kN/m² × {In.Lj/1e3:,.3f} m × {In.Lw/1e3:,.3f} m × {In.nZ:.0f} 층 = {In.P1:,.2f} kN', f'<b>장선재 길이 / 2 <br>     {In.P1/2:,.2f} kN'],
+                ['<b>작업하중 <br>   [kN]', f'<b> 작업하중 × 장선재 길이 × 띠장재 길이 <br> {In.working_weight2:,.2f} kN/m² × {In.Lj/1e3:,.3f} m × {In.Lw/1e3:,.3f} m = {In.P2:,.2f} kN', f'<b>장선재 길이 / 2 <br>     {In.P2/2:,.2f} kN'],
+                ['<b>장선재 자중 <br>     [kN]', f'<b> 장선재 단위중량 × 장선재 단면적 × 장선재 길이 × 층수 <br> (7,850 × 9.8) N/m³ × {Ajoist:,.1f} mm² × {In.Lj:,.1f} mm × {In.nZ:.0f} 층 = {In.Pjoist:,.2f} kN', f'<b>장선재 길이 / 2 <br>     {In.Pjoist/2:,.2f} kN'],
+                ['<b>띠장재 자중 <br>     [kN]', f'<b> 띠장재 단위중량 × 띠장재 단면적 × 띠장재 길이 × 층수 <br> (7,850 × 9.8) N/m³ × {Awaling:,.1f} mm² × {In.Lw:,.1f} mm × {In.nZ:.0f} 층 = {In.Pwaling:,.2f} kN', f'<b>좌측과 같음<br>   {In.Pwaling:,.2f} kN'],
+                ['<b>수직재 자중 <br>     [kN]', f'<b> 수직재 단위중량 × 수직재 단면적 × 수직재 길이 × 층수 <br> (7,850 × 9.8) N/m³ × {Aver:,.1f} mm² × {In.Lh:,.1f} mm × {In.nZ:.0f} 층 = {In.Pver:,.2f} kN', f'<b>좌측과 같음<br>   {In.Pver:,.2f} kN'],
+                ['<b>수평재 자중 <br>     [kN]', f'<b> 수평재 단위중량 × 수평재 단면적 × 수평재 길이 × 층수 <br> (7,850 × 9.8) N/m³ × {Ahor:,.1f} mm² × {In.Lv:,.1f} mm × {In.nZ:.0f} 층 = {In.Phor:,.2f} kN', f'<b>좌측과 같음<br>   {In.Phor:,.2f} kN'], 
+                ['<b>가새재 자중 <br>     [kN]', f'<b> 가새재 단위중량 × 가새재 단면적 × 가새재 길이 × 층수 / 가새재 설치 간격 개수  <br> (7,850 × 9.8) N/m³ × {Abra:,.1f} mm² × {Lb:,.1f} mm × {In.nZ:.0f} 층 / {In.bracing_N:,.0f} = {In.Pbra:,.2f} kN', f'<b>좌측과 같음<br>   {In.Pbra:,.2f} kN'],
+                ['<b>안전난간 자중 <br>      [kN]', f'<b> 안전난간 단위길이당 중량 × 길이 × (층수 - 1) × 개수  <br> 0.02418 N/mm × {In.Lw:,.1f} mm × {In.nZ-1:.0f} × 2 = {In.Pg:,.2f} kN', f'<b>좌측과 같음<br>   {In.Pg:,.2f} kN'],
+                ['<b>∑ (합계)', f'<b>{In.Pv1:,.2f} kN', f'<b>{In.Pv2:,.2f} kN'], ]
+            columnwidth = [1, 4, 1];  height = 569
+
+        if 'ver' in verhor:
+            design_load = In.working_weight1 + In.working_weight2   # kN/m2
+            In.design_load = design_load/1e3                        # N/mm2
+
+            data = [
+                ['<b>작업발판 자중', f'<b>{In.working_weight1/1e3:.4f}', f'<b>{In.working_weight1:.2f}', '<b>최소 0.2 kN/m²'],
+                ['<b>작업하중*', f'<b>{In.working_weight2/1e3:.4f}', f'<b>{In.working_weight2:.2f}', f'<b>{In.working_txt}'],
+                ['<b>∑ (합계)', f'<b>{In.design_load:.4f}', f'<b>{design_load:.2f}', ''], ]
+            columnwidth = [1., 1., 1., 1.8];  height = 158
+
+    else:
+        wood_load = In.wood_weight;  concrete_load = In.concrete_weight*In.thick_height/1e3;  live_load = 2.5   # kN/m²
+        if In.thick_height/1e3 >= 0.5: live_load = 3.5
+        if In.thick_height/1e3 >= 1.0: live_load = 5.0
+        dead_load = concrete_load + wood_load;  design_load = dead_load + live_load
+        [In.design_load, In.dead_load] = [design_load/1e3, dead_load/1e3]  # N/mm2
+
+        if 'ver' in verhor:
+            data = [
+                ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{In.concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{In.thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
+                ['<b>거푸집 자중', f'<b>{wood_load/1e3:.4f}', f'<b>{wood_load:.2f}', '<b>최소 0.4 kN/m²'],
+                ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
+                ['<b>∑ (합계)', f'<b>{In.design_load:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]                
+            columnwidth = [1., 1., 1., 1.8];  height = 198
         
-    wood_load = In.wood_weight;  concrete_load = In.concrete_weight*In.thick_height/1e3;  live_load = 2.5   # kN/m²
-    if In.thick_height/1e3 >= 0.5: live_load = 3.5
-    if In.thick_height/1e3 >= 1.0: live_load = 5.0
-    dead_load = concrete_load + wood_load;  design_load = dead_load + live_load
-    [In.design_load, In.dead_load] = [design_load/1e3, dead_load/1e3]  # N/mm2
+        if 'hor' in verhor:
+            H2 = dead_load*0.02;  Hx1 = H2*In.Y;  Hy1 = H2*In.X
+            lgeqx = ' < ' if Hx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Hy1 <= 1.5 else ' > '
+            
+            columnwidth = [1, 4.3];  height = 228
+            headers = [
+                '<b>구분</b>',
+                '<b>max[고정하중의 2%, 단위길이당 1.5 kN/m]', ]
 
-    data = [
-        ['<b>콘크리트 자중', f'<b>{concrete_load/1e3:.4f}', f'<b>{concrete_load:.2f}', f'<b>{In.concrete_weight:.1f}'+' kN/m³ × ' + f'<b>{In.thick_height/1e3:.3f}'+' m = ' + f'<b>{concrete_load:.2f}' + ' kN/m²'],
-        ['<b>거푸집 자중', f'<b>{wood_load/1e3:.4f}', f'<b>{wood_load:.2f}', '<b>최소 0.4 kN/m²'],
-        ['<b>작업하중*', f'<b>{live_load/1e3:.4f}', f'<b>{live_load:.2f}', '<b>최소 2.5 kN/m²'],
-        ['<b>∑ (합계)', f'<b>{In.design_load:.4f}', f'<b>{design_load:.2f}', '<b>최소 5.0 kN/m²'], ]
-        
-    columnwidth = [1., 1., 1., 1.8];  height = 198    
-    if 'hor' in verhor:
-        H2 = dead_load*0.02;  Hx1 = H2*In.slab_Y;  Hy1 = H2*In.slab_X
-        lgeqx = ' < ' if Hx1 <= 1.5 else ' > ';  lgeqy = ' < ' if Hy1 <= 1.5 else ' > '
-        
-        columnwidth = [1, 4.3];  height = 228
-        headers = [
-        '<b>구분</b>',
-        '<b>max[고정하중의 2%, 단위길이당 1.5 kN/m]', ]
+            txt1 = f'<b>X방향 : 고정하중의 2% × Y방향 길이 = {H2:.3f} kN/m² × {In.Y:.1f} m = {Hx1:.3f} kN/m {lgeqx} 1.5 kN/m'+ f'<br><b>Y방향 : 고정하중의 2% × X방향 길이 = {H2:.3f} kN/m² × {In.X:.1f} m = {Hy1:.3f} kN/m  {lgeqy} 1.5 kN/m'
 
-        txt1 = f'<b>X방향 : 고정하중의 2% × Y방향 길이 = {H2:.3f} kN/m² × {In.slab_Y:.1f} m = {Hx1:.3f} kN/m {lgeqx} 1.5 kN/m'+ f'<br><b>Y방향 : 고정하중의 2% × X방향 길이 = {H2:.3f} kN/m² × {In.slab_X:.1f} m = {Hy1:.3f} kN/m  {lgeqy} 1.5 kN/m'
+            Hx1 = max(Hx1, 1.5);  Hx2 = Hx1/In.X
+            Hy1 = max(Hy1, 1.5);  Hy2 = Hy1/In.Y
+            txt2 = f'<b>X방향 : 위의 큰값 / X방향 길이 = {Hx1:.3f} kN/m / {In.X:.1f} m = {Hx2:.3f} kN/m²'+ f'<br><b>Y방향 : 위의 큰값 / Y방향 길이 = {Hy1:.3f} kN/m / {In.Y:.1f} m = {Hy2:.3f} kN/m²'
+            In.Hx = Hx2*In.X*In.Y;  In.Hy = Hy2*In.X*In.Y
+            In.Hx2 = Hx2;  In.Hy2 = Hy2
 
-        Hx1 = max(Hx1, 1.5);  Hx2 = Hx1/In.slab_X
-        Hy1 = max(Hy1, 1.5);  Hy2 = Hy1/In.slab_Y
-        txt2 = f'<b>X방향 : 위의 큰값 / X방향 길이 = {Hx1:.3f} kN/m / {In.slab_X:.1f} m = {Hx2:.3f} kN/m²'+ f'<br><b>Y방향 : 위의 큰값 / Y방향 길이 = {Hy1:.3f} kN/m / {In.slab_Y:.1f} m = {Hy2:.3f} kN/m²'
-        In.Hx = Hx2*In.slab_X*In.slab_Y;  In.Hy = Hy2*In.slab_X*In.slab_Y
-        In.Hx2 = Hx2;  In.Hy2 = Hy2
+            txt3 = f'<b>X방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hx2:.3f} kN/m² × {In.X:.1f} m × {In.Y:.1f} m = {In.Hx:.1f} kN'+ f'<br><b>Y방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hy2:.3f} kN/m² × {In.X:.1f} m × {In.Y:.1f} m = {In.Hy:.1f} kN'
 
-        txt3 = f'<b>X방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hx2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Hx:.1f} kN'+ f'<br><b>Y방향 : 위의 수평하중 × X방향 길이 × Y방향 길이 = {Hy2:.3f} kN/m² × {In.slab_X:.1f} m × {In.slab_Y:.1f} m = {In.Hy:.1f} kN'
-
-        data = [
-            [f'<b>단위 길이당 수평하중<br><b>        [kN/m]', txt1],
-            ['<b>단위 면적당 수평하중<br><b>         [kN/m²]', txt2],
-            ['<b>수평하중 (P<sub>h</sub>)<br>      [kN]', txt3], ]
+            data = [
+                [f'<b>단위 길이당 수평하중<br><b>        [kN/m]', txt1],
+                ['<b>단위 면적당 수평하중<br><b>         [kN/m²]', txt2],
+                ['<b>수평하중 (P<sub>h</sub>)<br>      [kN]', txt3], ]
         
     left = 50
     cells_align = ['center', 'center', 'center', 'left'];  cells_fill_color = ['gainsboro', 'white']    

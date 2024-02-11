@@ -1,13 +1,36 @@
 import streamlit as st
 import numpy as np
-import Table
-import os;  import json
+import Table, os, json
 
 def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     # Input file
-    inputs = {'Ly':round(In.Ly, 1), 'vertical_d':round(In.vertical_d, 1), 'vertical_t':round(In.vertical_t, 1), 'Lv':round(In.Lv, 1), 'horizontal_d':round(In.horizontal_d, 1), 'horizontal_t':round(In.horizontal_t, 1), 'Lh':round(In.Lh, 1), 'bracing_d':round(In.bracing_d, 1), 'bracing_t':round(In.bracing_t, 1), 'slab_X':round(In.slab_X, 2), 'slab_Y':round(In.slab_Y, 2), 'height':round(In.height, 2), 'dead_load':round(In.dead_load, 4), 'design_load':round(In.design_load, 4), 'Hx2':round(In.Hx2, 4), 'Hy2':round(In.Hy2, 4), 'wind2':round(In.wind2, 4)}    
-    with open('Input.json', 'w') as f:
-        json.dump(inputs, f, indent = 4)
+    print(In.Lbottom)
+    print(In.type)
+    if '비계' in In.type:
+        inputs = {
+            'type':In.type,
+            'Lj':round(In.Lj, 1), 'Lw':round(In.Lw, 1), 'bracing_N':In.bracing_N,
+            'Lbottom':round(In.Lbottom, 1), 'Lh':round(In.Lh, 1),
+            'nX':In.nX, 'nY':In.nY, 'nZ':In.nZ, 
+            'vertical_d':round(In.vertical_d, 1), 'vertical_t':round(In.vertical_t, 1),
+            'horizontal_d':round(In.horizontal_d, 1), 'horizontal_t':round(In.horizontal_t, 1),
+            'bracing_d':round(In.bracing_d, 1), 'bracing_t':round(In.bracing_t, 1), 
+            'dead_load':round(In.working_weight1/1e3, 4), 'design_load':round(In.design_load, 4),   # N/mm2
+            'Hx':round(In.Hx, 4), 'Hy':round(In.Hy, 4), 'wind2':round(In.wind2, 4),  # Hx, Hy : kN, wind2 : kN/m2
+            'fastener_Ly':In.fastener_Ly, 'fastener_Lz':In.fastener_Lz, 'fastener_Lz1':In.fastener_Lz1, }
+    else:
+        inputs = {
+            'type':In.type,
+            'Ly':round(In.Ly, 1), 'Lv':round(In.Lv, 1), 'Lh':round(In.Lh, 1),
+            'X':round(In.X, 2), 'Y':round(In.Y, 2), 'Z':round(In.Z, 2),
+            'vertical_d':round(In.vertical_d, 1), 'vertical_t':round(In.vertical_t, 1),
+            'horizontal_d':round(In.horizontal_d, 1), 'horizontal_t':round(In.horizontal_t, 1),
+            'bracing_d':round(In.bracing_d, 1), 'bracing_t':round(In.bracing_t, 1),            
+            'dead_load':round(In.dead_load, 4), 'design_load':round(In.design_load, 4),   # N/mm2
+            'Hx2':round(In.Hx2, 4), 'Hy2':round(In.Hy2, 4), 'wind2':round(In.wind2, 4) }  # kN/m2
+        
+    with open('Input.json', 'w', encoding='utf-8') as f:   # 한글 쓸때 (encoding-'utf-8', ensure_ascii=False)
+        json.dump(inputs, f, indent = 4, ensure_ascii=False)
     # Input file
     
     # Output file
@@ -74,7 +97,7 @@ def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
     st.write(s1, '2) 허용응력 증가계수를 고려한 단면력')
     st.write(s2, '➣ LC2(하중조합 2)의 경우 허용응력 증가계수 1.25를 고려한다.')
     st.write(s2, '➣ 허용응력 증가는 단면력을 1.25로 나눈 것과 같다.')
-    [Axial, Moment, Shear] = Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, 1.25)
+    [Axial, Moment, Shear] = Table.Section(In, Fx1, Fx2, My1, My2, Mz1, Mz2, SFz1, SFz2, SFy1, SFy2, 1.25)    
     
     for i in [1, 2, 3]:
         if i != 1:
@@ -242,4 +265,3 @@ def Analysis(In, h4, h5, s1, s2, opt, Vertical, Horizontal, Bracing):
 
         with tabtab[1]:
             Code()
-        
