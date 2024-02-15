@@ -25,7 +25,7 @@ def Check(In, opt, section, WJY):
         st.write(s1, '1) 개요')
         st.write(s2, '➣ 등분포 하중을 받는 단순보로 계산한다.')
         st.write(s2, '➣ ' + L_jw)
-
+        
         st.write('')  ## 빈줄 공간
         st.write(s1, '2) ' + opt[0] + '에 재하되는 하중')
         st.write(s2, rf'➣ $w$ = 설계 하중 x ' + f'${L_str[1]}$')

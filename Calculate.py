@@ -282,7 +282,7 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         st.write(s3, rf'⇒ $\small H ≥ B$ 이므로')        
         st.write(s3, rf'∴ $\small k = {k:.2f}$')
     else:
-        st.write(s3, rf'⇒ $\small H < B$ 이므로')        
+        st.write(s3, rf'⇒ $\small H < B$ 이므로')
         st.write(s3, rf'∴ $\small k = {k:.2f}$')
 
     if '비계' in In.type:

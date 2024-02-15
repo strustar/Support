@@ -6,12 +6,11 @@ class In:
 
 In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
-In.background_color = 'linen'
 In.font_h1 = '30px';  In.font_h2 = '28px';  In.font_h3 = '26px';  In.font_h4 = '24px';  In.font_h5 = '20px';  In.font_h6 = '16px'
 
 color = 'green'
 In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
-In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">' # 2줄
+In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">'  # 2줄
 In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
 
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
@@ -32,9 +31,15 @@ def Sidebar(h4, h5):
     sb.markdown(html_code, unsafe_allow_html=True)
 
     h4 = h5
-    sb.write('# ', ':blue[[Information : 입력값 📘]]')
-    sb.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
-    In.select = sb.selectbox(h5 + '✦ 숨김', ('O. 표지 및 목차 📝', 'Ⅰ. 일반 사항 ✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 상세 구조해석 🎯', 'Ⅳ. 검토 결과 ✅', '[부 록]', '[전체 보고서]'), index = 6, label_visibility='collapsed')
+    sb.write('# ', ':blue[[Information : 입력값 📘]]')    
+    col = sb.columns(2)
+    with col[0]:
+        st.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
+        In.select = st.selectbox(h5 + '✦ 숨김', ('O. 표지 및 목차 📝', 'Ⅰ. 일반 사항 ✍️', 'Ⅱ. 구조 검토 💻⭕', 'Ⅲ. 상세 구조해석 🎯', 'Ⅳ. 검토 결과 ✅', '[부 록]', '[전체 보고서]'), index = 6, label_visibility='collapsed')
+    with col[1]:
+        st.write(h4, '✤ 워터마크(watermark) 제거')
+        In.watermark = st.text_input(h5 + '✦ 숨김', type='password', placeholder='password 입력하세요' , label_visibility='collapsed')  # , type='password'
+
     
     # sb.write(h4, '✤ 공사명')
     # In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
