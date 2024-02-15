@@ -82,7 +82,7 @@ def input(In):
             padding-left: 5px;
             background-color: {bc};
             font-size: 18px;
-            color: blue;
+            color: purple;
             font-weight: bold;
             # border: 1px solid black;
             # border-radius: 100px;            
@@ -186,7 +186,7 @@ def input(In):
                     top: 50%;
                     left: 50%;
                     transform: translate(-15%, -50%);
-                    opacity: 0.2;  /* 투명도 설정 */
+                    opacity: 0.18;  /* 투명도 설정 */
                     z-index: 999;  /* 다른 요소들보다 상위에 위치하도록 설정 */
                     pointer-events: none;  /* 워터마크가 클릭 이벤트를 방해하지 않도록 설정 */
                 }
