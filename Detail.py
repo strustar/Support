@@ -2,7 +2,10 @@ import streamlit as st
 import numpy as np
 import Table, os, json
 
-def Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing):
+def Result(In, Vertical, Horizontal, Bracing):
+    h4 = In.h4;  h5 = In.h5
+    s1 = In.s1;  s2 = In.s2
+
     # Input file
     if '비계' in In.type:
         inputs = {
@@ -244,7 +247,7 @@ def Code():
     code_string = ''.join(lines)
     st.code(code_string, line_numbers=True)
 
-def Analysis(In, h4, h5, s1, s2, opt, Vertical, Horizontal, Bracing):
+def Analysis(In, opt, Vertical, Horizontal, Bracing):
     if 'code' in opt:
         st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
         st.title(':orange[부 록 🎯] (ANSYS 3차원 상세 구조해석 코드)')
@@ -253,13 +256,13 @@ def Analysis(In, h4, h5, s1, s2, opt, Vertical, Horizontal, Bracing):
         st.title(':orange[Ⅲ. 3차원 상세 구조해석 🎯]')
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########  #st.markdown('\n')
     
-    if 'result' in opt:  Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing)
+    if 'result' in opt:  Result(In, Vertical, Horizontal, Bracing)
     if 'code' in opt:    Code()
     
     if 'both' in opt:
-        tabtab = st.tabs([h4+':orange[해석 결과]', h4+':blue[해석 코드]'])
+        tabtab = st.tabs([In.h4+':orange[해석 결과]', In.h4+':blue[해석 코드]'])
         with tabtab[0]:
-            Result(In, h4, h5, s1, s2, Vertical, Horizontal, Bracing)
+            Result(In, Vertical, Horizontal, Bracing)
 
         with tabtab[1]:
             Code()

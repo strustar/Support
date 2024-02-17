@@ -2,10 +2,10 @@ import streamlit as st
 import numpy as np
 import Table
 
-h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
-s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$';  s4 = h5 + '$\qquad \qquad$'
-
 def Check(In, opt, section, WJY):
+    h4 = In.h4;  h5 = In.h5
+    s1 = In.s1;  s2 = In.s2;  s3 = In.s3
+
     [A, I, S, E, fba, fsa, Ib_Q] = [WJY.A, WJY.I, WJY.S, WJY.E, WJY.fba, WJY.fsa, WJY.Ib_Q]
 
     if '비계' in In.type:
@@ -154,6 +154,9 @@ def Check(In, opt, section, WJY):
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!수직재, 수평재, 가새재 체크  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def Check_Support(In, opt, section, Support):
+    h4 = In.h4;  h5 = In.h5
+    s1 = In.s1;  s2 = In.s2;  s3 = In.s3
+
     [A, I, S, E, r, Fy, Ib_Q] = [Support.A, Support.I, Support.S, Support.E, Support.r, Support.Fy, Support.Ib_Q]    
 
     P = In.Pv2 if '비계' in In.type else In.design_load*In.Ly*In.Lv/1e3 #kN

@@ -3,10 +3,10 @@ import numpy as np
 from Sidebar import word_wrap_style
 import Table, userFcn
 
-h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
-s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$';  s4 = h5 + '$\qquad \qquad$'
-
-def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):    
+def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
+    h4 = In.h4;  h5 = In.h5;  h6 = In.h6
+    s1 = In.s1;  s2 = In.s2;  s3 = In.s3;  s4 = h5 + '$\qquad \qquad$'
+    
     ###! 설계풍속(qH) 산정용
     z = In.Z
     if 'A' in In.Kzr_txt:
@@ -108,7 +108,7 @@ def Info(In, Wood, Joist, Waling, Yoke, Vertical, Horizontal, Bracing):
         word_wrap_style(s2+' ', '➣ 작업하중은 근로자와 근로자가 사용하는 자재, 공구 등을 포함하며, 경작업, 중작업, 돌 붙입 공사 등과 같이 구분하여 적용한다.', In.font_h5)
         st.write(s2, '➣ :blue[발판, 장선, 띠장 검토]를 위한 연직하중 산정')
         Table.Load(In, 'vertical')
-        word_wrap_style(s2, '*작업하중은 경작업에 대해서는 :blue[1.25kN/m² 이상], 중작업에 대해서는 :blue[2.5kN/m² 이상], 돌 붙임 공사 등 무거운 작업인 경우 :blue[3.5kN/m² 이상] 적용', '15px')
+        word_wrap_style(s2, '*작업하중은 경작업에 대해서는 :blue[1.25kN/m² 이상], 중작업에 대해서는 :blue[2.5kN/m² 이상], 돌 붙임 공사 등 무거운 작업인 경우 :blue[3.5kN/m² 이상] 적용', In.font_h6)
 
         st.write('')  ## 빈줄 공간
         st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################

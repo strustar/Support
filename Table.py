@@ -21,7 +21,7 @@ def common_table(headers, data, columnwidth, cells_align, cells_fill_color, heig
         columnwidth = columnwidth,
         header = dict(
             values = list(df.columns),
-            align = ['center'],            
+            align = ['center'],
             fill_color = fill_color,  #'darkgray'
             font = dict(size = fs, color = 'black', family = table_font, ),  # 글꼴 변경
             line = dict(color = 'black', width = lw),   # 셀 경계색, 두께

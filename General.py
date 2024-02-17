@@ -11,10 +11,10 @@ class Vertical: pass
 class Horizontal: pass
 class Bracing: pass
 
-h2 = '## ';  h3 = '### ';  h4 = '#### ';  h5 = '##### ';  h6 = '###### '
-s1 = h5 + '$\quad$';  s2 = h5 + '$\qquad$';  s3 = h5 + '$\quad \qquad$'
-
 def Info(In):
+    h4 = In.h4;  h5 = In.h5
+    s1 = In.s1;  s2 = In.s2;  s3 = In.s3
+
     st.markdown('<div class="page-break"></div>', unsafe_allow_html=True)    ############ 인쇄할 때, 페이지 나누기 ###################
     st.title(':green[Ⅰ. 일반 사항 ✍️]')  #!!!!!!!!!!!!!!!!!!!!!!
     st.markdown(In.border2, unsafe_allow_html=True) ########### border ##########

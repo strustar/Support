@@ -6,22 +6,24 @@ class In:
 
 In.ok = ':blue[∴ OK] (🆗✅)';  In.ng = ':red[∴ NG] (❌)'
 In.col_span_ref = [1, 1];  In.col_span_okng = [5, 1]  # 근거, OK(NG) 등 2열 배열 간격 설정
-In.font_h1 = '30px';  In.font_h2 = '28px';  In.font_h3 = '26px';  In.font_h4 = '24px';  In.font_h5 = '20px';  In.font_h6 = '16px'
 
-color = 'green'
-In.border1 = f'<hr style="border-top: 2px solid {color}; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
-In.border2 = f'<hr style="border-top: 5px double {color}; margin-top: 0px; margin-bottom:30px; margin-right: -30px">'  # 2줄
-In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
+In.font_h1 = '32px';  In.font_h2 = '28px';  In.font_h3 = '26px';  In.font_h4 = '24px';  In.font_h5 = '20px';  In.font_h6 = '16px'
+In.h2 = '## ';  In.h3 = '### ';  In.h4 = '#### ';  In.h5 = '##### ';  In.h6 = '###### '
+In.s1 = In.h5 + '$\quad$';  In.s2 = In.h5 + '$\qquad$';  In.s3 = In.h5 + '$\quad \qquad$'
+
+In.border1 = f'<hr style="border-top: 2px solid green; margin-top:30px; margin-bottom:30px; margin-right: -30px">'  # 1줄
+In.border2 = f'<hr style="border-top: 5px double green; margin-top: 0px; margin-bottom:30px; margin-right: -30px">'  # 2줄
+# In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
 
 def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em; text-align: justify">{txt}</div>', unsafe_allow_html=True)        
 
-sb = st.sidebar
-side_border = '<hr style="border-top: 2px solid purple; margin-top:15px; margin-bottom:15px;">'
 # ! L은 길이보다 간격을 의미함.
-##### sidebar =======================================================================================================
-def Sidebar(h4, h5):
-    # HTML 코드
+def Sidebar():
+    sb = st.sidebar
+    side_border = '<hr style="border-top: 2px solid purple; margin-top:15px; margin-bottom:15px;">'
+    h5 = In.h5;  h4 = h5
+    
     html_code = """
         <div style="background-color: lightblue; margin-top: 10px; padding: 10px; padding-top: 20px; padding-bottom:0px; font-weight:bold; border: 2px solid black; border-radius: 20px;">
             <h5>문의 사항은 언제든지 아래 이메일로 문의 주세요^^</h5>
@@ -30,8 +32,7 @@ def Sidebar(h4, h5):
     """
     sb.markdown(html_code, unsafe_allow_html=True)
 
-    h4 = h5
-    sb.write('# ', ':blue[[Information : 입력값 📘]]')    
+    sb.write('');  sb.write('## ', ':blue[[Information : 입력값 📘]]');  sb.write('')
     col = sb.columns(2)
     with col[0]:
         st.write(h4, '✤ 선택 [Ⅰ, Ⅱ, Ⅲ, Ⅳ, Ⅴ]')
@@ -39,10 +40,6 @@ def Sidebar(h4, h5):
     with col[1]:
         st.write(h4, '✤ 워터마크(watermark) 제거')
         In.watermark = st.text_input(h5 + '✦ 숨김', type='password', placeholder='password 입력하세요' , label_visibility='collapsed')  # , type='password'
-
-    
-    # sb.write(h4, '✤ 공사명')
-    # In.title = sb.text_input('숨김', placeholder='공사명을 입력하세요', label_visibility='collapsed')
 
     sb.write(h4, '✤ 검토 유형 [시스템 동바리 & 시스템 비계]')
     In.type = sb.radio('숨김', ('슬래브', '보 (단멍에)', '시스템 비계'), horizontal=True, label_visibility='collapsed', index=2)
@@ -244,7 +241,7 @@ def Sidebar(h4, h5):
         [col1, col2] = sb.columns([3,2])
         with col1:            
             st.write(h4, ':green[✤ ' + '거푸집 널의 변형기준 [표면 등급]' + ']')
-            level = st.radio(h5 + ':green[표면 등급]', ('A급', 'B급', 'C급'), label_visibility='collapsed')
+            level = st.radio(h5 + ':green[표면 등급]', ('A급', 'B급', 'C급'), label_visibility='collapsed', horizontal=True)
             if 'A' in level:  d1 = 360;  d2 = 3
             if 'B' in level:  d1 = 270;  d2 = 6
             if 'C' in level:  d1 = 180;  d2 = 13        
