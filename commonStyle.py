@@ -120,7 +120,7 @@ def input_box(In):
     </style> """, unsafe_allow_html=True)
 
 #! 워터마크 이미지, 투명도 및 크기를 설정하는 함수
-@st.cache_resource
+# @st.cache_resource
 def watermark(In):    
     if '0811' not in In.watermark:
         st.markdown("""
