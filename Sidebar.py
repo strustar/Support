@@ -15,7 +15,7 @@ In.border1 = f'<hr style="border-top: 2px solid green; margin-top:30px; margin-b
 In.border2 = f'<hr style="border-top: 5px double green; margin-top: 0px; margin-bottom:30px; margin-right: -30px">'  # 2줄
 # In.bracing_analysis = 'NO : 없음(상세구조해석에서 없음)'  # or OK
 
-def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등    
+def word_wrap_style(span, txt, fs):  # 자동 줄바꿈 등
     return st.markdown(span + f'<div style="white-space:pre-line; display:inline-block; font-size: {fs}; line-height: 1.8; text-indent: 0em; text-align: justify">{txt}</div>', unsafe_allow_html=True)        
 
 # ! L은 길이보다 간격을 의미함.

@@ -1,8 +1,11 @@
 import streamlit as st
-import Sidebar, General, Calculate, Cover, Detail, Summary, style
+import Sidebar, General, Calculate, Cover, Detail, Summary
 
-import os
+import os, sys
 os.system('cls')  # 터미널 창 청소, clear screen
+sys.path.append('D:\\Work_Python\\Common')  # 공통 스타일 변수 디렉토리 추가
+import commonStyle    # print(sys.path)
+
 ### * -- Set page config
 st.set_page_config(page_title="System support 구조검토", page_icon="🌈", layout="centered",   # centered, wide
                     initial_sidebar_state="expanded", # runOnSave = True,
@@ -13,7 +16,8 @@ st.set_page_config(page_title="System support 구조검토", page_icon="🌈", l
                     })
 
 In = Sidebar.Sidebar()
-style.input(In)
+commonStyle.input_box(In)
+commonStyle.watermark(In)
 
 if ('보고서' in In.select) or ('표지' in In.select):
     Cover.Contents()
